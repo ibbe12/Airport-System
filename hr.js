@@ -2571,9 +2571,9 @@ function renderLeaveRequests(data) {
         tr.innerHTML = '<td><div class="md-user-cell"><span class="md-avatar-sm" style="background:' + r.color + ';">' + r.initials + '</span><strong>' + r.employee + '</strong></div></td>' +
             '<td>' + r.type + '</td><td>' + r.from + '</td><td>' + r.to + '</td><td title="working / calendar">&thinsp;' + daysDisplay + '</td>' +
             '<td><span class="md-badge ' + badgeCls + '" style="' + colorStyle + '">' + r.status + '</span></td>' +
-            '<td><span class="md-action-btns" style="display:flex;gap:6px;">' +
-            '<i class="bi bi-pencil lr-edit" style="color:var(--gray-text,#888);font-size:1rem;cursor:pointer;" data-rid="' + r._id + '"></i>' +
-            '<i class="bi bi-trash lr-delete" style="color:#dc3545;font-size:1rem;cursor:pointer;" data-rid="' + r._id + '"></i></span></td>';
+            '<td><span class="md-action-btns" style="display:flex;gap:4px;">' +
+            '<span class="lr-edit" style="color:var(--gray-text,#888);font-size:0.75rem;cursor:pointer;padding:2px 8px;border:1px solid var(--gray-300,#ddd);border-radius:4px;" data-rid="' + r._id + '">Edit</span>' +
+            '<span class="lr-delete" style="color:#dc3545;font-size:0.75rem;cursor:pointer;padding:2px 8px;border:1px solid #dc3545;border-radius:4px;" data-rid="' + r._id + '">Delete</span></span></td>';
         tbody.appendChild(tr);
     });
 }
@@ -2587,9 +2587,9 @@ function renderPendingApprovals(data) {
         var li = document.createElement('li'); li.className = 'md-list-item';
         li.innerHTML = '<span class="md-avatar" style="background:' + r.color + ';">' + r.initials + '</span>' +
             '<div class="md-list-info"><p class="md-list-name">' + r.employee + '</p><p class="md-list-date">' + r.type + ' · ' + r.days + ' day' + (r.days > 1 ? 's' : '') + '</p></div>' +
-            '<span class="md-action-btns">' +
-            '<i class="bi bi-check-circle-fill lr-approve" style="color:#28a745;font-size:1.1rem;cursor:pointer;" data-rid="' + r._id + '"></i>' +
-            '<i class="bi bi-x-circle-fill lr-reject" style="color:#dc3545;font-size:1.1rem;cursor:pointer;margin-left:6px;" data-rid="' + r._id + '"></i></span>';
+            '<span class="md-action-btns" style="display:flex;gap:4px;">' +
+            '<span class="lr-approve" style="color:#155724;font-size:0.7rem;cursor:pointer;padding:2px 8px;background:#d4edda;border:1px solid #c3e6cb;border-radius:4px;font-weight:500;" data-rid="' + r._id + '">Approve</span>' +
+            '<span class="lr-reject" style="color:#721c24;font-size:0.7rem;cursor:pointer;padding:2px 8px;background:#f8d7da;border:1px solid #f5c6cb;border-radius:4px;font-weight:500;" data-rid="' + r._id + '">Reject</span></span>';
         ul.appendChild(li);
     });
 }
@@ -2624,18 +2624,23 @@ function renderApprovalWorkflow(data) {
     var tbody = document.querySelector('.leave-content[data-leave="approvals"] .md-table tbody');
     if (!tbody) return;
     tbody.innerHTML = '';
-    var pending = data.requests.filter(function(r) { return r.status === 'Pending'; });
-    pending.forEach(function(r) {
+    var allReqs = data.requests.slice().sort(function(a, b) {
+        return (b.submitted || '').localeCompare(a.submitted || '');
+    });
+    allReqs.forEach(function(r) {
         var daysDisplay = (r.type === 'Annual Leave' && r.rawDays) ? r.days + ' / ' + r.rawDays : r.days;
+        var actions = '';
+        if (r.status === 'Pending') {
+            actions += '<span class="lr-approve" style="color:#155724;font-size:0.72rem;cursor:pointer;padding:2px 8px;background:#d4edda;border:1px solid #c3e6cb;border-radius:4px;font-weight:500;" data-rid="' + r._id + '">Approve</span>' +
+                '<span class="lr-reject" style="color:#721c24;font-size:0.72rem;cursor:pointer;padding:2px 8px;background:#f8d7da;border:1px solid #f5c6cb;border-radius:4px;font-weight:500;" data-rid="' + r._id + '">Reject</span>';
+        }
+        actions += '<span class="lr-edit" style="color:var(--gray-text,#888);font-size:0.72rem;cursor:pointer;padding:2px 8px;border:1px solid var(--gray-300,#ddd);border-radius:4px;" data-rid="' + r._id + '">Edit</span>' +
+            '<span class="lr-delete" style="color:#dc3545;font-size:0.72rem;cursor:pointer;padding:2px 8px;border:1px solid #dc3545;border-radius:4px;" data-rid="' + r._id + '">Delete</span>';
         var tr = document.createElement('tr');
         tr.innerHTML = '<td><div class="md-user-cell"><span class="md-avatar-sm" style="background:' + r.color + ';">' + r.initials + '</span><strong>' + r.employee + '</strong></div></td>' +
             '<td>' + r.type + '</td><td>' + r.from + '</td><td>' + r.to + '</td><td title="working / calendar">&thinsp;' + daysDisplay + '</td>' +
-            '<td><span class="md-badge md-badge-closed">' + r.status + '</span></td>' +
-            '<td><span class="md-action-btns" style="display:flex;gap:6px;">' +
-            '<i class="bi bi-check-circle-fill lr-approve" style="color:#28a745;font-size:1.1rem;cursor:pointer;" data-rid="' + r._id + '"></i>' +
-            '<i class="bi bi-x-circle-fill lr-reject" style="color:#dc3545;font-size:1.1rem;cursor:pointer;" data-rid="' + r._id + '"></i>' +
-            '<i class="bi bi-pencil lr-edit" style="color:var(--gray-text,#888);font-size:1rem;cursor:pointer;" data-rid="' + r._id + '"></i>' +
-            '<i class="bi bi-trash lr-delete" style="color:#dc3545;font-size:1rem;cursor:pointer;" data-rid="' + r._id + '"></i></span></td>';
+            '<td><span class="md-badge ' + (r.status === 'Approved' ? 'md-badge-open' : 'md-badge-closed') + '">' + r.status + '</span></td>' +
+            '<td><span class="md-action-btns" style="display:flex;gap:4px;">' + actions + '</span></td>';
         tbody.appendChild(tr);
     });
 }
@@ -3267,7 +3272,7 @@ function renderLeaveCalendar(data) {
     /* Build leave lookup: which employees are on leave each day this month */
     var leaveMap = {};
     (data.requests || []).forEach(function(req) {
-        if (req.status !== 'Approved') return;
+        if (req.status !== 'Approved' && req.status !== 'Pending') return;
         var fromParts = (req.from || '').split(' ');
         var toParts = (req.to || '').split(' ');
         if (fromParts.length < 2 || toParts.length < 2) return;
@@ -3291,12 +3296,12 @@ function renderLeaveCalendar(data) {
     }
     for (var d = 1; d <= daysInMonth; d++) {
         var entries = leaveMap[d] || [];
-        var bg = entries.length ? '#fff3e0' : '';
+        var bg = entries.length ? '#fff3e0' : '#fefcf7';
         html += '<div style="min-height:72px;padding:4px 6px;border-radius:6px;background:' + bg + ';border:1px solid var(--gray-200,#eef0f4);">';
         html += '<div style="font-weight:600;font-size:0.8rem;margin-bottom:2px;color:var(--text,#1e1e2f);">' + d + '</div>';
         entries.forEach(function(lr) {
-            var c = CAL_TYPE_COLORS[lr.type] || lr.color;
-            html += '<div style="font-size:0.75rem;background:' + c + ';color:#fff;border-radius:4px;padding:1px 4px;margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:default;" title="' + lr.employee + ' - ' + lr.type + '">' + lr.employee + '</div>';
+            var c = lr.status === 'Pending' ? '#9ca3af' : (CAL_TYPE_COLORS[lr.type] || lr.color);
+            html += '<div style="font-size:0.75rem;background:' + c + ';color:#fff;border-radius:4px;padding:1px 4px;margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:default;" title="' + lr.employee + ' - ' + lr.type + ' (' + lr.status + ')">' + lr.employee + '</div>';
         });
         html += '</div>';
     }
