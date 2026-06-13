@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="HRF Airport System — Stock and Inventory" />
+    <title>HRF Airport System — Stock and Inventory</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    />
+    <!-- Bootstrap Icons -->
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css"
+    />
+    <!-- Google Fonts: Elms Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Elms+Sans:wght@300;400;500;700&display=swap"
+        rel="stylesheet"
+    />
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="stock.css" />
+</head>
+<body class="stock-body">
+    <!-- Toast notification -->
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1080;">
+        <div
+            id="successToast"
+            class="toast align-items-center text-bg-success border-0"
+            role="alert"
+            aria-live="assertive"
+            aria-atomic="true"
+        >
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    <span id="toastMessage">Welcome back!</span>
+                </div>
+                <button
+                    type="button"
+                    class="btn-close btn-close-white me-2 m-auto"
+                    data-bs-dismiss="toast"
+                    aria-label="Close"
+                ></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="stock-shell">
+        <!-- Sidebar (matches constgenius/SidebarMenu pattern) -->
+        <aside class="stock-sidebar" id="stockSidebar" aria-label="Stock module navigation">
+            <div class="logo-details">
+                <span class="logo_name">Stock &amp; Inventory</span>
+                <i class="bi bi-list toggle-btn" id="toggleBtn"></i>
+            </div>
+
+            <ul class="nav-list">
+                <li class="search-li">
+                    <i class="bi bi-search search-icon"></i>
+                    <input type="text" placeholder="Search..." />
+                    <span class="tooltip">Search</span>
+                </li>
+                <li>
+                    <a href="#" data-page="dashboard" class="active">
+                        <i class="bi bi-speedometer2"></i>
+                        <span class="links_name">Dashboard</span>
+                    </a>
+                    <span class="tooltip">Dashboard</span>
+                </li>
+                <li>
+                    <a href="#" data-page="products">
+                        <i class="bi bi-box"></i>
+                        <span class="links_name">Stock</span>
+                    </a>
+                    <span class="tooltip">Stock</span>
+                </li>
+                <li>
+                    <a href="#" data-page="stock-in">
+                        <i class="bi bi-download"></i>
+                        <span class="links_name">Stock In</span>
+                    </a>
+                    <span class="tooltip">Stock In</span>
+                </li>
+                <li>
+                    <a href="#" data-page="stock-out">
+                        <i class="bi bi-upload"></i>
+                        <span class="links_name">Stock Out</span>
+                    </a>
+                    <span class="tooltip">Stock Out</span>
+                </li>
+                <li>
+                    <a href="#" data-page="suppliers">
+                        <i class="bi bi-truck"></i>
+                        <span class="links_name">Suppliers</span>
+                    </a>
+                    <span class="tooltip">Suppliers</span>
+                </li>
+                <li>
+                    <a href="#" data-page="assets">
+                        <i class="bi bi-tools"></i>
+                        <span class="links_name">Assets</span>
+                    </a>
+                    <span class="tooltip">Assets</span>
+                </li>
+                <li>
+                    <a href="#" data-page="count">
+                        <i class="bi bi-clipboard-data"></i>
+                        <span class="links_name">Inventory Count</span>
+                    </a>
+                    <span class="tooltip">Inventory Count</span>
+                </li>
+                <li>
+                    <a href="#" data-page="reports">
+                        <i class="bi bi-bar-chart-line"></i>
+                        <span class="links_name">Reports</span>
+                    </a>
+                    <span class="tooltip">Reports</span>
+                </li>
+                <li>
+                    <a href="#" data-page="settings">
+                        <i class="bi bi-gear"></i>
+                        <span class="links_name">Settings</span>
+                    </a>
+                    <span class="tooltip">Settings</span>
+                </li>
+
+                <li class="profile">
+                    <div class="profile-details">
+                        <div class="avatar-placeholder">DU</div>
+                        <div class="name_job">
+                            <div class="name" id="userName">Demo User</div>
+                            <div class="job" id="userRole">Stock Manager</div>
+                        </div>
+                    </div>
+                    <i class="bi bi-box-arrow-right logout-icon" id="logoutIcon" title="Logout"></i>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Topbar + main content -->
+        <div class="stock-content">
+            <!-- Topbar (matches apps page) -->
+            <header class="stock-topbar">
+                <div class="stock-topbar-left">
+                    <div class="stock-topbar-title">
+                        <span class="stock-eyebrow">Stock &amp; Inventory</span>
+                        <h1 id="headline">Dashboard</h1>
+                    </div>
+                </div>
+
+                <div class="stock-topbar-right">
+                    <div class="topbar-divider"></div>
+
+                    <button type="button" class="emp-btn-icon" id="saveBackupBtn" title="Save system backup">
+                        <i class="bi bi-box-arrow-down"></i>
+                    </button>
+                    <button type="button" class="emp-btn-icon" id="loadBackupBtn" title="Load system backup">
+                        <i class="bi bi-box-arrow-in-up"></i>
+                    </button>
+                    <button type="button" class="emp-btn-icon" id="syncBtn" title="Connect shared sync folder">
+                        <i class="bi bi-cloud-arrow-up"></i>
+                    </button>
+                    <span class="sync-status" id="syncStatus" title="Sync status"><i class="bi bi-circle"></i></span>
+                    <input type="file" id="loadBackupInput" accept=".json" style="display:none;" />
+
+                    <div class="user-chip" id="userChip">
+                        <div class="user-avatar">DU</div>
+                        <div class="user-meta">
+                            <strong>Demo User</strong>
+                            <span>Stock Manager</span>
+                        </div>
+                    </div>
+
+                    <button type="button" class="icon-btn" id="themeToggle" aria-label="Toggle dark mode">
+                        <i class="bi bi-moon-stars-fill"></i>
+                    </button>
+
+                    <button type="button" class="icon-btn" aria-label="Notifications">
+                        <i class="bi bi-bell"></i>
+                        <span class="badge-dot" aria-label="3 new"></span>
+                    </button>
+
+                    <button type="button" class="logout-btn" id="logoutBtn">
+                        <i class="bi bi-box-arrow-right"></i>
+                        <span>Logout</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Main content -->
+            <main class="stock-main">
+                <div class="page-empty">
+                    <div class="page-empty-icon"><i class="bi bi-box-seam-fill"></i></div>
+                    <h1 class="page-empty-title" id="emptyTitle">Stock &amp; Inventory Dashboard</h1>
+                    <p class="page-empty-text" id="emptyText">
+                        The Stock &amp; Inventory overview will be built here. Track stock levels,
+                        manage suppliers and monitor inventory movements.
+                    </p>
+                    <span class="page-empty-pill">
+                        <i class="bi bi-info-circle"></i>
+                        Module coming soon
+                    </span>
+                    <a href="apps.html" class="back-link">
+                        <i class="bi bi-arrow-left"></i> Back to Airports Apps
+                    </a>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="stock.js"></script>
+</body>
+</html>

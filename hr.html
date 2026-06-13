@@ -1,0 +1,1767 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="HRF Airport System — HR System" />
+    <title>HRF Airport System — HR System</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    />
+    <!-- Bootstrap Icons -->
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css"
+    />
+    <!-- Google Fonts: Elms Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Elms+Sans:wght@300;400;500;700&display=swap"
+        rel="stylesheet"
+    />
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="hr.css" />
+</head>
+<body class="hr-body">
+    <!-- Toast notification -->
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1080;">
+        <div
+            id="successToast"
+            class="toast align-items-center text-bg-success border-0"
+            role="alert"
+            aria-live="assertive"
+            aria-atomic="true"
+        >
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    <span id="toastMessage">Welcome back!</span>
+                </div>
+                <button
+                    type="button"
+                    class="btn-close btn-close-white me-2 m-auto"
+                    data-bs-dismiss="toast"
+                    aria-label="Close"
+                ></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="hr-shell">
+        <!-- Sidebar (dark, constgenius pattern) -->
+        <aside class="hr-sidebar" id="hrSidebar" aria-label="HR module navigation">
+            <div class="logo-details">
+                <span class="logo_name">HR System</span>
+                <i class="bi bi-list toggle-btn" id="toggleBtn"></i>
+            </div>
+
+            <ul class="nav-list">
+                <li class="search-li">
+                    <i class="bi bi-search search-icon"></i>
+                    <input type="text" placeholder="Search..." />
+                    <span class="tooltip">Search</span>
+                </li>
+                <li>
+                    <a href="#" data-page="dashboard" class="active">
+                        <i class="bi bi-speedometer2"></i>
+                        <span class="links_name">Dashboard</span>
+                    </a>
+                    <span class="tooltip">Dashboard</span>
+                </li>
+                <li>
+                    <a href="#" data-page="employees">
+                        <i class="bi bi-people-fill"></i>
+                        <span class="links_name">Employees</span>
+                    </a>
+                    <span class="tooltip">Employees</span>
+                </li>
+                <li>
+                    <a href="#" data-page="attendance">
+                        <i class="bi bi-clock-history"></i>
+                        <span class="links_name">Time &amp; Attendance</span>
+                    </a>
+                    <span class="tooltip">Time &amp; Attendance</span>
+                </li>
+                <li>
+                    <a href="#" data-page="leave" id="leaveSidebarLink">
+                        <i class="bi bi-calendar2-week"></i>
+                        <span class="links_name">Leave Management</span>
+                    </a>
+                    <span class="tooltip">Leave Management</span>
+                </li>
+                <li>
+                    <a href="#" data-page="payroll">
+                        <i class="bi bi-wallet2"></i>
+                        <span class="links_name">Payroll Management</span>
+                    </a>
+                    <span class="tooltip">Payroll Management</span>
+                </li>
+                <li>
+                    <a href="#" data-page="performance">
+                        <i class="bi bi-star"></i>
+                        <span class="links_name">Performance Management</span>
+                    </a>
+                    <span class="tooltip">Performance Management</span>
+                </li>
+                <li>
+                    <a href="#" data-page="learning">
+                        <i class="bi bi-book"></i>
+                        <span class="links_name">Learning &amp; Development</span>
+                    </a>
+                    <span class="tooltip">Learning &amp; Development</span>
+                </li>
+                <li>
+                    <a href="#" data-page="engagement">
+                        <i class="bi bi-emoji-smile"></i>
+                        <span class="links_name">Employee Engagement</span>
+                    </a>
+                    <span class="tooltip">Employee Engagement</span>
+                </li>
+                <li>
+                    <a href="#" data-page="compliance">
+                        <i class="bi bi-shield-check"></i>
+                        <span class="links_name">Compliance &amp; Employee Relations</span>
+                    </a>
+                    <span class="tooltip">Compliance &amp; Employee Relations</span>
+                </li>
+                <li>
+                    <a href="#" data-page="safety">
+                        <i class="bi bi-heart-pulse"></i>
+                        <span class="links_name">Health, Safety &amp; Wellbeing</span>
+                    </a>
+                    <span class="tooltip">Health, Safety &amp; Wellbeing</span>
+                </li>
+                <li>
+                    <a href="#" data-page="reports">
+                        <i class="bi bi-bar-chart"></i>
+                        <span class="links_name">Reports &amp; Analytics</span>
+                    </a>
+                    <span class="tooltip">Reports &amp; Analytics</span>
+                </li>
+                <li>
+                    <a href="#" data-page="workflow">
+                        <i class="bi bi-diagram-3"></i>
+                        <span class="links_name">Workflow &amp; Approvals</span>
+                    </a>
+                    <span class="tooltip">Workflow &amp; Approvals</span>
+                </li>
+                <li>
+                    <a href="#" data-page="documents">
+                        <i class="bi bi-folder"></i>
+                        <span class="links_name">Document Management</span>
+                    </a>
+                    <span class="tooltip">Document Management</span>
+                </li>
+                <li>
+                    <a href="#" data-page="settings">
+                        <i class="bi bi-gear"></i>
+                        <span class="links_name">Settings</span>
+                    </a>
+                    <span class="tooltip">Settings</span>
+                </li>
+
+                <li class="profile">
+                    <div class="profile-details">
+                        <div class="avatar-placeholder">DU</div>
+                        <div class="name_job">
+                            <div class="name" id="userName">Demo User</div>
+                            <div class="job" id="userRole">HR Manager</div>
+                        </div>
+                    </div>
+                    <i class="bi bi-box-arrow-right logout-icon" id="logoutIcon" title="Logout"></i>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Content area -->
+        <div class="hr-content">
+            <!-- Topbar -->
+            <header class="hr-topbar">
+                <div class="hr-topbar-left">
+                    <div class="hr-topbar-title">
+                        <span class="hr-eyebrow">HR System</span>
+                        <h1 id="headline">Dashboard</h1>
+                    </div>
+                </div>
+
+                <div class="hr-topbar-right">
+                    <div class="topbar-divider"></div>
+
+                    <button type="button" class="emp-btn-icon" id="saveBackupBtn" title="Save system backup">
+                        <i class="bi bi-box-arrow-down"></i>
+                    </button>
+                    <button type="button" class="emp-btn-icon" id="loadBackupBtn" title="Load system backup">
+                        <i class="bi bi-box-arrow-in-up"></i>
+                    </button>
+                    <button type="button" class="emp-btn-icon" id="syncBtn" title="Connect shared sync folder">
+                        <i class="bi bi-cloud-arrow-up"></i>
+                    </button>
+                    <span class="sync-status" id="syncStatus" title="Sync status"><i class="bi bi-circle"></i></span>
+                    <input type="file" id="loadBackupInput" accept=".json" style="display:none;" />
+
+                    <div class="user-chip" id="userChip">
+                        <div class="user-avatar">DU</div>
+                        <div class="user-meta">
+                            <strong>Demo User</strong>
+                            <span>HR Manager</span>
+                        </div>
+                    </div>
+
+                    <button type="button" class="icon-btn" id="themeToggle" aria-label="Toggle dark mode">
+                        <i class="bi bi-moon-stars-fill"></i>
+                    </button>
+
+                    <button type="button" class="icon-btn" aria-label="Notifications">
+                        <i class="bi bi-bell"></i>
+                        <span class="badge-dot" aria-label="3 new"></span>
+                    </button>
+
+                    <button type="button" class="logout-btn" id="logoutBtn">
+                        <i class="bi bi-box-arrow-right"></i>
+                        <span>Logout</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Dashboard Sub-nav -->
+            <nav class="hr-subnav" id="hrSubnav">
+                <a href="#" class="hr-subnav-item active" data-sub="workforce">
+                    <i class="bi bi-people"></i> <span>Workforce Overview</span>
+                </a>
+                <a href="#" class="hr-subnav-item" data-sub="attendance">
+                    <i class="bi bi-clock-history"></i> <span>Attendance &amp; Time Management</span>
+                </a>
+                <a href="#" class="hr-subnav-item" data-sub="leave">
+                    <i class="bi bi-calendar2-week"></i> <span>Leave Management</span>
+                </a>
+                <a href="#" class="hr-subnav-item" data-sub="training">
+                    <i class="bi bi-mortarboard"></i> <span>Training &amp; Development</span>
+                </a>
+                <a href="#" class="hr-subnav-item" data-sub="compliance">
+                    <i class="bi bi-shield-check"></i> <span>Compliance &amp; Discipline</span>
+                </a>
+                <a href="#" class="hr-subnav-item" data-sub="safety">
+                    <i class="bi bi-heart-pulse"></i> <span>Health &amp; Safety</span>
+                </a>
+            </nav>
+
+            <!-- Employee Sub-nav -->
+            <nav class="hr-subnav" id="empSubnav" style="display:none;">
+                <a href="#" class="hr-subnav-item active" data-emp="directory">
+                    <i class="bi bi-list-ul"></i> <span>Employee Directory</span>
+                </a>
+                <a href="#" class="hr-subnav-item" data-emp="profiles">
+                    <i class="bi bi-person-badge"></i> <span>Employee Profiles</span>
+                </a>
+                <a href="#" class="hr-subnav-item" data-emp="onboarding">
+                    <i class="bi bi-person-plus"></i> <span>Employee Onboarding</span>
+                </a>
+                <a href="#" class="hr-subnav-item" data-emp="offboarding">
+                    <i class="bi bi-person-dash"></i> <span>Employee Offboarding</span>
+                </a>
+                <a href="#" class="hr-subnav-item" data-emp="transfers">
+                    <i class="bi bi-arrow-left-right"></i> <span>Employee Transfers</span>
+                </a>
+                <a href="#" class="hr-subnav-item" data-emp="promotions">
+                    <i class="bi bi-graph-up-arrow"></i> <span>Employee Promotions</span>
+                </a>
+                <a href="#" class="hr-subnav-item" data-emp="documents">
+                    <i class="bi bi-file-earmark-text"></i> <span>Employee Documents</span>
+                </a>
+                <a href="#" class="hr-subnav-item" data-emp="assets">
+                    <i class="bi bi-laptop"></i> <span>Employee Assets</span>
+                </a>
+                <a href="#" class="hr-subnav-item" data-emp="orgchart">
+                    <i class="bi bi-diagram-3"></i> <span>Organizational Chart</span>
+                </a>
+            </nav>
+
+            <!-- Main content -->
+            <main class="hr-main">
+                <div class="page-empty" id="pageEmpty">
+                    <div class="page-empty-icon"><i class="bi bi-people-fill"></i></div>
+                    <h1 class="page-empty-title" id="emptyTitle">HR Dashboard</h1>
+                    <p class="page-empty-text" id="emptyText">
+                        The HR Dashboard overview will be built here. Key metrics,
+                        recent hires and attendance summaries will live in this area.
+                    </p>
+                    <span class="page-empty-pill">
+                        <i class="bi bi-info-circle"></i>
+                        Module coming soon
+                    </span>
+                    <a href="apps.html" class="back-link">
+                        <i class="bi bi-arrow-left"></i> Back to Airports Apps
+                    </a>
+                </div>
+
+                <!-- Workforce Overview — Modern Dashboard style -->
+                <div class="kpi-section" id="kpiSection" style="display:none;">
+
+                    <!-- Row 1: Donut chart + Line chart -->
+                    <div class="md-row">
+                        <div class="md-col md-col-5">
+                            <div class="md-card md-card-chart">
+                                <div class="md-card-content">
+                                    <h6 class="md-card-title mb-0">Department Distribution</h6>
+                                    <p class="md-card-subtitle">Current headcount across departments</p>
+                                    <div class="md-chart-wrap" style="height:180px;">
+                                        <canvas id="deptChart"></canvas>
+                                    </div>
+                                    <h5 class="md-chart-value" id="deptCount">8 Departments</h5>
+                                    <p class="md-chart-label center-align">Total departments active</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="md-col md-col-7">
+                            <div class="md-card md-card-chart">
+                                <div class="md-card-content">
+                                    <h4 class="md-card-title mb-0">Employee Growth <i class="bi bi-three-dots-vertical float-end"></i></h4>
+                                    <p class="md-card-subtitle">Monthly hires &amp; attrition trend</p>
+                                    <div class="md-chart-wrap" style="height:240px;">
+                                        <canvas id="growthChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Row 2: Statistics, Recent Hires, Gender Ratio -->
+                    <div class="md-row">
+                        <div class="md-col md-col-5">
+                            <div class="md-card">
+                                <div class="md-card-content">
+                                    <h4 class="md-card-title mb-0">Employee Statistics <i class="bi bi-three-dots-vertical float-end"></i></h4>
+                                    <div class="md-stats-row">
+                                        <div class="md-stat-item">
+                                            <i class="bi bi-trending-up md-stat-icon pink"></i>
+                                            <p class="md-stat-subtitle">This year</p>
+                                            <h5 class="md-stat-value">87.6%</h5>
+                                        </div>
+                                        <div class="md-stat-item">
+                                            <i class="bi bi-trending-down md-stat-icon purple"></i>
+                                            <p class="md-stat-subtitle">Last year</p>
+                                            <h5 class="md-stat-value">82.1%</h5>
+                                        </div>
+                                    </div>
+                                    <div class="md-chart-wrap" style="height:150px;">
+                                        <canvas id="statsBarChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="md-col md-col-4">
+                            <div class="md-card">
+                                <div class="md-card-content">
+                                    <h4 class="md-card-title mb-0">Recent Hires <i class="bi bi-three-dots-vertical float-end"></i></h4>
+                                    <p class="md-card-subtitle">This month</p>
+                                    <ul class="md-list" id="dashboardRecentHires">
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="md-col md-col-3">
+                            <div class="md-card md-card-gradient" style="background:linear-gradient(135deg,#895129 0%,#d68a3c 100%);">
+                                <div class="md-gradient-inner" style="flex-direction:column;align-items:stretch;gap:8px;">
+                                    <div style="display:flex;align-items:center;justify-content:space-between;">
+                                        <div>
+                                            <h5 class="md-gradient-value" id="dashboardGenderRatio">0 : 0</h5>
+                                            <p class="md-gradient-label">Gender Ratio</p>
+                                        </div>
+                                        <i class="bi bi-gender-ambiguous md-gradient-icon" style="font-size:2rem;"></i>
+                                    </div>
+                                    <div style="height:100px;">
+                                        <canvas id="genderChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Row 3: Gradient stat cards -->
+                    <div class="md-row">
+                        <div class="md-col md-col-3">
+                            <div class="md-card md-card-gradient g-amber">
+                                <div class="md-gradient-inner">
+                                    <div class="md-gradient-left">
+                                        <h5 class="md-gradient-value" id="dashboardTotalEmployees">0</h5>
+                                        <p class="md-gradient-label">Total Employees</p>
+                                    </div>
+                                    <div class="md-gradient-right">
+                                        <i class="bi bi-people md-gradient-icon"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="md-col md-col-3">
+                            <div class="md-card md-card-gradient g-purple-amber">
+                                <div class="md-gradient-inner">
+                                    <div class="md-gradient-left">
+                                        <h5 class="md-gradient-value" id="dashboardActiveEmployees">0</h5>
+                                        <p class="md-gradient-label">Active Employees</p>
+                                    </div>
+                                    <div class="md-gradient-right">
+                                        <i class="bi bi-person-check md-gradient-icon"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="md-col md-col-3">
+                            <div class="md-card md-card-gradient g-green-teal">
+                                <div class="md-gradient-inner">
+                                    <div class="md-gradient-left">
+                                            <h5 class="md-gradient-value" id="dashboardRetentionRate">0%</h5>
+                                        <p class="md-gradient-label">Retention Rate</p>
+                                    </div>
+                                    <div class="md-gradient-right">
+                                        <i class="bi bi-shield-check md-gradient-icon"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="md-col md-col-3">
+                            <div class="md-card md-card-gradient g-red-pink">
+                                <div class="md-gradient-inner">
+                                    <div class="md-gradient-left">
+                                            <h5 class="md-gradient-value" id="dashboardTurnoverRate">0%</h5>
+                                        <p class="md-gradient-label">Turnover Rate</p>
+                                    </div>
+                                    <div class="md-gradient-right">
+                                        <i class="bi bi-graph-down-arrow md-gradient-icon"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Row 4: Summary table -->
+                    <div class="md-row">
+                        <div class="md-col md-col-12">
+                            <div class="md-card">
+                                <div class="md-card-content">
+                                    <h4 class="md-card-title mb-0">Department Summary <i class="bi bi-three-dots-vertical float-end"></i></h4>
+                                    <div class="md-table-wrap">
+                                        <table class="md-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Department</th>
+                                                    <th>Headcount</th>
+                                                    <th>Avg. Tenure</th>
+                                                    <th>Status</th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="deptSummaryBody">
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Leave Management -->
+                <div class="kpi-section" id="leaveSection" style="display:none;">
+                    <nav class="hr-subnav" id="leaveSubnav">
+                        <a href="#" class="leave-subnav-item active" data-leave="requests"><i class="bi bi-send"></i> <span>Leave Requests</span></a>
+                        <a href="#" class="leave-subnav-item" data-leave="approvals"><i class="bi bi-check2-square"></i> <span>Leave Approval Workflow</span></a>
+                        <a href="#" class="leave-subnav-item" data-leave="calendar"><i class="bi bi-calendar3"></i> <span>Leave Calendar</span></a>
+                        <a href="#" class="leave-subnav-item" data-leave="balances"><i class="bi bi-pie-chart"></i> <span>Leave Balances</span></a>
+                        <a href="#" class="leave-subnav-item" data-leave="annual"><i class="bi bi-tree"></i> <span>Annual Leave Planning</span></a>
+                        <a href="#" class="leave-subnav-item" data-leave="sick"><i class="bi bi-heart-pulse"></i> <span>Sick Leave Tracking</span></a>
+                        <a href="#" class="leave-subnav-item" data-leave="holidays"><i class="bi bi-star"></i> <span>Public Holidays</span></a>
+                        <a href="#" class="leave-subnav-item" data-leave="reports"><i class="bi bi-bar-chart"></i> <span>Leave Reports</span></a>
+                    </nav>
+
+                    <!-- Leave Requests -->
+                    <div class="leave-content" data-leave="requests">
+                        <div class="md-row md-stats-row" style="margin-bottom:0;">
+                            <div class="md-col md-col-3">
+                                <div class="md-card md-card-gradient g-amber">
+                                    <div class="md-gradient-inner">
+                                        <div class="md-gradient-left">
+                                            <h5 class="md-gradient-value" id="leaveTotalRequests">0</h5>
+                                            <p class="md-gradient-label">Total Requests</p>
+                                        </div>
+                                        <div class="md-gradient-right">
+                                            <i class="bi bi-calendar2-week md-gradient-icon"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="md-col md-col-3">
+                                <div class="md-card md-card-gradient g-purple-amber">
+                                    <div class="md-gradient-inner">
+                                        <div class="md-gradient-left">
+                                            <h5 class="md-gradient-value" id="leaveApproved">0</h5>
+                                            <p class="md-gradient-label">Approved</p>
+                                        </div>
+                                        <div class="md-gradient-right">
+                                            <i class="bi bi-check-circle md-gradient-icon"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="md-col md-col-3">
+                                <div class="md-card md-card-gradient g-green-teal">
+                                    <div class="md-gradient-inner">
+                                        <div class="md-gradient-left">
+                                            <h5 class="md-gradient-value" id="leavePending">0</h5>
+                                            <p class="md-gradient-label">Pending</p>
+                                        </div>
+                                        <div class="md-gradient-right">
+                                            <i class="bi bi-hourglass-split md-gradient-icon"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="md-col md-col-3">
+                                <div class="md-card md-card-gradient g-red-pink">
+                                    <div class="md-gradient-inner">
+                                        <div class="md-gradient-left">
+                                            <h5 class="md-gradient-value" id="leaveRejected">0</h5>
+                                            <p class="md-gradient-label">Rejected</p>
+                                        </div>
+                                        <div class="md-gradient-right">
+                                            <i class="bi bi-x-circle md-gradient-icon"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="md-row" style="margin:0 0 16px 0;">
+                            <div class="md-col md-col-12" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;">
+                                <div>
+                                    <h4 class="md-card-title mb-0">Recent Leave Requests</h4>
+                                    <p class="md-card-subtitle">Submit and manage employee leave requests</p>
+                                </div>
+                                <button class="emp-btn emp-btn-primary" id="requestLeaveBtn"><i class="bi bi-plus-lg"></i> Request Leave</button>
+                            </div>
+                        </div>
+
+                        <div id="leaveFormRow" style="display:none;margin-bottom:16px;padding:20px;background:var(--card-bg-alt,#f8f9fb);border-radius:12px;border:1px solid var(--gray-200,#eef0f4);">
+                            <div style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;">
+                                <div>
+                                    <label style="display:block;margin-bottom:4px;font-size:12px;font-weight:500;color:var(--gray-text,#888);">Employee</label>
+                                    <select id="lrEmployee" style="padding:8px 12px;border:1px solid var(--gray-300,#ddd);border-radius:8px;font-size:13px;background:var(--input-bg,#fff);color:var(--text,#1e1e2f);min-width:180px;">
+                                        <option value="">— Select —</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label style="display:block;margin-bottom:4px;font-size:12px;font-weight:500;color:var(--gray-text,#888);">Leave Type</label>
+                                    <select id="lrType" style="padding:8px 12px;border:1px solid var(--gray-300,#ddd);border-radius:8px;font-size:13px;background:var(--input-bg,#fff);color:var(--text,#1e1e2f);min-width:160px;">
+                                        <option value="">— Select —</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label style="display:block;margin-bottom:4px;font-size:12px;font-weight:500;color:var(--gray-text,#888);">From</label>
+                                    <input type="date" id="lrFrom" style="padding:8px 12px;border:1px solid var(--gray-300,#ddd);border-radius:8px;font-size:13px;background:var(--input-bg,#fff);color:var(--text,#1e1e2f);" />
+                                </div>
+                                <div>
+                                    <label style="display:block;margin-bottom:4px;font-size:12px;font-weight:500;color:var(--gray-text,#888);">To</label>
+                                    <input type="date" id="lrTo" style="padding:8px 12px;border:1px solid var(--gray-300,#ddd);border-radius:8px;font-size:13px;background:var(--input-bg,#fff);color:var(--text,#1e1e2f);" />
+                                </div>
+                                <div>
+                                    <label style="display:block;margin-bottom:4px;font-size:12px;font-weight:500;color:var(--gray-text,#888);">Notes</label>
+                                    <input type="text" id="lrNotes" placeholder="Reason (optional)" style="padding:8px 12px;border:1px solid var(--gray-300,#ddd);border-radius:8px;font-size:13px;background:var(--input-bg,#fff);color:var(--text,#1e1e2f);width:180px;" />
+                                </div>
+                                <div style="display:flex;gap:6px;">
+                                    <button id="lrSubmitBtn" style="padding:8px 16px;border:none;border-radius:8px;background:#895129;color:#fff;cursor:pointer;font-size:13px;font-weight:500;"><i class="bi bi-check-lg"></i> Submit</button>
+                                    <button id="lrCancelBtn" style="padding:8px 16px;border:1px solid var(--gray-300,#ddd);border-radius:8px;background:var(--card-bg,#fff);color:var(--gray-text,#888);cursor:pointer;font-size:13px;font-weight:500;">Cancel</button>
+                                </div>
+                            </div>
+                            <div id="lrBalanceInfo" style="margin-top:10px;padding:8px 14px;border-radius:6px;font-size:0.85rem;display:none;"></div>
+                        </div>
+
+                        <div class="md-row">
+                            <div class="md-col md-col-8">
+                                <div class="md-card">
+                                    <div class="md-card-content">
+                                        <h4 class="md-card-title mb-0">Leave Requests <i class="bi bi-three-dots-vertical float-end"></i></h4>
+                                        <div class="md-table-wrap">
+                                            <table class="md-table">
+                                                <thead>
+                                                    <tr><th>Employee</th><th>Type</th><th>From</th><th>To</th><th>Days</th><th>Status</th><th></th></tr>
+                                                </thead>
+                                                <tbody>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="md-col md-col-4">
+                                <div class="md-card">
+                                    <div class="md-card-content">
+                                        <h4 class="md-card-title mb-0">Pending Approvals <i class="bi bi-three-dots-vertical float-end"></i></h4>
+                                        <p class="md-card-subtitle">Awaiting your decision</p>
+                                        <ul class="md-list">
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="md-row">
+                            <div class="md-col md-col-12">
+                                <div class="md-card">
+                                    <div class="md-card-content">
+                                        <h4 class="md-card-title mb-0">Leave Balance Summary <i class="bi bi-three-dots-vertical float-end"></i></h4>
+                                        <div class="md-table-wrap">
+                                            <table class="md-table">
+                                                <thead>
+                                                    <tr><th>Employee</th><th>Annual Leave</th><th>FRL</th><th>Sick Leave Medical</th><th>Sick Leave</th><th>Circumcision</th><th>Paternity</th><th>Maternity</th><th>No Pay</th><th>Umrah</th><th>Hajj</th><th>Total</th></tr>
+                                                </thead>
+                                                <tbody>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Leave Approval Workflow -->
+                    <div class="leave-content" data-leave="approvals" style="display:none;">
+                        <div class="md-row">
+                            <div class="md-col md-col-12">
+                                <div class="md-card">
+                                    <div class="md-card-content">
+                                        <h4 class="md-card-title mb-0">Leave Approval Workflow</h4>
+                                        <p class="md-card-subtitle">Manage and approve pending leave requests</p>
+                                        <div class="md-table-wrap">
+                                            <table class="md-table">
+                                                <thead>
+                                                    <tr><th>Employee</th><th>Type</th><th>From</th><th>To</th><th>Days</th><th>Status</th><th>Actions</th></tr>
+                                                </thead>
+                                                <tbody>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Leave Calendar -->
+                    <div class="leave-content" data-leave="calendar" style="display:none;">
+                        <div class="md-row">
+                            <div class="md-col md-col-12">
+                                <div class="md-card">
+                                    <div class="md-card-content">
+                                        <h4 class="md-card-title mb-0">Leave Calendar</h4>
+                                        <p class="md-card-subtitle">View all employee leave across a calendar</p>
+                                        <div id="leaveCalendarWrap">
+                                            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+                                                <button id="calPrev" style="padding:6px 12px;border:1px solid var(--gray-300,#ddd);border-radius:8px;background:var(--card-bg,#fff);color:var(--text,#1e1e2f);cursor:pointer;font-size:0.9rem;"><i class="bi bi-chevron-left"></i></button>
+                                                <h4 id="calMonthYear" style="margin:0;font-size:1.1rem;font-weight:700;color:var(--text,#1e1e2f);">June 2026</h4>
+                                                <button id="calNext" style="padding:6px 12px;border:1px solid var(--gray-300,#ddd);border-radius:8px;background:var(--card-bg,#fff);color:var(--text,#1e1e2f);cursor:pointer;font-size:0.9rem;"><i class="bi bi-chevron-right"></i></button>
+                                            </div>
+                                            <div style="display:flex;gap:20px;">
+                                                <div style="flex:1;min-width:0;"><div id="calGrid"></div></div>
+                                                <div id="calLegend" style="width:160px;flex-shrink:0;"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Leave Balances -->
+                    <div class="leave-content" data-leave="balances" style="display:none;">
+                        <div class="md-row">
+                            <div class="md-col md-col-12">
+                                <div class="md-card">
+                                    <div class="md-card-content">
+                                        <h4 class="md-card-title mb-0">Leave Balances</h4>
+                                        <p class="md-card-subtitle">Individual employee leave balances by type</p>
+                                        <div class="md-table-wrap">
+                                            <table class="md-table">
+                                                <thead>
+                                                    <tr><th>Employee</th><th>Annual Leave</th><th>FRL</th><th>Sick Leave Medical</th><th>Sick Leave</th><th>Circumcision</th><th>Paternity</th><th>Maternity</th><th>No Pay</th><th>Umrah</th><th>Hajj</th><th>Total</th></tr>
+                                                </thead>
+                                                <tbody>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Annual Leave Planning -->
+                    <div class="leave-content" data-leave="annual" style="display:none;">
+                        <div class="md-row">
+                            <div class="md-col md-col-12">
+                                <div class="md-card">
+                                    <div class="md-card-content">
+                                        <h4 class="md-card-title mb-0">Annual Leave Planning</h4>
+                                        <p class="md-card-subtitle">Plan and manage annual leave schedules</p>
+                                        <div class="leave-placeholder">
+                                            <i class="bi bi-tree" style="font-size:2.4rem;color:var(--gray-text);display:block;text-align:center;margin:32px 0 8px;"></i>
+                                            <p style="text-align:center;color:var(--gray-text);">Annual leave planning calendar and team coverage view.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sick Leave Tracking -->
+                    <div class="leave-content" data-leave="sick" style="display:none;">
+                        <div class="md-row">
+                            <div class="md-col md-col-12">
+                                <div class="md-card">
+                                    <div class="md-card-content">
+                                        <h4 class="md-card-title mb-0">Sick Leave Tracking</h4>
+                                        <p class="md-card-subtitle">Monitor sick leave usage and patterns</p>
+                                        <div class="md-table-wrap">
+                                            <table class="md-table">
+                                                <thead>
+                                                    <tr><th>Employee</th><th>Total Sick Days</th><th>This Year</th><th>Last Year</th><th>Avg Duration</th><th>Frequency</th></tr>
+                                                </thead>
+                                                <tbody>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Public Holidays -->
+                    <div class="leave-content" data-leave="holidays" style="display:none;">
+                        <div class="md-row">
+                            <div class="md-col md-col-12">
+                                <div class="md-card">
+                                    <div class="md-card-content">
+                                        <div class="md-row" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+                                            <div>
+                                                <h4 class="md-card-title mb-0">Public Holidays</h4>
+                                                <p class="md-card-subtitle">Manage public holidays for the current year</p>
+                                            </div>
+                                            <button class="emp-btn emp-btn-primary" id="addHolidayBtn"><i class="bi bi-plus-lg"></i> Add Holiday</button>
+                                        </div>
+                                        <div id="holidayFormRow" style="display:none;margin-bottom:16px;padding:20px;background:var(--card-bg-alt,#f8f9fb);border-radius:12px;border:1px solid var(--gray-200,#eef0f4);">
+                                            <div style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;">
+                                                <div>
+                                                    <label style="display:block;margin-bottom:4px;font-size:12px;font-weight:500;color:var(--gray-text,#888);">Date</label>
+                                                    <input type="date" id="holidayDate" style="padding:8px 12px;border:1px solid var(--gray-300,#ddd);border-radius:8px;font-size:13px;background:var(--input-bg,#fff);color:var(--text,#1e1e2f);" />
+                                                </div>
+                                                <div>
+                                                    <label style="display:block;margin-bottom:4px;font-size:12px;font-weight:500;color:var(--gray-text,#888);">Holiday Name</label>
+                                                    <input type="text" id="holidayName" placeholder="e.g. New Year's Day" style="padding:8px 12px;border:1px solid var(--gray-300,#ddd);border-radius:8px;font-size:13px;background:var(--input-bg,#fff);color:var(--text,#1e1e2f);width:200px;" />
+                                                </div>
+                                                <div>
+                                                    <label style="display:block;margin-bottom:4px;font-size:12px;font-weight:500;color:var(--gray-text,#888);">Type</label>
+                                                    <select id="holidayType" style="padding:8px 12px;border:1px solid var(--gray-300,#ddd);border-radius:8px;font-size:13px;background:var(--input-bg,#fff);color:var(--text,#1e1e2f);">
+                                                        <option value="National">National</option>
+                                                        <option value="Christian">Christian</option>
+                                                        <option value="Islamic">Islamic</option>
+                                                        <option value="Other">Other</option>
+                                                    </select>
+                                                </div>
+                                                <div style="display:flex;gap:6px;">
+                                                    <button id="saveHolidayBtn" style="padding:8px 16px;border:none;border-radius:8px;background:#895129;color:#fff;cursor:pointer;font-size:13px;font-weight:500;"><i class="bi bi-check-lg"></i> Save</button>
+                                                    <button id="cancelHolidayBtn" style="padding:8px 16px;border:1px solid var(--gray-300,#ddd);border-radius:8px;background:transparent;color:var(--text,#1e1e2f);cursor:pointer;font-size:13px;">Cancel</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="md-table-wrap">
+                                            <table class="md-table">
+                                                <thead>
+                                                    <tr><th>Date</th><th>Holiday</th><th>Day</th><th>Type</th><th style="width:80px;"></th></tr>
+                                                </thead>
+                                                <tbody id="holidayTbody"></tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Leave Reports -->
+                    <div class="leave-content" data-leave="reports" style="display:none;">
+                        <div class="md-row">
+                            <div class="md-col md-col-12">
+                                <div class="md-card">
+                                    <div class="md-card-content">
+                                        <h4 class="md-card-title mb-0">Leave Reports</h4>
+                                        <p class="md-card-subtitle">Generate and export leave reports</p>
+                                        <div class="leave-placeholder">
+                                            <i class="bi bi-bar-chart" style="font-size:2.4rem;color:var(--gray-text);display:block;text-align:center;margin:32px 0 8px;"></i>
+                                            <p style="text-align:center;color:var(--gray-text);">Leave report generation tools with export to PDF/Excel.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Employee Management Section -->
+                <div class="emp-section" id="empSection" style="display:none;">
+                    <!-- Employee Directory -->
+                    <div class="emp-content" data-emp="directory">
+                        <div class="emp-toolbar">
+                            <div class="emp-search">
+                                <i class="bi bi-search"></i>
+                                <input type="text" placeholder="Search employees..." id="dirSearchInput" />
+                            </div>
+                            <button class="emp-btn emp-btn-primary" id="addEmployeeBtn"><i class="bi bi-plus-lg"></i> Add Employee</button>
+                            <button class="emp-btn" id="filterBtn"><i class="bi bi-funnel"></i> Filter</button>
+                            <button class="emp-btn emp-btn-primary" id="exportExcelBtn"><i class="bi bi-upload"></i> Export</button>
+                            <button class="emp-btn emp-btn-primary" id="importExcelBtn"><i class="bi bi-download"></i> Import</button>
+                        </div>
+                        <div class="emp-filter-panel" id="filterPanel" style="display:none;">
+                            <div class="emp-filter-row">
+                                <div class="emp-filter-group">
+                                    <label>Department</label>
+                                    <select id="filterDept"><option value="">All Departments</option></select>
+                                </div>
+                                <div class="emp-filter-group">
+                                    <label>Designation</label>
+                                    <select id="filterDesig"><option value="">All Designations</option></select>
+                                </div>
+                                <div class="emp-filter-group">
+                                    <label>Status</label>
+                                    <select id="filterStatus">
+                                        <option value="">All Statuses</option>
+                                        <option value="Active">Active</option>
+                                        <option value="Inactive">Inactive</option>
+                                    </select>
+                                </div>
+                                <div class="emp-filter-group">
+                                    <label>Gender</label>
+                                    <select id="filterGender">
+                                        <option value="">All Genders</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                    </select>
+                                </div>
+                                <div class="emp-filter-actions">
+                                    <button class="emp-btn" id="clearFiltersBtn"><i class="bi bi-x-lg"></i> Clear</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="emp-table-wrap">
+                            <table class="emp-table">
+                                <thead>
+                                    <tr><th>Employee</th><th>Department</th><th>Designation</th><th>Status</th><th>Joined</th><th></th></tr>
+                                </thead>
+                                <tbody>
+                                    
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Employee Profiles -->
+                    <div class="emp-content" data-emp="profiles" style="display:none;">
+                        <div class="emp-grid-3" id="profilesGrid"></div>
+                    </div>
+
+                    <!-- Employee Onboarding -->
+                    <div class="emp-content" data-emp="onboarding" style="display:none;">
+                        <div class="emp-section-header">
+                            <h3>Active Onboarding</h3>
+                            <button class="emp-btn emp-btn-primary" id="newOnboardingBtn"><i class="bi bi-plus-lg"></i> New Onboarding</button>
+                        </div>
+                        <div class="emp-board-list">
+                            <div class="emp-board-card">
+                                <div class="emp-board-top"><span class="emp-avatar-sm" style="background:#895129;">MN</span><div><strong>Mary Ndung'u</strong><span>IT Support — Starts Aug 1</span></div></div>
+                                <div class="emp-board-progress"><div class="emp-board-bar" style="width:65%"></div></div>
+                                <div class="emp-board-info"><span>65% complete</span><span>4 of 9 tasks done</span></div>
+                            </div>
+                            <div class="emp-board-card">
+                                <div class="emp-board-top"><span class="emp-avatar-sm" style="background:#ffc107;color:#895129;">BK</span><div><strong>Brian Kiprop</strong><span>Security Officer — Starts Aug 15</span></div></div>
+                                <div class="emp-board-progress"><div class="emp-board-bar" style="width:30%"></div></div>
+                                <div class="emp-board-info"><span>30% complete</span><span>2 of 9 tasks done</span></div>
+                            </div>
+                            <div class="emp-board-card">
+                                <div class="emp-board-top"><span class="emp-avatar-sm" style="background:#d68a3c;">FA</span><div><strong>Faith Achieng</strong><span>Admin Assistant — Starts Sep 1</span></div></div>
+                                <div class="emp-board-progress"><div class="emp-board-bar" style="width:10%"></div></div>
+                                <div class="emp-board-info"><span>10% complete</span><span>1 of 9 tasks done</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Employee Offboarding -->
+                    <div class="emp-content" data-emp="offboarding" style="display:none;">
+                        <div class="emp-section-header">
+                            <h3>Offboarding in Progress</h3>
+                        </div>
+                        <div class="emp-table-wrap">
+                            <table class="emp-table">
+                                <thead>
+                                    <tr><th>Employee</th><th>Department</th><th>Exit Date</th><th>Type</th><th>Status</th><th></th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td><div class="emp-cell-user"><span class="emp-avatar" style="background:#b86b2e;">MW</span><div><strong>Mary Wanjiku</strong><span>EMP-089</span></div></div></td><td>Admin</td><td>Jul 15, 2026</td><td>Resignation</td><td><span class="emp-badge emp-warn">In Progress</span></td><td><i class="bi bi-three-dots-vertical emp-more"></i></td></tr>
+                                    <tr><td><div class="emp-cell-user"><span class="emp-avatar" style="background:#c47a35;">TO</span><div><strong>Tom Otieno</strong><span>EMP-031</span></div></div></td><td>Operations</td><td>Jul 31, 2026</td><td>Retirement</td><td><span class="emp-badge emp-warn">In Progress</span></td><td><i class="bi bi-three-dots-vertical emp-more"></i></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Employee Transfers -->
+                    <div class="emp-content" data-emp="transfers" style="display:none;">
+                        <div class="emp-section-header">
+                            <h3>Transfer Requests</h3>
+                            <button class="emp-btn emp-btn-primary"><i class="bi bi-plus-lg"></i> New Transfer</button>
+                        </div>
+                        <div class="emp-table-wrap">
+                            <table class="emp-table">
+                                <thead><tr><th>Employee</th><th>From</th><th>To</th><th>Date</th><th>Status</th><th></th></tr></thead>
+                                <tbody>
+                                    <tr><td><div class="emp-cell-user"><span class="emp-avatar" style="background:#e8b84b;">GN</span><div><strong>Grace Nyambura</strong><span>EMP-067</span></div></div></td><td>Admin</td><td>HR</td><td>Aug 1</td><td><span class="emp-badge emp-active">Approved</span></td><td><i class="bi bi-three-dots-vertical emp-more"></i></td></tr>
+                                    <tr><td><div class="emp-cell-user"><span class="emp-avatar" style="background:#895129;">DK</span><div><strong>David Kariuki</strong><span>EMP-044</span></div></div></td><td>Security</td><td>Operations</td><td>Pending</td><td><span class="emp-badge emp-warn">Pending</span></td><td><i class="bi bi-three-dots-vertical emp-more"></i></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Employee Promotions -->
+                    <div class="emp-content" data-emp="promotions" style="display:none;">
+                        <div class="emp-section-header">
+                            <h3>Recent Promotions</h3>
+                            <button class="emp-btn emp-btn-primary"><i class="bi bi-plus-lg"></i> New Promotion</button>
+                        </div>
+                        <div class="emp-table-wrap">
+                            <table class="emp-table">
+                                <thead><tr><th>Employee</th><th>Previous Role</th><th>New Role</th><th>Date</th><th>Status</th><th></th></tr></thead>
+                                <tbody>
+                                    <tr><td><div class="emp-cell-user"><span class="emp-avatar" style="background:#ffc107;color:#895129;">JO</span><div><strong>Jane Omondi</strong><span>EMP-022</span></div></div></td><td>Finance Officer</td><td>Finance Manager</td><td>Jun 1</td><td><span class="emp-badge emp-active">Completed</span></td><td><i class="bi bi-three-dots-vertical emp-more"></i></td></tr>
+                                    <tr><td><div class="emp-cell-user"><span class="emp-avatar" style="background:#d68a3c;">SM</span><div><strong>Samuel Mutua</strong><span>EMP-035</span></div></div></td><td>Security Guard</td><td>Security Supervisor</td><td>Jun 15</td><td><span class="emp-badge emp-active">Completed</span></td><td><i class="bi bi-three-dots-vertical emp-more"></i></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Employee Documents -->
+                    <div class="emp-content" data-emp="documents" style="display:none;">
+                        <div class="emp-section-header">
+                            <h3>Employee Documents</h3>
+                            <button class="emp-btn emp-btn-primary"><i class="bi bi-upload"></i> Upload</button>
+                        </div>
+                        <div class="emp-grid-4">
+                            <div class="emp-doc-card"><i class="bi bi-filetype-pdf" style="color:#dc3545;"></i><strong>Employment Contract.pdf</strong><span>John Doe • 2.4 MB</span></div>
+                            <div class="emp-doc-card"><i class="bi bi-filetype-pdf" style="color:#dc3545;"></i><strong>NDA Agreement.pdf</strong><span>Sarah Mwangi • 1.1 MB</span></div>
+                            <div class="emp-doc-card"><i class="bi bi-filetype-xlsx" style="color:#28a745;"></i><strong>Payroll Jul 2026.xlsx</strong><span>Finance Dept • 856 KB</span></div>
+                            <div class="emp-doc-card"><i class="bi bi-filetype-docx" style="color:#0057d9;"></i><strong>Performance Review.docx</strong><span>Peter Kamau • 234 KB</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Employee Assets -->
+                    <div class="emp-content" data-emp="assets" style="display:none;">
+                        <div class="emp-section-header">
+                            <h3>Assigned Assets</h3>
+                            <button class="emp-btn emp-btn-primary"><i class="bi bi-plus-lg"></i> Assign Asset</button>
+                        </div>
+                        <div class="emp-table-wrap">
+                            <table class="emp-table">
+                                <thead><tr><th>Asset</th><th>Assigned To</th><th>Department</th><th>Issued</th><th>Status</th><th></th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>Dell Latitude 5540</strong></td><td>John Doe</td><td>Operations</td><td>Jan 2024</td><td><span class="emp-badge emp-active">In Use</span></td><td><i class="bi bi-three-dots-vertical emp-more"></i></td></tr>
+                                    <tr><td><strong>iPhone 15 Pro</strong></td><td>Sarah Mwangi</td><td>Security</td><td>Mar 2024</td><td><span class="emp-badge emp-active">In Use</span></td><td><i class="bi bi-three-dots-vertical emp-more"></i></td></tr>
+                                    <tr><td><strong>Lenovo ThinkPad</strong></td><td>Alice Ochieng</td><td>Finance</td><td>Sep 2023</td><td><span class="emp-badge emp-warn">Repair</span></td><td><i class="bi bi-three-dots-vertical emp-more"></i></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Organizational Chart -->
+                    <div class="emp-content" data-emp="orgchart" style="display:none;">
+                        <div class="emp-org">
+                            <div class="emp-org-node emp-org-ceo">
+                                <div class="emp-org-avatar" style="background:#895129;">DK</div>
+                                <strong>David Kimani</strong>
+                                <span>CEO</span>
+                            </div>
+                            <div class="emp-org-line"></div>
+                            <div class="emp-org-row">
+                                <div class="emp-org-node">
+                                    <div class="emp-org-avatar" style="background:#ffc107;color:#895129;">JD</div>
+                                    <strong>John Doe</strong>
+                                    <span>Ops Director</span>
+                                </div>
+                                <div class="emp-org-node">
+                                    <div class="emp-org-avatar" style="background:#d68a3c;">SM</div>
+                                    <strong>Sarah Mwangi</strong>
+                                    <span>Security Chief</span>
+                                </div>
+                                <div class="emp-org-node">
+                                    <div class="emp-org-avatar" style="background:#b86b2e;">PK</div>
+                                    <strong>Peter Kamau</strong>
+                                    <span>Maint. Head</span>
+                                </div>
+                                <div class="emp-org-node">
+                                    <div class="emp-org-avatar" style="background:#a05e24;">AO</div>
+                                    <strong>Alice Ochieng</strong>
+                                    <span>Finance Head</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings Section -->
+                <div class="kpi-section" id="settingsSection" style="display:none;">
+
+                    <!-- Row 1: General Settings + Notifications -->
+                    <div class="md-row">
+                        <div class="md-col md-col-6">
+                            <div class="md-card">
+                                <div class="md-card-content">
+                                    <h4 class="md-card-title mb-0"><i class="bi bi-sliders me-2"></i>General Settings</h4>
+                                    <p class="md-card-subtitle">System preferences and regional options</p>
+                                    <div class="settings-form">
+                                        <div class="settings-group">
+                                            <label>Language</label>
+                                            <select class="emp-form-control settings-control" id="setLang">
+                                                <option value="en">English</option>
+                                                <option value="sw">Kiswahili</option>
+                                                <option value="fr">Français</option>
+                                            </select>
+                                        </div>
+                                        <div class="settings-group">
+                                            <label>Date Format</label>
+                                            <select class="emp-form-control settings-control" id="setDateFormat">
+                                                <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+                                                <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                                                <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+                                            </select>
+                                        </div>
+                                        <div class="settings-group">
+                                            <label>Timezone</label>
+                                            <select class="emp-form-control settings-control" id="setTz">
+                                                <option value="Africa/Nairobi">Africa/Nairobi (UTC+3)</option>
+                                                <option value="Africa/Johannesburg">Africa/Johannesburg (UTC+2)</option>
+                                                <option value="Africa/Lagos">Africa/Lagos (UTC+1)</option>
+                                                <option value="Europe/London">Europe/London (UTC+0/+1)</option>
+                                                <option value="America/New_York">America/New_York (UTC-5/-4)</option>
+                                            </select>
+                                        </div>
+                                        <div class="settings-group">
+                                            <label>Items Per Page</label>
+                                            <select class="emp-form-control settings-control" id="setPerPage">
+                                                <option value="10">10</option>
+                                                <option value="25">25</option>
+                                                <option value="50">50</option>
+                                                <option value="100">100</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="md-col md-col-6">
+                            <div class="md-card">
+                                <div class="md-card-content">
+                                    <h4 class="md-card-title mb-0"><i class="bi bi-bell me-2"></i>Notification Preferences</h4>
+                                    <p class="md-card-subtitle">Choose how you receive alerts</p>
+                                    <div class="settings-form">
+                                        <div class="settings-toggle">
+                                            <div class="settings-toggle-info">
+                                                <strong>Email Notifications</strong>
+                                                <span>Receive leave requests, approvals and reminders via email</span>
+                                            </div>
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input settings-switch" type="checkbox" id="setEmailNotif" checked />
+                                            </div>
+                                        </div>
+                                        <div class="settings-toggle">
+                                            <div class="settings-toggle-info">
+                                                <strong>Push Notifications</strong>
+                                                <span>Get browser push notifications for urgent actions</span>
+                                            </div>
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input settings-switch" type="checkbox" id="setPushNotif" />
+                                            </div>
+                                        </div>
+                                        <div class="settings-toggle">
+                                            <div class="settings-toggle-info">
+                                                <strong>In-App Notifications</strong>
+                                                <span>Show notification badge and toast alerts in the app</span>
+                                            </div>
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input settings-switch" type="checkbox" id="setInAppNotif" checked />
+                                            </div>
+                                        </div>
+                                        <div class="settings-toggle">
+                                            <div class="settings-toggle-info">
+                                                <strong>Weekly Digest</strong>
+                                                <span>Receive a weekly summary of HR activities and pending tasks</span>
+                                            </div>
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input settings-switch" type="checkbox" id="setDigest" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Row 2: HR Preferences + System -->
+                    <div class="md-row">
+                        <div class="md-col md-col-6">
+                            <div class="md-card">
+                                <div class="md-card-content">
+                                    <h4 class="md-card-title mb-0"><i class="bi bi-briefcase me-2"></i>HR Preferences</h4>
+                                    <p class="md-card-subtitle">Configure HR module behaviour</p>
+                                    <div class="settings-form">
+                                        <div class="settings-group">
+                                            <label>Default Department</label>
+                                            <select class="emp-form-control settings-control" id="setDefaultDept">
+                                                <option value="">Select...</option>
+                                            </select>
+                                        </div>
+                                        <hr class="settings-hr" />
+                                        <div class="settings-group">
+                                            <label>Department Manager</label>
+                                            <p style="font-size:0.75rem;color:var(--gray-text);margin:0 0 8px;">Add, edit, or remove departments used across the system</p>
+                                            <div class="settings-dept-table-wrap">
+                                                <table class="emp-table settings-dept-table" id="deptManagerTable">
+                                                    <thead>
+                                                        <tr><th>Department</th><th>Headcount</th><th>Status</th><th style="width:80px;"></th></tr>
+                                                    </thead>
+                                                    <tbody></tbody>
+                                                </table>
+                                            </div>
+                                            <button class="emp-btn emp-btn-primary" id="addDeptBtn" style="margin-top:10px;"><i class="bi bi-plus-lg"></i> Add Department</button>
+                                        </div>
+                                        <hr class="settings-hr" />
+                                        <div class="settings-group">
+                                            <label>Designation Manager</label>
+                                            <p style="font-size:0.75rem;color:var(--gray-text);margin:0 0 8px;">Add, edit, or remove designations used across the system</p>
+                                            <div class="settings-dept-table-wrap">
+                                                <table class="emp-table settings-dept-table" id="desigManagerTable">
+                                                    <thead>
+                                                        <tr><th>Designation</th><th style="width:80px;"></th></tr>
+                                                    </thead>
+                                                    <tbody></tbody>
+                                                </table>
+                                            </div>
+                                            <button class="emp-btn emp-btn-primary" id="addDesigBtn" style="margin-top:10px;"><i class="bi bi-plus-lg"></i> Add Designation</button>
+                                        </div>
+                                        <div class="settings-group">
+                                            <label>Leave Approval Workflow</label>
+                                            <select class="emp-form-control settings-control" id="setLeaveWorkflow">
+                                                <option value="auto">Automatic (Manager Approval)</option>
+                                                <option value="multi">Multi-Level (Manager + HR)</option>
+                                                <option value="direct">Direct (HR Only)</option>
+                                            </select>
+                                        </div>
+                                        <div class="settings-group">
+                                            <label>Probation Period (days)</label>
+                                            <input type="number" class="emp-form-control settings-control" id="setProbationDays" value="90" min="30" max="365" />
+                                        </div>
+                                        <div class="settings-group">
+                                            <label>Default Leave Balance (days/year)</label>
+                                            <input type="number" class="emp-form-control settings-control" id="setLeaveBalance" value="21" min="0" max="60" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="md-col md-col-6">
+                            <div class="md-card">
+                                <div class="md-card-content">
+                                    <h4 class="md-card-title mb-0"><i class="bi bi-gear-wide-connected me-2"></i>System</h4>
+                                    <p class="md-card-subtitle">System configuration and data management</p>
+                                    <div class="settings-form">
+                                        <div class="settings-toggle">
+                                            <div class="settings-toggle-info">
+                                                <strong>Dark Mode</strong>
+                                                <span>Switch between light and dark theme across the system</span>
+                                            </div>
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input settings-switch" type="checkbox" id="setDarkMode" />
+                                            </div>
+                                        </div>
+                                        <div class="settings-toggle">
+                                            <div class="settings-toggle-info">
+                                                <strong>Auto-Sync</strong>
+                                                <span>Automatically sync data with shared folder when changes are made</span>
+                                            </div>
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input settings-switch" type="checkbox" id="setAutoSync" />
+                                            </div>
+                                        </div>
+                                        <div class="settings-toggle">
+                                            <div class="settings-toggle-info">
+                                                <strong>Compact Sidebar</strong>
+                                                <span>Keep sidebar collapsed by default on page load</span>
+                                            </div>
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input settings-switch" type="checkbox" id="setCompactSidebar" />
+                                            </div>
+                                        </div>
+                                        <hr class="settings-hr" />
+                                        <div class="settings-actions">
+                                            <button class="emp-btn emp-btn-primary" id="clearAllDataBtn"><i class="bi bi-trash me-1"></i> Clear All Data</button>
+                                            <button class="emp-btn" id="resetSettingsBtn"><i class="bi bi-arrow-counterclockwise me-1"></i> Reset Settings</button>
+                                        </div>
+                                        <p class="settings-footnote">Clearing data removes all employee records, leave data, and onboarding entries. This cannot be undone.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Row 3: Leave Policy -->
+                    <div class="md-row">
+                        <div class="md-col md-col-12">
+                            <div class="md-card">
+                                <div class="md-card-content">
+                                    <h4 class="md-card-title mb-0"><i class="bi bi-calendar-check me-2"></i>Leave Policy</h4>
+                                    <p class="md-card-subtitle">Configure annual leave entitlements per policy. Changes apply to new leave cycles.</p>
+                                    <div class="settings-form">
+                                        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-top:8px;">
+                                            <div class="settings-group">
+                                                <label>Annual Leave (days)</label>
+                                                <input type="number" class="emp-form-control leave-policy-input" id="lpAnnual" value="30" min="0" max="60" />
+                                                <span style="font-size:11px;color:var(--gray-text);">Max 32 if >2 yrs service</span>
+                                            </div>
+                                            <div class="settings-group">
+                                                <label>FRL (days)</label>
+                                                <input type="number" class="emp-form-control leave-policy-input" id="lpFrl" value="10" min="0" max="30" />
+                                            </div>
+                                            <div class="settings-group">
+                                                <label>Sick Leave (days)</label>
+                                                <input type="number" class="emp-form-control leave-policy-input" id="lpSl" value="15" min="0" max="30" />
+                                            </div>
+                                            <div class="settings-group">
+                                                <label>Sick Leave Medical (days)</label>
+                                                <input type="number" class="emp-form-control leave-policy-input" id="lpSlm" value="15" min="0" max="30" />
+                                            </div>
+                                            <div class="settings-group">
+                                                <label>Circumcision (days)</label>
+                                                <input type="number" class="emp-form-control leave-policy-input" id="lpCircumcision" value="5" min="0" max="15" />
+                                            </div>
+                                            <div class="settings-group">
+                                                <label>Paternity (days, male)</label>
+                                                <input type="number" class="emp-form-control leave-policy-input" id="lpPaternity" value="30" min="0" max="60" />
+                                            </div>
+                                            <div class="settings-group">
+                                                <label>Maternity (days, female)</label>
+                                                <input type="number" class="emp-form-control leave-policy-input" id="lpMaternity" value="30" min="0" max="90" />
+                                            </div>
+                                            <div class="settings-group">
+                                                <label>Hajj / Umrah (per employee)</label>
+                                                <select class="emp-form-control leave-policy-input" id="lpHajjUmrah">
+                                                    <option value="once">Once per career</option>
+                                                    <option value="yearly">Yearly</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <p style="font-size:11px;color:var(--gray-text);margin-top:8px;">Balances are computed from the employee's date of join and reset on each anniversary. Paternity applies to male employees, Maternity to female employees.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Row 4: About / Version -->
+                    <div class="md-row">
+                        <div class="md-col md-col-12">
+                            <div class="md-card">
+                                <div class="md-card-content">
+                                    <h4 class="md-card-title mb-0"><i class="bi bi-info-circle me-2"></i>About</h4>
+                                    <div class="settings-about">
+                                        <div class="settings-about-item"><strong>Application</strong><span>HRF Airport System — HR Module</span></div>
+                                        <div class="settings-about-item"><strong>Version</strong><span>2.1.0</span></div>
+                                        <div class="settings-about-item"><strong>Build</strong><span>2026.06.11</span></div>
+                                        <div class="settings-about-item"><strong>Data Store</strong><span>Local Storage (Browser)</span></div>
+                                        <div class="settings-about-item"><strong>Session</strong><span id="setAboutUser">Demo User</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+    <!-- Department Modal -->
+    <div class="modal fade" id="deptModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content emp-modal-content">
+                <div class="modal-header emp-modal-header">
+                    <h5 class="modal-title" id="deptModalTitle"><i class="bi bi-building"></i> Add Department</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="deptForm">
+                        <input type="hidden" id="deptEditId" />
+                        <div class="emp-form-group">
+                            <label>Department Name <span class="text-danger">*</span></label>
+                            <input type="text" class="emp-form-control" id="deptNameInput" placeholder="e.g. Logistics" required />
+                        </div>
+                        <div class="emp-form-group" style="margin-top:12px;">
+                            <label>Status</label>
+                            <select class="emp-form-control" id="deptStatus">
+                                <option value="Active">Active</option>
+                                <option value="Inactive">Inactive</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer emp-modal-footer">
+                    <button class="emp-btn" data-bs-dismiss="modal">Cancel</button>
+                    <button class="emp-btn emp-btn-primary" id="saveDeptBtn"><i class="bi bi-check-lg"></i> Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Department Modal -->
+    <div class="modal fade" id="deleteDeptModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content emp-modal-content" style="text-align:center;">
+                <div class="modal-body" style="padding:32px 24px;">
+                    <i class="bi bi-exclamation-triangle" style="font-size:2.4rem;color:#dc3545;margin-bottom:12px;display:block;"></i>
+                    <h5 style="margin:0 0 6px;font-weight:600;">Delete Department?</h5>
+                    <p style="color:var(--gray-text);font-size:0.85rem;margin:0;" id="deleteDeptName">This action cannot be undone.</p>
+                </div>
+                <div class="emp-modal-footer" style="justify-content:center;">
+                    <button class="emp-btn" data-bs-dismiss="modal">Cancel</button>
+                    <button class="emp-btn" id="confirmDeleteDeptBtn" style="background:#dc3545;color:#fff;border-color:#dc3545;"><i class="bi bi-trash"></i> Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Designation Modal -->
+    <div class="modal fade" id="desigModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content emp-modal-content">
+                <div class="modal-header emp-modal-header">
+                    <h5 class="modal-title" id="desigModalTitle"><i class="bi bi-briefcase"></i> Add Designation</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="desigForm">
+                        <input type="hidden" id="desigEditId" />
+                        <div class="emp-form-group">
+                            <label>Designation Name <span class="text-danger">*</span></label>
+                            <input type="text" class="emp-form-control" id="desigNameInput" placeholder="e.g. Operations Manager" required />
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer emp-modal-footer">
+                    <button class="emp-btn" data-bs-dismiss="modal">Cancel</button>
+                    <button class="emp-btn emp-btn-primary" id="saveDesigBtn"><i class="bi bi-check-lg"></i> Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Designation Modal -->
+    <div class="modal fade" id="deleteDesigModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content emp-modal-content" style="text-align:center;">
+                <div class="modal-body" style="padding:32px 24px;">
+                    <i class="bi bi-exclamation-triangle" style="font-size:2.4rem;color:#dc3545;margin-bottom:12px;display:block;"></i>
+                    <h5 style="margin:0 0 6px;font-weight:600;">Delete Designation?</h5>
+                    <p style="color:var(--gray-text);font-size:0.85rem;margin:0;" id="deleteDesigName">This action cannot be undone.</p>
+                </div>
+                <div class="emp-modal-footer" style="justify-content:center;">
+                    <button class="emp-btn" data-bs-dismiss="modal">Cancel</button>
+                    <button class="emp-btn" id="confirmDeleteDesigBtn" style="background:#dc3545;color:#fff;border-color:#dc3545;"><i class="bi bi-trash"></i> Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Onboarding Modal -->
+    <div class="modal fade" id="onboardingModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content emp-modal-content">
+                <div class="modal-header emp-modal-header">
+                    <h5 class="modal-title"><i class="bi bi-person-plus"></i> New Onboarding</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="onboardingForm">
+                        <div class="emp-form-row">
+                            <div class="emp-form-group">
+                                <label>Full Name</label>
+                                <input type="text" class="emp-form-control" id="onbName" placeholder="e.g. Mary Ndung'u" required />
+                            </div>
+                            <div class="emp-form-group">
+                                <label>Designation</label>
+                                <select class="emp-form-control" id="onbDesignation" required>
+                                    <option value="">Select...</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="emp-form-row">
+                            <div class="emp-form-group">
+                                <label>Department</label>
+                                <select class="emp-form-control" id="onbDept">
+                                    <option value="">Select...</option>
+                                </select>
+                            </div>
+                            <div class="emp-form-group">
+                                <label>Start Date</label>
+                                <input type="date" class="emp-form-control" id="onbDate" required />
+                            </div>
+                        </div>
+                        <div class="emp-form-group">
+                            <label>Email</label>
+                            <input type="email" class="emp-form-control" id="onbEmail" placeholder="e.g. m.ndungu@airport.com" />
+                        </div>
+                        <div class="emp-form-group">
+                            <label>Tasks</label>
+                            <div class="emp-checklist">
+                                <label><input type="checkbox" checked /> Employment Contract</label>
+                                <label><input type="checkbox" checked /> ID &amp; Documents</label>
+                                <label><input type="checkbox" checked /> IT Account Setup</label>
+                                <label><input type="checkbox" /> Email &amp; Access</label>
+                                <label><input type="checkbox" /> Workspace Assignment</label>
+                                <label><input type="checkbox" /> Orientation Session</label>
+                                <label><input type="checkbox" /> Uniform &amp; Badge</label>
+                                <label><input type="checkbox" /> Payroll Enrollment</label>
+                                <label><input type="checkbox" /> Benefits Enrollment</label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer emp-modal-footer">
+                    <button class="emp-btn" data-bs-dismiss="modal">Cancel</button>
+                    <button class="emp-btn emp-btn-primary" id="saveOnboardingBtn"><i class="bi bi-check-lg"></i> Start Onboarding</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Employee Modal -->
+    <div class="modal fade" id="editEmpModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content emp-modal-content">
+                <div class="modal-header emp-modal-header">
+                    <h5 class="modal-title"><i class="bi bi-pencil"></i> Edit Employee</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editEmpForm">
+                        <input type="hidden" id="editEmpId" />
+                        <div class="emp-form-row">
+                            <div class="emp-form-group">
+                                <label>SN Number</label>
+                                <input type="text" class="emp-form-control" id="editSnNumber" placeholder="e.g. SN-001" />
+                            </div>
+                            <div class="emp-form-group">
+                                <label>Full Name <span class="text-danger">*</span></label>
+                                <input type="text" class="emp-form-control" id="editName" required />
+                            </div>
+                        </div>
+                        <div class="emp-form-row">
+                            <div class="emp-form-group">
+                                <label>Date of Birth</label>
+                                <input type="date" class="emp-form-control" id="editDob" />
+                            </div>
+                            <div class="emp-form-group">
+                                <label>Date of Join</label>
+                                <input type="date" class="emp-form-control" id="editJoinDate" />
+                            </div>
+                        </div>
+                        <div class="emp-form-row">
+                            <div class="emp-form-group">
+                                <label>Mobile Number</label>
+                                <input type="tel" class="emp-form-control" id="editMobile" placeholder="+254 7XX XXX XXX" />
+                            </div>
+                            <div class="emp-form-group">
+                                <label>Email Address</label>
+                                <input type="email" class="emp-form-control" id="editEmail" placeholder="employee@example.com" />
+                            </div>
+                        </div>
+                        <div class="emp-form-row">
+                            <div class="emp-form-group">
+                                <label>Emergency Contact</label>
+                                <input type="tel" class="emp-form-control" id="editEmergency" placeholder="+254 7XX XXX XXX" />
+                            </div>
+                            <div class="emp-form-group">
+                                <label>NIC Number</label>
+                                <input type="text" class="emp-form-control" id="editNic" placeholder="National ID" />
+                            </div>
+                        </div>
+                        <div class="emp-form-row">
+                            <div class="emp-form-group">
+                                <label>Gender</label>
+                                <select class="emp-form-control" id="editGender">
+                                    <option value="">Select...</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="emp-form-group">
+                                <label>Marital Status</label>
+                                <select class="emp-form-control" id="editMarital">
+                                    <option value="">Select...</option>
+                                    <option value="Single">Single</option>
+                                    <option value="Married">Married</option>
+                                    <option value="Divorced">Divorced</option>
+                                    <option value="Widowed">Widowed</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="emp-form-row">
+                            <div class="emp-form-group">
+                                <label>Department</label>
+                                <select class="emp-form-control" id="editDept">
+                                    <option value="">Select...</option>
+                                </select>
+                            </div>
+                            <div class="emp-form-group">
+                                <label>Designation</label>
+                                <select class="emp-form-control" id="editDesignation" required>
+                                    <option value="">Select...</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="emp-form-row">
+                            <div class="emp-form-group" style="flex:1;">
+                                <label>Salary (MVR)</label>
+                                <input type="number" class="emp-form-control" id="editSalary" placeholder="e.g. 150000" min="0" step="1000" />
+                            </div>
+                            <div class="emp-form-group" style="flex:2;">
+                                <label>Permanent Address</label>
+                                <textarea class="emp-form-control" id="editPermanentAddress" rows="2" placeholder="Physical / postal address"></textarea>
+                            </div>
+                            <div class="emp-form-group" style="flex:1;">
+                                <label>Status</label>
+                                <select class="emp-form-control" id="editStatus">
+                                    <option>Active</option><option>Inactive</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="emp-form-group">
+                            <label>Present Address</label>
+                            <textarea class="emp-form-control" id="editPresentAddress" rows="2" placeholder="Current residential address"></textarea>
+                        </div>
+                        <div class="emp-form-row">
+                            <div class="emp-form-group">
+                                <label>Passport Photo</label>
+                                <div class="photo-upload" id="editPhotoUpload">
+                                    <div class="photo-placeholder" id="editPhotoPlaceholder">
+                                        <i class="bi bi-camera"></i>
+                                        <span>Click to upload</span>
+                                    </div>
+                                    <img id="editPhotoPreview" class="photo-preview" style="display:none;" alt="Passport photo" />
+                                    <input type="file" id="editPhotoInput" accept="image/*" />
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer emp-modal-footer">
+                    <button class="emp-btn" data-bs-dismiss="modal">Cancel</button>
+                    <button class="emp-btn emp-btn-primary" id="saveEditBtn"><i class="bi bi-check-lg"></i> Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirm Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content emp-modal-content" style="text-align:center;">
+                <div class="modal-body" style="padding:32px 24px;">
+                    <i class="bi bi-exclamation-triangle" style="font-size:2.4rem;color:#dc3545;margin-bottom:12px;display:block;"></i>
+                    <h5 style="margin:0 0 6px;font-weight:600;">Delete Employee?</h5>
+                    <p style="color:var(--gray-text);font-size:0.85rem;margin:0;" id="deleteEmpName">This action cannot be undone.</p>
+                </div>
+                <div class="emp-modal-footer" style="justify-content:center;">
+                    <button class="emp-btn" data-bs-dismiss="modal">Cancel</button>
+                    <button class="emp-btn" id="confirmDeleteBtn" style="background:#dc3545;color:#fff;border-color:#dc3545;"><i class="bi bi-trash"></i> Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Import Excel Modal -->
+    <div class="modal fade" id="importModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content emp-modal-content">
+                <div class="modal-header emp-modal-header">
+                    <h5 class="modal-title"><i class="bi bi-file-earmark-excel"></i> Import Employees from Excel</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="emp-import-drop" id="importDrop">
+                        <i class="bi bi-cloud-arrow-up"></i>
+                        <p>Drop your Excel file here or click to browse</p>
+                        <span>Supports .xlsx, .xls, .csv</span>
+                        <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" hidden />
+                    </div>
+                    <div id="importPreview" style="display:none;">
+                        <div class="emp-import-info">
+                            <span id="importFileName"></span>
+                            <span id="importRowCount"></span>
+                        </div>
+                        <div class="emp-table-wrap" style="margin-top:12px;">
+                            <table class="emp-table" id="importTable"></table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer emp-modal-footer">
+                    <button class="emp-btn" data-bs-dismiss="modal">Cancel</button>
+                    <button class="emp-btn emp-btn-primary" id="confirmImportBtn" style="display:none;"><i class="bi bi-check-lg"></i> Import <span id="importCount">0</span> Employees</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Employee Modal -->
+    <div class="modal fade" id="addEmployeeModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content emp-modal-content">
+                <div class="modal-header emp-modal-header">
+                    <h5 class="modal-title"><i class="bi bi-person-plus"></i> Add Employee</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addEmployeeForm">
+                        <div class="emp-form-top-actions">
+                            <button type="button" class="emp-btn" data-bs-dismiss="modal"><i class="bi bi-x-lg"></i> Cancel</button>
+                            <button type="button" class="emp-btn emp-btn-primary" id="saveAddEmployeeBtnTop"><i class="bi bi-check-lg"></i> Save</button>
+                        </div>
+                        <div class="emp-form-row">
+                            <div class="emp-form-group">
+                                <label>SN Number</label>
+                                <input type="text" class="emp-form-control" id="addSnNumber" placeholder="e.g. SN-001" />
+                            </div>
+                            <div class="emp-form-group">
+                                <label>Full Name <span class="text-danger">*</span></label>
+                                <input type="text" class="emp-form-control" id="addName" required />
+                            </div>
+                        </div>
+                        <div class="emp-form-row">
+                            <div class="emp-form-group">
+                                <label>Date of Birth</label>
+                                <input type="date" class="emp-form-control" id="addDob" />
+                            </div>
+                            <div class="emp-form-group">
+                                <label>Date of Join</label>
+                                <input type="date" class="emp-form-control" id="addJoinDate" />
+                            </div>
+                        </div>
+                        <div class="emp-form-row">
+                            <div class="emp-form-group">
+                                <label>Mobile Number</label>
+                                <input type="tel" class="emp-form-control" id="addMobile" placeholder="+254 7XX XXX XXX" />
+                            </div>
+                            <div class="emp-form-group">
+                                <label>Email Address</label>
+                                <input type="email" class="emp-form-control" id="addEmail" placeholder="employee@example.com" />
+                            </div>
+                        </div>
+                        <div class="emp-form-row">
+                            <div class="emp-form-group">
+                                <label>Emergency Contact</label>
+                                <input type="tel" class="emp-form-control" id="addEmergency" placeholder="+254 7XX XXX XXX" />
+                            </div>
+                            <div class="emp-form-group">
+                                <label>NIC Number</label>
+                                <input type="text" class="emp-form-control" id="addNic" placeholder="National ID" />
+                            </div>
+                        </div>
+                        <div class="emp-form-row">
+                            <div class="emp-form-group">
+                                <label>Gender</label>
+                                <select class="emp-form-control" id="addGender">
+                                    <option value="">Select...</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="emp-form-group">
+                                <label>Marital Status</label>
+                                <select class="emp-form-control" id="addMarital">
+                                    <option value="">Select...</option>
+                                    <option value="Single">Single</option>
+                                    <option value="Married">Married</option>
+                                    <option value="Divorced">Divorced</option>
+                                    <option value="Widowed">Widowed</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="emp-form-row">
+                            <div class="emp-form-group">
+                                <label>Department</label>
+                                <select class="emp-form-control" id="addDept">
+                                    <option value="">Select...</option>
+                                </select>
+                            </div>
+                            <div class="emp-form-group">
+                                <label>Designation</label>
+                                <select class="emp-form-control" id="addDesignation">
+                                    <option value="">Select...</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="emp-form-row">
+                            <div class="emp-form-group">
+                                <label>Salary (MVR)</label>
+                                <input type="number" class="emp-form-control" id="addSalary" placeholder="e.g. 150000" min="0" step="1000" />
+                            </div>
+                            <div class="emp-form-group">
+                                <label>Permanent Address</label>
+                            <textarea class="emp-form-control" id="addPermanentAddress" rows="2" placeholder="Physical / postal address"></textarea>
+                        </div>
+                        <div class="emp-form-group">
+                            <label>Present Address</label>
+                            <textarea class="emp-form-control" id="addPresentAddress" rows="2" placeholder="Current residential address"></textarea>
+                        </div>
+                        <div class="emp-form-row">
+                            <div class="emp-form-group">
+                                <label>Passport Photo</label>
+                                <div class="photo-upload" id="photoUpload">
+                                    <div class="photo-placeholder" id="photoPlaceholder">
+                                        <i class="bi bi-camera"></i>
+                                        <span>Click to upload</span>
+                                    </div>
+                                    <img id="photoPreview" class="photo-preview" style="display:none;" alt="Passport photo" />
+                                    <input type="file" id="photoInput" accept="image/*" />
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer emp-modal-footer">
+                    <button class="emp-btn" data-bs-dismiss="modal">Cancel</button>
+                    <button class="emp-btn emp-btn-primary" id="saveAddEmployeeBtn"><i class="bi bi-check-lg"></i> Save Employee</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="hr.js"></script>
+</body>
+</html>

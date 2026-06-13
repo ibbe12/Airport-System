@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="HRF Airport System — Operations Dashboard" />
+    <title>HRF Airport System — Dashboard</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    />
+    <!-- Bootstrap Icons -->
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css"
+    />
+    <!-- Google Fonts: Elms Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Elms+Sans:wght@300;400;500;700&display=swap"
+        rel="stylesheet"
+    />
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="dashboard.css" />
+</head>
+<body class="dashboard-body">
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar" aria-label="Primary navigation">
+            <div class="sidebar-brand">
+                <span class="brand-icon"><i class="bi bi-airplane-engines-fill"></i></span>
+                <div class="brand-text">
+                    <strong>HRF Airport</strong>
+                    <span>System</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav" aria-label="Main menu">
+                <a href="#" class="nav-item active" data-page="overview">
+                    <i class="bi bi-speedometer2"></i>
+                    <span>Overview</span>
+                </a>
+                <a href="#" class="nav-item" data-page="flights">
+                    <i class="bi bi-airplane"></i>
+                    <span>Flights</span>
+                </a>
+                <a href="#" class="nav-item" data-page="passengers">
+                    <i class="bi bi-people"></i>
+                    <span>Passengers</span>
+                </a>
+                <a href="#" class="nav-item" data-page="baggage">
+                    <i class="bi bi-luggage"></i>
+                    <span>Baggage</span>
+                </a>
+                <a href="#" class="nav-item" data-page="gates">
+                    <i class="bi bi-signpost-2"></i>
+                    <span>Gates</span>
+                </a>
+                <a href="#" class="nav-item" data-page="staff">
+                    <i class="bi bi-person-badge"></i>
+                    <span>Staff</span>
+                </a>
+                <a href="#" class="nav-item" data-page="reports">
+                    <i class="bi bi-bar-chart-line"></i>
+                    <span>Reports</span>
+                </a>
+                <a href="#" class="nav-item" data-page="settings">
+                    <i class="bi bi-gear"></i>
+                    <span>Settings</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="sidebar-version">v1.0.0 — Demo Build</div>
+            </div>
+        </aside>
+
+        <!-- Main area -->
+        <div class="main-area">
+            <!-- Top bar -->
+            <header class="topbar">
+                <button
+                    type="button"
+                    class="sidebar-toggle d-lg-none"
+                    id="sidebarToggle"
+                    aria-label="Toggle sidebar"
+                >
+                    <i class="bi bi-list"></i>
+                </button>
+
+                <div class="topbar-search">
+                    <i class="bi bi-search"></i>
+                    <input
+                        type="search"
+                        placeholder="Search flights, passengers, gates…"
+                        aria-label="Search"
+                    />
+                </div>
+
+                <div class="topbar-actions">
+                    <button
+                        type="button"
+                        class="icon-btn"
+                        aria-label="Notifications"
+                        title="Notifications"
+                    >
+                        <i class="bi bi-bell"></i>
+                        <span class="badge-dot" aria-label="3 new notifications"></span>
+                    </button>
+                    <button
+                        type="button"
+                        class="icon-btn"
+                        aria-label="Messages"
+                        title="Messages"
+                    >
+                        <i class="bi bi-chat-dots"></i>
+                    </button>
+
+                    <div class="topbar-divider"></div>
+
+                    <button type="button" class="icon-btn" id="themeToggle" aria-label="Toggle dark mode">
+                        <i class="bi bi-moon-stars-fill"></i>
+                    </button>
+
+                    <div class="topbar-divider"></div>
+
+                    <button type="button" class="emp-btn-icon" id="saveBackupBtn" title="Save system backup">
+                        <i class="bi bi-box-arrow-down"></i>
+                    </button>
+                    <button type="button" class="emp-btn-icon" id="loadBackupBtn" title="Load system backup">
+                        <i class="bi bi-box-arrow-in-up"></i>
+                    </button>
+                    <button type="button" class="emp-btn-icon" id="syncBtn" title="Connect shared sync folder">
+                        <i class="bi bi-cloud-arrow-up"></i>
+                    </button>
+                    <span class="sync-status" id="syncStatus" title="Sync status"><i class="bi bi-circle"></i></span>
+                    <input type="file" id="loadBackupInput" accept=".json" style="display:none;" />
+
+                    <div class="user-chip" id="userChip">
+                        <div class="user-avatar" aria-hidden="true">DU</div>
+                        <div class="user-meta">
+                            <strong id="userName">Demo User</strong>
+                            <span id="userRole">Operations Manager</span>
+                        </div>
+                        <i class="bi bi-chevron-down"></i>
+                    </div>
+
+                    <button type="button" class="logout-btn" id="logoutBtn">
+                        <i class="bi bi-box-arrow-right"></i>
+                        <span>Logout</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Content -->
+            <main class="dashboard-content">
+                <section class="welcome-strip">
+                    <div>
+                        <h1 class="page-title">Welcome back, <span id="greetingName">Demo</span> 👋</h1>
+                        <p class="page-subtitle">
+                            Here's what's happening at HRF Airport today.
+                        </p>
+                    </div>
+                    <div class="strip-meta">
+                        <div class="meta-item">
+                            <i class="bi bi-calendar3"></i>
+                            <span id="todayDate">—</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="bi bi-clock"></i>
+                            <span id="liveClock">--:--:--</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Stat cards -->
+                <section class="stat-grid" aria-label="Key metrics">
+                    <article class="stat-card stat-blue">
+                        <div class="stat-icon"><i class="bi bi-airplane"></i></div>
+                        <div class="stat-body">
+                            <span class="stat-label">Active Flights</span>
+                            <strong class="stat-value" data-target="128">0</strong>
+                            <span class="stat-trend up">
+                                <i class="bi bi-arrow-up-short"></i> 4.2% vs yesterday
+                            </span>
+                        </div>
+                    </article>
+
+                    <article class="stat-card stat-green">
+                        <div class="stat-icon"><i class="bi bi-people"></i></div>
+                        <div class="stat-body">
+                            <span class="stat-label">Passengers Today</span>
+                            <strong class="stat-value" data-target="18432">0</strong>
+                            <span class="stat-trend up">
+                                <i class="bi bi-arrow-up-short"></i> 1.8% vs yesterday
+                            </span>
+                        </div>
+                    </article>
+
+                    <article class="stat-card stat-orange">
+                        <div class="stat-icon"><i class="bi bi-luggage"></i></div>
+                        <div class="stat-body">
+                            <span class="stat-label">Baggage Processed</span>
+                            <strong class="stat-value" data-target="24610">0</strong>
+                            <span class="stat-trend down">
+                                <i class="bi bi-arrow-down-short"></i> 0.6% vs yesterday
+                            </span>
+                        </div>
+                    </article>
+
+                    <article class="stat-card stat-purple">
+                        <div class="stat-icon"><i class="bi bi-shield-check"></i></div>
+                        <div class="stat-body">
+                            <span class="stat-label">On-Time Rate</span>
+                            <strong class="stat-value" data-target="94" data-suffix="%">0</strong>
+                            <span class="stat-trend up">
+                                <i class="bi bi-arrow-up-short"></i> 2.1% vs yesterday
+                            </span>
+                        </div>
+                    </article>
+                </section>
+
+                <!-- Main panels -->
+                <section class="panel-grid">
+                    <article class="panel panel-large">
+                        <header class="panel-header">
+                            <h2 class="panel-title">Recent Flights</h2>
+                            <button type="button" class="link-btn">View all</button>
+                        </header>
+                        <div class="table-wrapper">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Flight</th>
+                                        <th>Route</th>
+                                        <th>Departure</th>
+                                        <th>Gate</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>HRF 204</strong></td>
+                                        <td>HRE → JNB</td>
+                                        <td>08:15</td>
+                                        <td>A12</td>
+                                        <td><span class="status-pill status-on">On Time</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>HRF 118</strong></td>
+                                        <td>HRE → DXB</td>
+                                        <td>09:40</td>
+                                        <td>B07</td>
+                                        <td><span class="status-pill status-boarding">Boarding</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>HRF 332</strong></td>
+                                        <td>HRE → CPT</td>
+                                        <td>10:55</td>
+                                        <td>A04</td>
+                                        <td><span class="status-pill status-delayed">Delayed</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>HRF 451</strong></td>
+                                        <td>HRE → LHR</td>
+                                        <td>12:20</td>
+                                        <td>C02</td>
+                                        <td><span class="status-pill status-scheduled">Scheduled</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>HRF 277</strong></td>
+                                        <td>HRE → NBO</td>
+                                        <td>13:05</td>
+                                        <td>B11</td>
+                                        <td><span class="status-pill status-on">On Time</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </article>
+
+                    <article class="panel">
+                        <header class="panel-header">
+                            <h2 class="panel-title">Gate Activity</h2>
+                        </header>
+                        <ul class="gate-list">
+                            <li>
+                                <span class="gate-badge">A12</span>
+                                <div class="gate-info">
+                                    <strong>HRF 204</strong>
+                                    <span>Boarding · 78% full</span>
+                                </div>
+                                <span class="status-dot status-on"></span>
+                            </li>
+                            <li>
+                                <span class="gate-badge">B07</span>
+                                <div class="gate-info">
+                                    <strong>HRF 118</strong>
+                                    <span>Final call · 95% full</span>
+                                </div>
+                                <span class="status-dot status-boarding"></span>
+                            </li>
+                            <li>
+                                <span class="gate-badge">A04</span>
+                                <div class="gate-info">
+                                    <strong>HRF 332</strong>
+                                    <span>Delayed · 25 min</span>
+                                </div>
+                                <span class="status-dot status-delayed"></span>
+                            </li>
+                            <li>
+                                <span class="gate-badge">C02</span>
+                                <div class="gate-info">
+                                    <strong>HRF 451</strong>
+                                    <span>Open · 12% full</span>
+                                </div>
+                                <span class="status-dot status-scheduled"></span>
+                            </li>
+                            <li>
+                                <span class="gate-badge">B11</span>
+                                <div class="gate-info">
+                                    <strong>HRF 277</strong>
+                                    <span>Not yet open</span>
+                                </div>
+                                <span class="status-dot status-scheduled"></span>
+                            </li>
+                        </ul>
+                    </article>
+
+                    <article class="panel">
+                        <header class="panel-header">
+                            <h2 class="panel-title">Quick Actions</h2>
+                        </header>
+                        <div class="quick-actions">
+                            <button type="button" class="quick-btn">
+                                <i class="bi bi-plus-circle"></i>
+                                <span>Add Flight</span>
+                            </button>
+                            <button type="button" class="quick-btn">
+                                <i class="bi bi-person-plus"></i>
+                                <span>New Passenger</span>
+                            </button>
+                            <button type="button" class="quick-btn">
+                                <i class="bi bi-search"></i>
+                                <span>Track Baggage</span>
+                            </button>
+                            <button type="button" class="quick-btn">
+                                <i class="bi bi-megaphone"></i>
+                                <span>Send Notice</span>
+                            </button>
+                            <button type="button" class="quick-btn">
+                                <i class="bi bi-file-earmark-text"></i>
+                                <span>Generate Report</span>
+                            </button>
+                            <button type="button" class="quick-btn">
+                                <i class="bi bi-shield-lock"></i>
+                                <span>Security Log</span>
+                            </button>
+                        </div>
+                    </article>
+
+                    <article class="panel">
+                        <header class="panel-header">
+                            <h2 class="panel-title">System Status</h2>
+                        </header>
+                        <ul class="status-list">
+                            <li>
+                                <i class="bi bi-wifi"></i>
+                                <span>Network</span>
+                                <strong class="ok">Operational</strong>
+                            </li>
+                            <li>
+                                <i class="bi bi-database"></i>
+                                <span>Database</span>
+                                <strong class="ok">Operational</strong>
+                            </li>
+                            <li>
+                                <i class="bi bi-broadcast"></i>
+                                <span>Flight Feeds</span>
+                                <strong class="ok">Operational</strong>
+                            </li>
+                            <li>
+                                <i class="bi bi-camera-video"></i>
+                                <span>CCTV</span>
+                                <strong class="warn">Degraded</strong>
+                            </li>
+                            <li>
+                                <i class="bi bi-bag-check"></i>
+                                <span>Baggage System</span>
+                                <strong class="ok">Operational</strong>
+                            </li>
+                        </ul>
+                    </article>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- Mobile sidebar backdrop -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop" aria-hidden="true"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="dashboard.js"></script>
+</body>
+</html>
