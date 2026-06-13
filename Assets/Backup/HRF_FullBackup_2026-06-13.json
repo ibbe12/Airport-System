@@ -1,0 +1,726 @@
+{
+  "hrf-emp-directory": [
+    {
+      "name": "Ibrahim Rafeeu",
+      "empId": "SN-0369",
+      "department": "Ground Operations",
+      "position": "Assistant Operation Officer",
+      "status": "Active",
+      "joined": "15.06.2021",
+      "sn": "SN-0369",
+      "dob": "1981-11-19",
+      "joinedRaw": "2021-06-15",
+      "mobile": "9526507",
+      "email": "ibrahim.rafeeu@outlook.com",
+      "emergency": "7670236",
+      "nic": "A078071",
+      "gender": "Male",
+      "marital": "Married",
+      "permanentAddress": "Alhifashuige / Ha.Hoarafushi",
+      "presentAddress": "Bashimaage / Ha.Hoarafushi",
+      "salary": "",
+      "photo": "data:image/jpeg;base64,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"
+    },
+    {
+      "name": "Mohamed Salim",
+      "empId": "MS",
+      "department": "Ground Operations",
+      "position": "Airport Hands",
+      "status": "Active",
+      "joined": "15.06.2021",
+      "sn": "SN-0578",
+      "dob": "",
+      "joinedRaw": "15.06.2021",
+      "mobile": "",
+      "email": "",
+      "emergency": "",
+      "nic": "A122637",
+      "gender": "Male",
+      "marital": "Married",
+      "permanentAddress": "",
+      "presentAddress": "",
+      "salary": "",
+      "initials": "MS",
+      "color": "rgb(232, 184, 75)"
+    },
+    {
+      "name": "Ali Shareef",
+      "empId": "AS",
+      "department": "Ground Operations",
+      "position": "Airport Hands",
+      "status": "Active",
+      "joined": "15.06.2021",
+      "sn": "SN-0579",
+      "dob": "",
+      "joinedRaw": "15.06.2021",
+      "mobile": "",
+      "email": "",
+      "emergency": "",
+      "nic": "A093770",
+      "gender": "Male",
+      "marital": "Married",
+      "permanentAddress": "",
+      "presentAddress": "",
+      "salary": "",
+      "initials": "AS",
+      "color": "rgb(137, 81, 41)"
+    },
+    {
+      "name": "Ahmed Nabeel",
+      "empId": "AN",
+      "department": "Ground Operations",
+      "position": "Airport Hands",
+      "status": "Active",
+      "joined": "15.06.2021",
+      "sn": "SN-0352",
+      "dob": "",
+      "joinedRaw": "15.06.2021",
+      "mobile": "",
+      "email": "",
+      "emergency": "",
+      "nic": "A264010",
+      "gender": "Male",
+      "marital": "Married",
+      "permanentAddress": "",
+      "presentAddress": "",
+      "salary": "",
+      "initials": "AN",
+      "color": "rgb(255, 193, 7)"
+    },
+    {
+      "name": "Ahmed Naufal",
+      "empId": "AN",
+      "department": "Ground Operations",
+      "position": "Airport Hands",
+      "status": "Active",
+      "joined": "14.05.2023",
+      "sn": "SN-0354",
+      "dob": "",
+      "joinedRaw": "14.05.2023",
+      "mobile": "",
+      "email": "",
+      "emergency": "",
+      "nic": "A261312",
+      "gender": "Male",
+      "marital": "Married",
+      "permanentAddress": "",
+      "presentAddress": "",
+      "salary": "",
+      "initials": "AN",
+      "color": "rgb(214, 138, 60)"
+    },
+    {
+      "name": "Ahmed Falah",
+      "empId": "AF",
+      "department": "Ground Operations",
+      "position": "Airport Hands",
+      "status": "Active",
+      "joined": "14.05.2023",
+      "sn": "SN-0365",
+      "dob": "",
+      "joinedRaw": "14.05.2023",
+      "mobile": "",
+      "email": "",
+      "emergency": "",
+      "nic": "A263511",
+      "gender": "Male",
+      "marital": "Married",
+      "permanentAddress": "",
+      "presentAddress": "",
+      "salary": "",
+      "initials": "AF",
+      "color": "rgb(184, 107, 46)"
+    },
+    {
+      "name": "Ali Rilwan",
+      "empId": "AR",
+      "department": "Ground Operations",
+      "position": "Airport Hands",
+      "status": "Active",
+      "joined": "21.05.2023",
+      "sn": "SN-0577",
+      "dob": "",
+      "joinedRaw": "21.05.2023",
+      "mobile": "",
+      "email": "",
+      "emergency": "",
+      "nic": "A149918",
+      "gender": "Male",
+      "marital": "Married",
+      "permanentAddress": "",
+      "presentAddress": "",
+      "salary": "",
+      "initials": "AR",
+      "color": "rgb(160, 94, 36)"
+    },
+    {
+      "name": "Moosa Mohamed",
+      "empId": "MM",
+      "department": "Ground Operations",
+      "position": "Airport Hands",
+      "status": "Active",
+      "joined": "09.01.2023",
+      "sn": "SN-0598",
+      "dob": "",
+      "joinedRaw": "2023-01-08",
+      "mobile": "",
+      "email": "",
+      "emergency": "",
+      "nic": "A079642",
+      "gender": "Male",
+      "marital": "Married",
+      "permanentAddress": "",
+      "presentAddress": "",
+      "salary": "",
+      "initials": "MM",
+      "color": "rgb(137, 81, 41)"
+    },
+    {
+      "name": "Ali Arushan",
+      "empId": "AA",
+      "department": "Ground Operations",
+      "position": "Airport Hands",
+      "status": "Active",
+      "joined": "09.01.2023",
+      "sn": "SN-0600",
+      "dob": "",
+      "joinedRaw": "2023-01-08",
+      "mobile": "",
+      "email": "",
+      "emergency": "",
+      "nic": "A261314",
+      "gender": "Male",
+      "marital": "Married",
+      "permanentAddress": "",
+      "presentAddress": "",
+      "salary": "",
+      "initials": "AA",
+      "color": "rgb(255, 193, 7)"
+    },
+    {
+      "name": "Abdulla Rasheed",
+      "empId": "AR",
+      "department": "Ground Operations",
+      "position": "Airport Hands",
+      "status": "Active",
+      "joined": "10.01.2023",
+      "sn": "SN-0612",
+      "dob": "",
+      "joinedRaw": "2023-01-09",
+      "mobile": "",
+      "email": "",
+      "emergency": "",
+      "nic": "A260571",
+      "gender": "Male",
+      "marital": "Married",
+      "permanentAddress": "",
+      "presentAddress": "",
+      "salary": "",
+      "initials": "AR",
+      "color": "rgb(214, 138, 60)"
+    },
+    {
+      "name": "Sharafudheen Mohamed",
+      "empId": "SM",
+      "department": "Ground Operations",
+      "position": "Airport Hands",
+      "status": "Active",
+      "joined": "10.01.2023",
+      "sn": "SN-0613",
+      "dob": "",
+      "joinedRaw": "2023-01-09",
+      "mobile": "",
+      "email": "",
+      "emergency": "",
+      "nic": "A261225",
+      "gender": "Male",
+      "marital": "Married",
+      "permanentAddress": "",
+      "presentAddress": "",
+      "salary": "",
+      "initials": "SM",
+      "color": "rgb(184, 107, 46)"
+    },
+    {
+      "name": "Ahmed Ashfaq",
+      "empId": "AA",
+      "department": "Ground Operations",
+      "position": "Airport Hands",
+      "status": "Active",
+      "joined": "10.01.2023",
+      "sn": "SN-0614",
+      "dob": "",
+      "joinedRaw": "2023-01-09",
+      "mobile": "",
+      "email": "",
+      "emergency": "",
+      "nic": "A330977",
+      "gender": "Male",
+      "marital": "Married",
+      "permanentAddress": "",
+      "presentAddress": "",
+      "salary": "",
+      "initials": "AA",
+      "color": "rgb(160, 94, 36)"
+    }
+  ],
+  "hrf-emp-onboarding": [
+    {
+      "name": "ggfd",
+      "initials": "G",
+      "color": "rgb(255, 193, 7)",
+      "position": "hfghf",
+      "startLabel": "Starts Jun 6",
+      "progress": 0,
+      "tasksDone": 0
+    },
+    {
+      "name": "Mary Ndung'u",
+      "initials": "MN",
+      "color": "rgb(137, 81, 41)",
+      "position": "IT Support",
+      "startLabel": "Starts Aug 1",
+      "progress": 65,
+      "tasksDone": 4
+    },
+    {
+      "name": "Brian Kiprop",
+      "initials": "BK",
+      "color": "rgb(255, 193, 7)",
+      "position": "Security Officer",
+      "startLabel": "Starts Aug 15",
+      "progress": 30,
+      "tasksDone": 2
+    },
+    {
+      "name": "Faith Achieng",
+      "initials": "FA",
+      "color": "rgb(214, 138, 60)",
+      "position": "Admin Assistant",
+      "startLabel": "Starts Sep 1",
+      "progress": 10,
+      "tasksDone": 1
+    }
+  ],
+  "hrf-settings": {
+    "lang": "en",
+    "dateFormat": "DD/MM/YYYY",
+    "tz": "Africa/Nairobi",
+    "perPage": "10",
+    "emailNotif": false,
+    "pushNotif": true,
+    "inAppNotif": true,
+    "digest": true,
+    "defaultDept": "Operations",
+    "leaveWorkflow": "multi",
+    "probationDays": 90,
+    "leaveBalance": 30,
+    "darkMode": false,
+    "autoSync": true,
+    "compactSidebar": false
+  },
+  "hrf-departments": [
+    {
+      "name": "Operations",
+      "headcount": 284,
+      "status": "Active"
+    },
+    {
+      "name": "Security",
+      "headcount": 198,
+      "status": "Active"
+    },
+    {
+      "name": "Maintenance",
+      "headcount": 156,
+      "status": "Active"
+    },
+    {
+      "name": "HR",
+      "headcount": 78,
+      "status": "Active"
+    },
+    {
+      "name": "Administration",
+      "headcount": 45,
+      "status": "Active"
+    },
+    {
+      "name": "Safety",
+      "headcount": 0,
+      "status": "Active"
+    },
+    {
+      "name": "Ground Operations",
+      "headcount": 0,
+      "status": "Active"
+    },
+    {
+      "name": "Cleaning And Gardening",
+      "headcount": 0,
+      "status": "Active"
+    }
+  ],
+  "hrf-designations": [
+    "Assistant Operation Officer",
+    "Admin Assistant",
+    "Security Agents",
+    "Airport Hands"
+  ],
+  "hrf-leave-data": {
+    "requests": [
+      {
+        "_id": "1781341558317-nuj9no",
+        "employee": "Ibrahim Rafeeu",
+        "initials": "IR",
+        "color": "#b86b2e",
+        "type": "FRL",
+        "from": "Jun 18",
+        "to": "Jun 20",
+        "days": 3,
+        "rawDays": 3,
+        "status": "Approved",
+        "notes": "",
+        "submitted": "2026-06-13T09:05:58.317Z"
+      },
+      {
+        "_id": "1781341608316-mkvtd6",
+        "employee": "Ibrahim Rafeeu",
+        "initials": "IR",
+        "color": "#b86b2e",
+        "type": "FRL",
+        "from": "Jun 17",
+        "to": "Jun 21",
+        "days": 5,
+        "rawDays": 5,
+        "status": "Approved",
+        "notes": "",
+        "submitted": "2026-06-13T09:06:48.316Z"
+      },
+      {
+        "_id": "1781341637077-6ud162",
+        "employee": "Ibrahim Rafeeu",
+        "initials": "IR",
+        "color": "#b86b2e",
+        "type": "FRL",
+        "from": "Jun 30",
+        "to": "Jul 1",
+        "days": 2,
+        "rawDays": 2,
+        "status": "Approved",
+        "notes": "",
+        "submitted": "2026-06-13T09:07:17.077Z"
+      }
+    ],
+    "balances": {
+      "Ibrahim Rafeeu": {
+        "annual": 32,
+        "frl": 0,
+        "sickMedical": 15,
+        "sick": 15,
+        "circumcision": 5,
+        "paternity": 30,
+        "maternity": 0,
+        "noPay": 0,
+        "umrah": 0,
+        "hajj": 0,
+        "total": 97
+      },
+      "Mohamed Salim": {
+        "annual": 30,
+        "frl": 10,
+        "sickMedical": 15,
+        "sick": 15,
+        "circumcision": 5,
+        "paternity": 30,
+        "maternity": 0,
+        "noPay": 0,
+        "umrah": 0,
+        "hajj": 0,
+        "total": 105
+      },
+      "Ali Shareef": {
+        "annual": 30,
+        "frl": 10,
+        "sickMedical": 15,
+        "sick": 15,
+        "circumcision": 5,
+        "paternity": 30,
+        "maternity": 0,
+        "noPay": 0,
+        "umrah": 0,
+        "hajj": 0,
+        "total": 105
+      },
+      "Ahmed Nabeel": {
+        "annual": 30,
+        "frl": 10,
+        "sickMedical": 15,
+        "sick": 15,
+        "circumcision": 5,
+        "paternity": 30,
+        "maternity": 0,
+        "noPay": 0,
+        "umrah": 0,
+        "hajj": 0,
+        "total": 105
+      },
+      "Ahmed Naufal": {
+        "annual": 30,
+        "frl": 10,
+        "sickMedical": 15,
+        "sick": 15,
+        "circumcision": 5,
+        "paternity": 30,
+        "maternity": 0,
+        "noPay": 0,
+        "umrah": 0,
+        "hajj": 0,
+        "total": 105
+      },
+      "Ahmed Falah": {
+        "annual": 30,
+        "frl": 10,
+        "sickMedical": 15,
+        "sick": 15,
+        "circumcision": 5,
+        "paternity": 30,
+        "maternity": 0,
+        "noPay": 0,
+        "umrah": 0,
+        "hajj": 0,
+        "total": 105
+      },
+      "Ali Rilwan": {
+        "annual": 30,
+        "frl": 10,
+        "sickMedical": 15,
+        "sick": 15,
+        "circumcision": 5,
+        "paternity": 30,
+        "maternity": 0,
+        "noPay": 0,
+        "umrah": 0,
+        "hajj": 0,
+        "total": 105
+      },
+      "Moosa Mohamed": {
+        "annual": 32,
+        "frl": 10,
+        "sickMedical": 15,
+        "sick": 15,
+        "circumcision": 5,
+        "paternity": 30,
+        "maternity": 0,
+        "noPay": 0,
+        "umrah": 0,
+        "hajj": 0,
+        "total": 107
+      },
+      "Ali Arushan": {
+        "annual": 32,
+        "frl": 10,
+        "sickMedical": 15,
+        "sick": 15,
+        "circumcision": 5,
+        "paternity": 30,
+        "maternity": 0,
+        "noPay": 0,
+        "umrah": 0,
+        "hajj": 0,
+        "total": 107
+      },
+      "Abdulla Rasheed": {
+        "annual": 32,
+        "frl": 10,
+        "sickMedical": 15,
+        "sick": 15,
+        "circumcision": 5,
+        "paternity": 30,
+        "maternity": 0,
+        "noPay": 0,
+        "umrah": 0,
+        "hajj": 0,
+        "total": 107
+      },
+      "Sharafudheen Mohamed": {
+        "annual": 32,
+        "frl": 10,
+        "sickMedical": 15,
+        "sick": 15,
+        "circumcision": 5,
+        "paternity": 30,
+        "maternity": 0,
+        "noPay": 0,
+        "umrah": 0,
+        "hajj": 0,
+        "total": 107
+      },
+      "Ahmed Ashfaq": {
+        "annual": 32,
+        "frl": 10,
+        "sickMedical": 15,
+        "sick": 15,
+        "circumcision": 5,
+        "paternity": 30,
+        "maternity": 0,
+        "noPay": 0,
+        "umrah": 0,
+        "hajj": 0,
+        "total": 107
+      }
+    },
+    "sickTracking": {
+      "Ibrahim Rafeeu": {
+        "total": 0,
+        "thisYear": 0,
+        "lastYear": 0,
+        "avgDuration": "—",
+        "frequency": 0
+      },
+      "Mohamed Salim": {
+        "total": 0,
+        "thisYear": 0,
+        "lastYear": 0,
+        "avgDuration": "—",
+        "frequency": 0
+      },
+      "Ali Shareef": {
+        "total": 0,
+        "thisYear": 0,
+        "lastYear": 0,
+        "avgDuration": "—",
+        "frequency": 0
+      },
+      "Ahmed Nabeel": {
+        "total": 0,
+        "thisYear": 0,
+        "lastYear": 0,
+        "avgDuration": "—",
+        "frequency": 0
+      },
+      "Ahmed Naufal": {
+        "total": 0,
+        "thisYear": 0,
+        "lastYear": 0,
+        "avgDuration": "—",
+        "frequency": 0
+      },
+      "Ahmed Falah": {
+        "total": 0,
+        "thisYear": 0,
+        "lastYear": 0,
+        "avgDuration": "—",
+        "frequency": 0
+      },
+      "Ali Rilwan": {
+        "total": 0,
+        "thisYear": 0,
+        "lastYear": 0,
+        "avgDuration": "—",
+        "frequency": 0
+      },
+      "Moosa Mohamed": {
+        "total": 0,
+        "thisYear": 0,
+        "lastYear": 0,
+        "avgDuration": "—",
+        "frequency": 0
+      },
+      "Ali Arushan": {
+        "total": 0,
+        "thisYear": 0,
+        "lastYear": 0,
+        "avgDuration": "—",
+        "frequency": 0
+      },
+      "Abdulla Rasheed": {
+        "total": 0,
+        "thisYear": 0,
+        "lastYear": 0,
+        "avgDuration": "—",
+        "frequency": 0
+      },
+      "Sharafudheen Mohamed": {
+        "total": 0,
+        "thisYear": 0,
+        "lastYear": 0,
+        "avgDuration": "—",
+        "frequency": 0
+      },
+      "Ahmed Ashfaq": {
+        "total": 0,
+        "thisYear": 0,
+        "lastYear": 0,
+        "avgDuration": "—",
+        "frequency": 0
+      }
+    },
+    "_version": "2"
+  },
+  "hrf-holidays": [
+    {
+      "date": "2026-01-01",
+      "name": "New Year's Day",
+      "type": "National"
+    },
+    {
+      "date": "2026-01-07",
+      "name": "Orthodox Christmas",
+      "type": "Christian"
+    },
+    {
+      "date": "2026-01-26",
+      "name": "Republic Day",
+      "type": "National"
+    },
+    {
+      "date": "2026-02-28",
+      "name": "National Day",
+      "type": "National"
+    },
+    {
+      "date": "2026-03-31",
+      "name": "Eid al-Fitr",
+      "type": "Islamic"
+    },
+    {
+      "date": "2026-05-01",
+      "name": "Labour Day",
+      "type": "National"
+    },
+    {
+      "date": "2026-12-25",
+      "name": "Christmas Day",
+      "type": "Christian"
+    }
+  ],
+  "hrf-leave-policy": {
+    "annual": 30,
+    "annualSenior": 32,
+    "annualSeniorYears": 2,
+    "frl": 10,
+    "sl": 15,
+    "slm": 15,
+    "circumcision": 5,
+    "paternity": 30,
+    "maternity": 30,
+    "hajjUmrah": "once"
+  },
+  "__meta": {
+    "app": "HRF Airport System",
+    "exported": "2026-06-13T09:08:51.948Z",
+    "keys": [
+      "hrf-airport-session",
+      "hrf-airport-theme",
+      "hrf-emp-directory",
+      "hrf-emp-onboarding",
+      "hrf-settings",
+      "hrf-departments",
+      "hrf-designations",
+      "hrf-leave-data",
+      "hrf-holidays",
+      "hrf-leave-policy"
+    ]
+  }
+}

@@ -715,11 +715,6 @@ body {
 
 .leave-subnav-item.active {
     color: #895129;
-    font-weight: 600;
-}
-
-.leave-subnav-item.active i {
-    display: inline-flex;
 }
 
 /* Hide sub-nav when not on Dashboard */

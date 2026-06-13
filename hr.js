@@ -2564,11 +2564,12 @@ function renderLeaveRequests(data) {
     tbody.innerHTML = '';
     var items = data.requests.slice().reverse();
     items.forEach(function(r) {
+        var daysDisplay = (r.type === 'Annual Leave' && r.rawDays) ? r.days + ' / ' + r.rawDays : r.days;
         var badgeCls = r.status === 'Approved' ? 'md-badge-open' : (r.status === 'Pending' ? 'md-badge-closed' : 'md-badge-closed');
         var colorStyle = r.status === 'Rejected' ? 'color:#dc3545;' : '';
         var tr = document.createElement('tr');
         tr.innerHTML = '<td><div class="md-user-cell"><span class="md-avatar-sm" style="background:' + r.color + ';">' + r.initials + '</span><strong>' + r.employee + '</strong></div></td>' +
-            '<td>' + r.type + '</td><td>' + r.from + '</td><td>' + r.to + '</td><td>' + r.days + '</td>' +
+            '<td>' + r.type + '</td><td>' + r.from + '</td><td>' + r.to + '</td><td title="working / calendar">&thinsp;' + daysDisplay + '</td>' +
             '<td><span class="md-badge ' + badgeCls + '" style="' + colorStyle + '">' + r.status + '</span></td>' +
             '<td><span class="md-action-btns" style="display:flex;gap:6px;">' +
             '<i class="bi bi-pencil lr-edit" style="color:var(--gray-text,#888);font-size:1rem;cursor:pointer;" data-rid="' + r._id + '"></i>' +
@@ -2625,9 +2626,10 @@ function renderApprovalWorkflow(data) {
     tbody.innerHTML = '';
     var pending = data.requests.filter(function(r) { return r.status === 'Pending'; });
     pending.forEach(function(r) {
+        var daysDisplay = (r.type === 'Annual Leave' && r.rawDays) ? r.days + ' / ' + r.rawDays : r.days;
         var tr = document.createElement('tr');
         tr.innerHTML = '<td><div class="md-user-cell"><span class="md-avatar-sm" style="background:' + r.color + ';">' + r.initials + '</span><strong>' + r.employee + '</strong></div></td>' +
-            '<td>' + r.type + '</td><td>' + r.from + '</td><td>' + r.to + '</td><td>' + r.days + '</td>' +
+            '<td>' + r.type + '</td><td>' + r.from + '</td><td>' + r.to + '</td><td title="working / calendar">&thinsp;' + daysDisplay + '</td>' +
             '<td><span class="md-badge md-badge-closed">' + r.status + '</span></td>' +
             '<td><span class="md-action-btns" style="display:flex;gap:6px;">' +
             '<i class="bi bi-check-circle-fill lr-approve" style="color:#28a745;font-size:1.1rem;cursor:pointer;" data-rid="' + r._id + '"></i>' +
@@ -2696,6 +2698,58 @@ function loadHolidays() {
 }
 
 function saveHolidays(h) { lsSave(HOLIDAYS_KEY, h); }
+
+/**
+ * Count working days from `from` to `to` (inclusive) for a given department.
+ * HR / Administrative: Sunday–Thursday only (skip Friday, Saturday, public holidays)
+ * Other departments:      Sunday–Thursday + Saturday (skip Friday and public holidays)
+ * @param {Date} from     Start date
+ * @param {Date} to       End date
+ * @param {string} department  Employee department name
+ * @returns {number}       Number of working days
+ */
+function countWorkingDays(from, to, department) {
+    var holidays = loadHolidays();
+    var holidaySet = {};
+    holidays.forEach(function(h) { holidaySet[h.date] = true; });
+
+    var dept = (department || '').toLowerCase();
+    var isHrAdmin = dept === 'hr' || dept === 'human resources' || dept === 'administrative' || dept === 'admin';
+
+    var count = 0;
+    var current = new Date(from);
+    current.setHours(0, 0, 0, 0);
+    var end = new Date(to);
+    end.setHours(0, 0, 0, 0);
+
+    while (current <= end) {
+        var dayOfWeek = current.getDay(); /* 0=Sun … 6=Sat */
+        var y = current.getFullYear();
+        var m = String(current.getMonth() + 1).padStart(2, '0');
+        var d = String(current.getDate()).padStart(2, '0');
+        var dateStr = y + '-' + m + '-' + d;
+
+        var isFriday = dayOfWeek === 5;
+        var isSaturday = dayOfWeek === 6;
+        var isHoliday = holidaySet[dateStr] === true;
+
+        /* Always exclude Friday and public holidays */
+        if (isFriday || isHoliday) {
+            current.setDate(current.getDate() + 1);
+            continue;
+        }
+        /* HR/Admin also exclude Saturday */
+        if (isHrAdmin && isSaturday) {
+            current.setDate(current.getDate() + 1);
+            continue;
+        }
+
+        count++;
+        current.setDate(current.getDate() + 1);
+    }
+
+    return count;
+}
 
 function getDayName(dateStr) {
     var d = new Date(dateStr + 'T00:00:00');
@@ -2783,7 +2837,7 @@ document.addEventListener('click', function(e) {
     showHolidayForm();
 });
 
-/* Delete via confirm() */
+/* Delete via confirm toast */
 document.addEventListener('click', function(e) {
     var delBtn = e.target.closest('.emp-dropdown-item.holiday-delete');
     if (!delBtn) return;
@@ -2794,14 +2848,15 @@ document.addEventListener('click', function(e) {
     var h = holidays[idx];
     if (!h) return;
     delBtn.closest('.emp-actions')?.classList.remove('open');
-    if (confirm('Remove "' + h.name + '" holiday?')) {
+    showConfirm('Remove "' + h.name + '" holiday?', function(confirmed) {
+        if (!confirmed) return;
         holidays.splice(idx, 1);
         saveHolidays(holidays);
         renderHolidays();
-        var toast = new bootstrap.Toast(document.getElementById('successToast'));
-        document.getElementById('toastMessage').textContent = 'Holiday removed.';
+        var toast = new bootstrap.Toast(document.getElementById('dangerToast'));
+        document.getElementById('dangerToastMessage').textContent = 'Holiday removed.';
         toast.show();
-    }
+    });
 });
 
 /* ========== LEAVE REQUEST FORM ========== */
@@ -2841,7 +2896,39 @@ function showLeaveBalanceInfo() {
     infoEl.style.display = 'block';
     infoEl.style.background = balance > 0 ? '#d4edda' : '#f8d7da';
     infoEl.style.color = balance > 0 ? '#155724' : '#721c24';
-    infoEl.textContent = 'Available ' + leaveType + ' balance: ' + balance + ' day' + (balance > 1 ? 's' : '');
+    var emp = getEmployees().filter(function(e){ return e.name === empName; })[0] || {};
+    var note = '';
+    if (leaveType === 'Annual Leave') {
+        var dept = (emp.department || '').toLowerCase();
+        if (dept === 'hr' || dept === 'human resources' || dept === 'administrative' || dept === 'admin') {
+            note = ' (Fri, Sat & holidays excluded)';
+        } else {
+            note = ' (Fri & holidays excluded)';
+        }
+    }
+    infoEl.textContent = 'Available ' + leaveType + ' balance: ' + balance + ' day' + (balance > 1 ? 's' : '') + note;
+}
+
+function showLeaveDayCount() {
+    var empName = document.getElementById('lrEmployee').value;
+    var leaveType = document.getElementById('lrType').value;
+    var fromVal = document.getElementById('lrFrom').value;
+    var toVal = document.getElementById('lrTo').value;
+    var el = document.getElementById('lrDayCount');
+    if (!el) return;
+    if (!empName || !leaveType || !fromVal || !toVal) { el.style.display = 'none'; return; }
+    var from = new Date(fromVal + 'T00:00:00');
+    var to = new Date(toVal + 'T00:00:00');
+    if (isNaN(from) || isNaN(to) || to < from) { el.style.display = 'none'; return; }
+    var rawDays = Math.floor((to - from) / (24 * 60 * 60 * 1000)) + 1;
+    var emp = getEmployees().filter(function(e){ return e.name === empName; })[0] || {};
+    var days = leaveType === 'Annual Leave' ? countWorkingDays(from, to, emp.department || '') : rawDays;
+    el.style.display = 'block';
+    if (leaveType === 'Annual Leave' && days !== rawDays) {
+        el.textContent = 'Days: ' + days + ' working day' + (days > 1 ? 's' : '') + ' (calendar: ' + rawDays + ')';
+    } else {
+        el.textContent = 'Days: ' + rawDays + ' day' + (rawDays > 1 ? 's' : '');
+    }
 }
 
 function leaveTypeToKey(type) {
@@ -2861,7 +2948,10 @@ function leaveTypeToKey(type) {
 }
 
 document.addEventListener('change', function(e) {
-    if (e.target.id === 'lrEmployee' || e.target.id === 'lrType') showLeaveBalanceInfo();
+    if (e.target.id === 'lrEmployee' || e.target.id === 'lrType' || e.target.id === 'lrFrom' || e.target.id === 'lrTo') {
+        showLeaveBalanceInfo();
+        showLeaveDayCount();
+    }
 });
 
 document.addEventListener('click', function(e) {
@@ -2910,19 +3000,20 @@ document.addEventListener('click', function(e) {
             alert('To date must be on or after from date.');
             return;
         }
-        var days = Math.floor((to - from) / (24 * 60 * 60 * 1000)) + 1;
+        var rawDays = Math.floor((to - from) / (24 * 60 * 60 * 1000)) + 1;
+        var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        var emp = getEmployees().filter(function(e){ return e.name === empName; })[0] || {};
+        var days = leaveType === 'Annual Leave' ? countWorkingDays(from, to, emp.department || '') : rawDays;
 
         var data = getLeaveData();
         if (!data) { alert('Leave data not initialized.'); return; }
         var key = leaveTypeToKey(leaveType);
         var balance = data.balances[empName] ? data.balances[empName][key] : 0;
         if (balance !== undefined && days > balance) {
-            alert('Insufficient ' + leaveType + ' balance. Available: ' + balance + ', Requested: ' + days);
+            var detail = 'Available: ' + balance + ', Requested: ' + days + ' working day' + (days > 1 ? 's' : '') + ' (calendar: ' + rawDays + ' day' + (rawDays > 1 ? 's' : '') + ')';
+            alert('Insufficient ' + leaveType + ' balance.\n' + detail);
             return;
         }
-
-        var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-        var emp = getEmployees().filter(function(e){ return e.name === empName; })[0] || {};
 
         if (editingRequestId) {
             /* Update existing request */
@@ -2945,6 +3036,7 @@ document.addEventListener('click', function(e) {
                     old.from = months[from.getMonth()] + ' ' + from.getDate();
                     old.to = months[to.getMonth()] + ' ' + to.getDate();
                     old.days = days;
+                    old.rawDays = rawDays;
                     old.notes = notes || '';
                     /* Re-check balance if now approved (status unchanged unless re-approved) */
                     if (old.status === 'Approved') {
@@ -2952,7 +3044,8 @@ document.addEventListener('click', function(e) {
                         var bal2 = data.balances[empName];
                         if (bal2 && bal2[newKey] !== undefined) {
                             if (days > bal2[newKey]) {
-                                alert('Insufficient ' + leaveType + ' balance. Available: ' + bal2[newKey] + ', Requested: ' + days);
+                                var detail = 'Available: ' + bal2[newKey] + ', Requested: ' + days + ' working day' + (days > 1 ? 's' : '') + ' (calendar: ' + rawDays + ' day' + (rawDays > 1 ? 's' : '') + ')';
+                                alert('Insufficient ' + leaveType + ' balance.\n' + detail);
                                 return;
                             }
                             bal2[newKey] -= days;
@@ -2974,6 +3067,7 @@ document.addEventListener('click', function(e) {
                 from: months[from.getMonth()] + ' ' + from.getDate(),
                 to: months[to.getMonth()] + ' ' + to.getDate(),
                 days: days,
+                rawDays: rawDays,
                 status: 'Pending',
                 notes: notes || '',
                 submitted: new Date().toISOString()
@@ -3036,38 +3130,62 @@ document.addEventListener('click', function(e) {
 /* ========== LEAVE REQUEST EDIT / DELETE ========== */
 
 var editingRequestId = null;
+var _confirmCallback = null;
+
+function showConfirm(message, callback) {
+    document.getElementById('confirmMessage').textContent = message;
+    _confirmCallback = callback;
+    document.getElementById('confirmOverlay').style.display = 'block';
+}
 
 document.addEventListener('click', function(e) {
     var target = e.target;
+
+    /* Confirmation Yes / No */
+    if (target.id === 'confirmYes') {
+        var cb = _confirmCallback;
+        _confirmCallback = null;
+        document.getElementById('confirmOverlay').style.display = 'none';
+        if (cb) cb(true);
+        return;
+    }
+    if (target.id === 'confirmNo') {
+        _confirmCallback = null;
+        document.getElementById('confirmOverlay').style.display = 'none';
+        return;
+    }
+
     var rid = target.getAttribute && target.getAttribute('data-rid');
     if (!rid) return;
 
     /* Delete */
     if (target.classList.contains('lr-delete')) {
-        if (!confirm('Delete this leave request?')) return;
-        var data = getLeaveData();
-        if (!data) return;
-        for (var i = 0; i < data.requests.length; i++) {
-            if (data.requests[i]._id === rid) {
-                var req = data.requests[i];
-                /* Restore balance if the request was approved */
-                if (req.status === 'Approved') {
-                    var key = leaveTypeToKey(req.type);
-                    var bal = data.balances[req.employee];
-                    if (bal && bal[key] !== undefined) {
-                        bal[key] += req.days;
-                        bal.total = (bal.total || 0) + req.days;
+        showConfirm('Delete this leave request?', function(confirmed) {
+            if (!confirmed) return;
+            var data = getLeaveData();
+            if (!data) return;
+            for (var i = 0; i < data.requests.length; i++) {
+                if (data.requests[i]._id === rid) {
+                    var req = data.requests[i];
+                    /* Restore balance if the request was approved */
+                    if (req.status === 'Approved') {
+                        var key = leaveTypeToKey(req.type);
+                        var bal = data.balances[req.employee];
+                        if (bal && bal[key] !== undefined) {
+                            bal[key] += req.days;
+                            bal.total = (bal.total || 0) + req.days;
+                        }
                     }
+                    data.requests.splice(i, 1);
+                    break;
                 }
-                data.requests.splice(i, 1);
-                break;
             }
-        }
-        lsSave(LS_KEY_LEAVE, data);
-        renderAllFromEmployees();
-        var toast = new bootstrap.Toast(document.getElementById('successToast'));
-        document.getElementById('toastMessage').textContent = 'Leave request deleted.';
-        toast.show();
+            lsSave(LS_KEY_LEAVE, data);
+            renderAllFromEmployees();
+            var toast = new bootstrap.Toast(document.getElementById('dangerToast'));
+            document.getElementById('dangerToastMessage').textContent = 'Leave request deleted.';
+            toast.show();
+        });
         return;
     }
 
@@ -3108,6 +3226,7 @@ document.addEventListener('click', function(e) {
         document.getElementById('lrSubmitBtn').innerHTML = '<i class="bi bi-check-lg"></i> Update';
         row.style.display = 'block';
         showLeaveBalanceInfo();
+        showLeaveDayCount();
         return;
     }
 });
