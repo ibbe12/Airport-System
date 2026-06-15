@@ -95,6 +95,13 @@
                 'Generate and view stock movement reports, valuation summaries and audit trails.',
             icon: 'bi-bar-chart-line',
         },
+        calendar: {
+            title: 'Calendar',
+            emptyTitle: 'Calendar',
+            emptyText:
+                'View stock movements, deliveries, and inventory events on a calendar.',
+            icon: 'bi-calendar3',
+        },
         settings: {
             title: 'Settings',
             emptyTitle: 'Settings',
@@ -170,18 +177,28 @@
             link.classList.add('active');
 
             if (headline) headline.textContent = page.title;
-            if (emptyTitle) emptyTitle.textContent = page.emptyTitle;
-            if (emptyText) emptyText.textContent = page.emptyText;
-            if (emptyIcon) {
-                emptyIcon.className = 'bi ' + page.icon;
-            }
 
-            // Replay entrance
-            const empty = document.querySelector('.page-empty');
-            if (empty) {
-                empty.style.animation = 'none';
-                void empty.offsetHeight;
-                empty.style.animation = '';
+            var pageEmpty = document.querySelector('.page-empty');
+            var pageCalendar = document.getElementById('pageCalendar');
+            if (key === 'calendar') {
+                if (pageEmpty) pageEmpty.style.display = 'none';
+                if (pageCalendar) pageCalendar.style.display = '';
+                var data = getStockData();
+                if (data) renderStockCalendar(data); else renderStockCalendar({ items: [] });
+            } else {
+                if (pageCalendar) pageCalendar.style.display = 'none';
+                if (pageEmpty) pageEmpty.style.display = 'block';
+                if (emptyTitle) emptyTitle.textContent = page.emptyTitle;
+                if (emptyText) emptyText.textContent = page.emptyText;
+                if (emptyIcon) {
+                    emptyIcon.className = 'bi ' + page.icon;
+                }
+                // Replay entrance
+                if (pageEmpty) {
+                    pageEmpty.style.animation = 'none';
+                    void pageEmpty.offsetHeight;
+                    pageEmpty.style.animation = '';
+                }
             }
         });
     });
@@ -378,4 +395,248 @@
             syncTimer = setTimeout(syncWrite, 500);
         }
     };
+
+    /* ========== STOCK CALENDAR ========== */
+
+    var calCurrentDate = new Date();
+    calCurrentDate.setDate(1);
+    var calView = 'month';
+
+    var CAL_MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var CAL_FULL = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    var CAL_DOW = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    var DOW_SHORT = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+    function getStockData() {
+        try {
+            var raw = localStorage.getItem('hrf-airport-stock');
+            return raw ? JSON.parse(raw) : null;
+        } catch (e) { return null; }
+    }
+
+    function renderStockCalendar(data) {
+        var grid = document.querySelector('[data-calendar]');
+        var header = document.querySelector('[data-nav-date]');
+        if (!grid || !header) return;
+        var items = (data && data.items) || [];
+        if (calView === 'month') {
+            miniCalDate = new Date(calCurrentDate);
+        }
+        renderMiniCalendar();
+        if (calView === 'month') renderCalMonth(grid, header, items);
+        else if (calView === 'week') renderCalWeek(grid, header, items);
+        else if (calView === 'day') renderCalDay(grid, header, items);
+    }
+
+    function renderCalMonth(grid, header, items) {
+        var year = calCurrentDate.getFullYear();
+        var month = calCurrentDate.getMonth();
+        header.textContent = CAL_FULL[month] + ' ' + year;
+
+        var firstDay = new Date(year, month, 1).getDay();
+        var daysInMonth = new Date(year, month + 1, 0).getDate();
+        var startOffset = (firstDay + 6) % 7;
+        var totalCells = startOffset + daysInMonth;
+        var weeks = Math.ceil(totalCells / 7);
+
+        var html = '<div class="month-calendar">';
+        html += '<ul class="month-calendar__day-of-week-list">';
+        ['Sat','Sun','Mon','Tue','Wed','Thu','Fri'].forEach(function(dn) {
+            html += '<li class="month-calendar__day-of-week">' + dn + '</li>';
+        });
+        html += '</ul>';
+        html += '<div class="month-calendar__day-list-wrapper"><ul class="month-calendar__day-list" style="grid-template-rows:repeat(' + weeks + ',1fr);">';
+        for (var i = 0; i < startOffset; i++) {
+            html += '<li class="month-calendar__day month-calendar__day--empty"></li>';
+        }
+        var today = new Date();
+        for (var d = 1; d <= daysInMonth; d++) {
+            var dayCls = 'month-calendar__day';
+            if (year === today.getFullYear() && month === today.getMonth() && d === today.getDate()) {
+                dayCls += ' month-calendar__day--highlight';
+            }
+            html += '<li class="' + dayCls + '">';
+            html += '<button class="month-calendar__day-label">' + d + '</button>';
+            html += '</li>';
+        }
+        var remaining = weeks * 7 - startOffset - daysInMonth;
+        for (var i = 0; i < remaining; i++) {
+            html += '<li class="month-calendar__day month-calendar__day--empty"></li>';
+        }
+        html += '</ul></div></div>';
+        grid.innerHTML = html;
+    }
+
+    function renderCalWeek(grid, header, items) {
+        var year = calCurrentDate.getFullYear();
+        var month = calCurrentDate.getMonth();
+        header.textContent = CAL_FULL[month] + ' ' + year;
+
+        var sat = new Date(calCurrentDate);
+        sat.setHours(12, 0, 0, 0);
+
+        var html = '<div class="week-calendar">';
+        var today = new Date();
+        html += '<ul class="week-calendar__day-of-week-list">';
+        for (var i = 0; i < 7; i++) {
+            var day = new Date(sat);
+            day.setDate(sat.getDate() + i);
+            var isToday = (day.getFullYear() === today.getFullYear() &&
+                           day.getMonth() === today.getMonth() &&
+                           day.getDate() === today.getDate());
+            var dateStr = day.getDate();
+            var dowName = DOW_SHORT[day.getDay()];
+            html += '<li class="week-calendar__day-of-week-button' + (isToday ? ' week-calendar__day-of-week-button--highlight' : '') + '">' +
+                '<span class="dow">' + dowName + '</span>' +
+                '<span class="dom">' + dateStr + '</span></li>';
+        }
+        html += '</ul>';
+        html += '<ul class="week-calendar__all-day-list"></ul>';
+        html += '<div class="week-calendar__content"><div class="week-calendar__content-inner">';
+        html += '<div class="week-calendar__columns">';
+        for (var i = 0; i < 7; i++) {
+            html += '<div class="week-calendar__column"></div>';
+        }
+        html += '</div></div></div></div>';
+        grid.innerHTML = html;
+    }
+
+    function renderCalDay(grid, header, items) {
+        var year = calCurrentDate.getFullYear();
+        var month = calCurrentDate.getMonth();
+        var dayNum = calCurrentDate.getDate();
+        var dayDate = new Date(year, month, dayNum, 12, 0, 0);
+        var dowName = CAL_DOW[dayDate.getDay()];
+        header.textContent = dowName + ', ' + dayNum + ' ' + CAL_FULL[month] + ' ' + year;
+
+        var html = '<div class="cal-day-view">';
+        html += '<div class="cal-day-header">' + header.textContent + '</div>';
+        html += '<div class="cal-day-list">';
+        html += '<div style="color:var(--gray-text,#888);font-size:0.85rem;padding:12px 0;">No items on this day.</div>';
+        html += '</div></div>';
+        grid.innerHTML = html;
+    }
+
+    /* Mini calendar */
+    var miniCalDate = new Date();
+    miniCalDate.setDate(1);
+
+    function renderMiniCalendar() {
+        var miniDate = document.querySelector('[data-mini-calendar-date]');
+        var grid = document.querySelector('[data-mini-calendar-day-list]');
+        if (!miniDate || !grid) return;
+        var year = miniCalDate.getFullYear();
+        var month = miniCalDate.getMonth();
+        miniDate.textContent = CAL_FULL[month] + ' ' + year;
+
+        var firstDay = new Date(year, month, 1).getDay();
+        var daysInMonth = new Date(year, month + 1, 0).getDate();
+        var startOffset = (firstDay + 6) % 7;
+        var today = new Date();
+        var html = '';
+        for (var i = 0; i < startOffset; i++) {
+            html += '<li class="mini-calendar__day-list-item"><button class="mini-calendar__day mini-calendar__day--other"></button></li>';
+        }
+        for (var d = 1; d <= daysInMonth; d++) {
+            var cls = 'mini-calendar__day';
+            if (year === today.getFullYear() && month === today.getMonth() && d === today.getDate()) cls += ' mini-calendar__day--highlight';
+            if (year === calCurrentDate.getFullYear() && month === calCurrentDate.getMonth() && d === calCurrentDate.getDate()) cls += ' mini-calendar__day--selected';
+            html += '<li class="mini-calendar__day-list-item"><button class="' + cls + '" data-m="' + month + '" data-d="' + d + '">' + d + '</button></li>';
+        }
+        var totalCells = startOffset + daysInMonth;
+        var remaining = (7 - (totalCells % 7)) % 7;
+        for (var i = 1; i <= remaining; i++) {
+            html += '<li class="mini-calendar__day-list-item"><button class="mini-calendar__day mini-calendar__day--other" data-m="' + ((month + 1) % 12) + '" data-d="' + i + '">' + i + '</button></li>';
+        }
+        grid.innerHTML = html;
+    }
+
+    /* Mini calendar click delegation */
+    document.addEventListener('click', function(e) {
+        var dayEl = e.target.closest('.mini-calendar__day');
+        if (!dayEl) return;
+        var m = parseInt(dayEl.getAttribute('data-m'), 10);
+        var d = parseInt(dayEl.getAttribute('data-d'), 10);
+        if (isNaN(m) || isNaN(d)) return;
+        var year = miniCalDate.getFullYear();
+        var targetMonth = m;
+        var targetYear = year;
+        if (m === 11 && miniCalDate.getMonth() === 0) { targetYear = year - 1; }
+        else if (m === 0 && miniCalDate.getMonth() === 11) { targetYear = year + 1; }
+        if (calView === 'month') {
+            calCurrentDate = new Date(targetYear, targetMonth, 1);
+        } else if (calView === 'week') {
+            var clicked = new Date(targetYear, targetMonth, d);
+            clicked.setDate(clicked.getDate() - ((clicked.getDay() + 1) % 7));
+            calCurrentDate = clicked;
+        } else {
+            calCurrentDate = new Date(targetYear, targetMonth, d);
+        }
+        miniCalDate = new Date(targetYear, targetMonth, 1);
+        var data = getStockData();
+        if (data) renderStockCalendar(data); else renderStockCalendar({ items: [] });
+    });
+
+    /* Mini calendar prev/next */
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('[data-mini-calendar-previous-button]')) {
+            miniCalDate.setMonth(miniCalDate.getMonth() - 1);
+            renderMiniCalendar();
+        }
+        if (e.target.closest('[data-mini-calendar-next-button]')) {
+            miniCalDate.setMonth(miniCalDate.getMonth() + 1);
+            renderMiniCalendar();
+        }
+    });
+
+    /* Navigation */
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('[data-nav-previous-button]')) {
+            if (calView === 'month') calCurrentDate.setMonth(calCurrentDate.getMonth() - 1);
+            else if (calView === 'week') calCurrentDate.setDate(calCurrentDate.getDate() - 7);
+            else calCurrentDate.setDate(calCurrentDate.getDate() - 1);
+            var data = getStockData();
+            if (data) renderStockCalendar(data); else renderStockCalendar({ items: [] });
+        }
+        if (e.target.closest('[data-nav-next-button]')) {
+            if (calView === 'month') calCurrentDate.setMonth(calCurrentDate.getMonth() + 1);
+            else if (calView === 'week') calCurrentDate.setDate(calCurrentDate.getDate() + 7);
+            else calCurrentDate.setDate(calCurrentDate.getDate() + 1);
+            var data = getStockData();
+            if (data) renderStockCalendar(data); else renderStockCalendar({ items: [] });
+        }
+        if (e.target.closest('[data-nav-today-button]')) {
+            var now = new Date();
+            if (calView === 'month') {
+                calCurrentDate = new Date(now.getFullYear(), now.getMonth(), 1);
+            } else if (calView === 'week') {
+                calCurrentDate = new Date(now);
+                calCurrentDate.setDate(now.getDate() - ((now.getDay() + 1) % 7));
+            } else {
+                calCurrentDate = new Date(now);
+            }
+            miniCalDate = new Date(now.getFullYear(), now.getMonth(), 1);
+            var data = getStockData();
+            if (data) renderStockCalendar(data); else renderStockCalendar({ items: [] });
+        }
+    });
+
+    /* View switcher */
+    document.addEventListener('change', function(e) {
+        var sel = e.target.closest('[data-view-select]');
+        if (!sel) return;
+        calView = sel.value;
+        var now = new Date();
+        if (calView === 'month') {
+            calCurrentDate = new Date(now.getFullYear(), now.getMonth(), 1);
+        } else if (calView === 'week') {
+            calCurrentDate = new Date(now);
+            calCurrentDate.setDate(now.getDate() - ((now.getDay() + 1) % 7));
+        } else {
+            calCurrentDate = new Date(now);
+        }
+        miniCalDate = new Date(now.getFullYear(), now.getMonth(), 1);
+        var data = getStockData();
+        if (data) renderStockCalendar(data); else renderStockCalendar({ items: [] });
+    });
 })();

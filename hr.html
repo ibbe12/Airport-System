@@ -27,6 +27,7 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="styles.css" />
     <link rel="stylesheet" href="hr.css" />
+    <link rel="stylesheet" href="styles/index.css" />
 </head>
 <body class="hr-body">
     <!-- Toast notification -->
@@ -683,14 +684,86 @@
                                         <h4 class="md-card-title mb-0">Leave Calendar</h4>
                                         <p class="md-card-subtitle">View all employee leave across a calendar</p>
                                         <div id="leaveCalendarWrap">
-                                            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-                                                <button id="calPrev" style="padding:6px 12px;border:1px solid var(--gray-300,#ddd);border-radius:8px;background:var(--card-bg,#fff);color:var(--text,#1e1e2f);cursor:pointer;font-size:0.9rem;"><i class="bi bi-chevron-left"></i></button>
-                                                <h4 id="calMonthYear" style="margin:0;font-size:1.1rem;font-weight:700;color:var(--text,#1e1e2f);">June 2026</h4>
-                                                <button id="calNext" style="padding:6px 12px;border:1px solid var(--gray-300,#ddd);border-radius:8px;background:var(--card-bg,#fff);color:var(--text,#1e1e2f);cursor:pointer;font-size:0.9rem;"><i class="bi bi-chevron-right"></i></button>
+                                            <div class="nav">
+                                                <div class="nav__date-info">
+                                                    <div class="nav__controls">
+                                                        <button class="button button--secondary" data-nav-today-button>Today</button>
+                                                        <div class="nav__arrows">
+                                                            <button class="button button--icon button--secondary" data-nav-previous-button>
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                                                            </button>
+                                                            <button class="button button--icon button--secondary" data-nav-next-button>
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <time class="nav__date" data-nav-date></time>
+                                                </div>
+                                                <div class="select desktop-only">
+                                                    <select class="select__select" data-view-select>
+                                                        <option value="month">Month</option>
+                                                        <option value="week">Week</option>
+                                                        <option value="day">Day</option>
+                                                    </select>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="select__icon"><path d="m6 9 6 6 6-6"/></svg>
+                                                </div>
                                             </div>
-                                            <div style="display:flex;gap:20px;">
-                                                <div style="flex:1;min-width:0;"><div id="calGrid"></div></div>
-                                                <div id="calLegend" style="width:160px;flex-shrink:0;"></div>
+                                            <div class="cal-layout">
+                                                <div class="sidebar desktop-only" id="calSidebar">
+                                                    <div class="mini-calendar" data-mini-calendar="prev">
+                                                        <div class="mini-calendar__header">
+                                                            <time class="mini-calendar__date" data-mini-calendar-date></time>
+                                                        </div>
+                                                        <div class="mini-calendar__content">
+                                                            <ul class="mini-calendar__day-of-week-list">
+                                                                <li class="mini-calendar__day-of-week">S</li>
+                                                                <li class="mini-calendar__day-of-week">M</li>
+                                                                <li class="mini-calendar__day-of-week">T</li>
+                                                                <li class="mini-calendar__day-of-week">W</li>
+                                                                <li class="mini-calendar__day-of-week">T</li>
+                                                                <li class="mini-calendar__day-of-week">F</li>
+                                                                <li class="mini-calendar__day-of-week">S</li>
+                                                            </ul>
+                                                            <ul class="mini-calendar__day-list" data-mini-calendar-day-list></ul>
+                                                        </div>
+                                                    </div>
+                                                    <div class="mini-calendar" data-mini-calendar="current">
+                                                        <div class="mini-calendar__header">
+                                                            <time class="mini-calendar__date" data-mini-calendar-date></time>
+                                                        </div>
+                                                        <div class="mini-calendar__content">
+                                                            <ul class="mini-calendar__day-of-week-list">
+                                                                <li class="mini-calendar__day-of-week">S</li>
+                                                                <li class="mini-calendar__day-of-week">M</li>
+                                                                <li class="mini-calendar__day-of-week">T</li>
+                                                                <li class="mini-calendar__day-of-week">W</li>
+                                                                <li class="mini-calendar__day-of-week">T</li>
+                                                                <li class="mini-calendar__day-of-week">F</li>
+                                                                <li class="mini-calendar__day-of-week">S</li>
+                                                            </ul>
+                                                            <ul class="mini-calendar__day-list" data-mini-calendar-day-list></ul>
+                                                        </div>
+                                                    </div>
+                                                    <div class="mini-calendar" data-mini-calendar="next">
+                                                        <div class="mini-calendar__header">
+                                                            <time class="mini-calendar__date" data-mini-calendar-date></time>
+                                                        </div>
+                                                        <div class="mini-calendar__content">
+                                                            <ul class="mini-calendar__day-of-week-list">
+                                                                <li class="mini-calendar__day-of-week">S</li>
+                                                                <li class="mini-calendar__day-of-week">M</li>
+                                                                <li class="mini-calendar__day-of-week">T</li>
+                                                                <li class="mini-calendar__day-of-week">W</li>
+                                                                <li class="mini-calendar__day-of-week">T</li>
+                                                                <li class="mini-calendar__day-of-week">F</li>
+                                                                <li class="mini-calendar__day-of-week">S</li>
+                                                            </ul>
+                                                            <ul class="mini-calendar__day-list" data-mini-calendar-day-list></ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="cal-grid-wrap"><div class="calendar" data-calendar></div></div>
+                                                <div id="calLegend" class="cal-legend"></div>
                                             </div>
                                         </div>
                                     </div>
@@ -850,6 +923,101 @@
                             </div>
                         </div>
                     </div>
+
+                </div>
+
+                <!-- Time & Attendance -->
+                <div class="kpi-section" id="attendanceSection" style="display:none;">
+                    <nav class="hr-subnav" id="attendanceSubnav">
+                        <a href="#" class="hr-subnav-item active" data-attendance="daily"><i class="bi bi-calendar-check"></i> <span>Daily Attendance</span></a>
+                        <a href="#" class="hr-subnav-item" data-attendance="calendar"><i class="bi bi-calendar3"></i> <span>Calendar</span></a>
+                        <a href="#" class="hr-subnav-item" data-attendance="shifts"><i class="bi bi-arrow-left-right"></i> <span>Shift Management</span></a>
+                        <a href="#" class="hr-subnav-item" data-attendance="rostering"><i class="bi bi-layout-three-columns"></i> <span>Rostering</span></a>
+                        <a href="#" class="hr-subnav-item" data-attendance="timesheets"><i class="bi bi-file-text"></i> <span>Timesheets</span></a>
+                        <a href="#" class="hr-subnav-item" data-attendance="overtime"><i class="bi bi-clock"></i> <span>Overtime Management</span></a>
+                        <a href="#" class="hr-subnav-item" data-attendance="corrections"><i class="bi bi-pencil-square"></i> <span>Attendance Corrections</span></a>
+                        <a href="#" class="hr-subnav-item" data-attendance="reports"><i class="bi bi-bar-chart"></i> <span>Attendance Reports</span></a>
+                    </nav>
+
+                    <div class="attendance-content" data-attendance="daily">
+                        <div class="md-row"><div class="md-col md-col-12"><div class="md-card"><div class="md-card-content">
+                            <h4 class="md-card-title mb-0">Daily Attendance</h4>
+                            <p class="md-card-subtitle">Track and manage daily employee attendance records</p>
+                            <div class="leave-placeholder">
+                                <i class="bi bi-calendar-check" style="font-size:2.4rem;color:var(--gray-text);display:block;text-align:center;margin:32px 0 8px;"></i>
+                                <p style="text-align:center;color:var(--gray-text);">Daily attendance tracking module with clock-in/out logs, late arrivals, and absences.</p>
+                            </div>
+                        </div></div></div></div></div>
+
+                    <div class="attendance-content" data-attendance="calendar" style="display:none;">
+                        <div class="md-row"><div class="md-col md-col-12"><div class="md-card"><div class="md-card-content">
+                            <h4 class="md-card-title mb-0">Calendar</h4>
+                            <p class="md-card-subtitle">View attendance records across a calendar</p>
+                            <div class="leave-placeholder">
+                                <i class="bi bi-calendar3" style="font-size:2.4rem;color:var(--gray-text);display:block;text-align:center;margin:32px 0 8px;"></i>
+                                <p style="text-align:center;color:var(--gray-text);">Attendance calendar view with daily records, shifts, and absences.</p>
+                            </div>
+                        </div></div></div></div></div>
+
+                    <div class="attendance-content" data-attendance="shifts" style="display:none;">
+                        <div class="md-row"><div class="md-col md-col-12"><div class="md-card"><div class="md-card-content">
+                            <h4 class="md-card-title mb-0">Shift Management</h4>
+                            <p class="md-card-subtitle">Define and manage work shifts and schedules</p>
+                            <div class="leave-placeholder">
+                                <i class="bi bi-arrow-left-right" style="font-size:2.4rem;color:var(--gray-text);display:block;text-align:center;margin:32px 0 8px;"></i>
+                                <p style="text-align:center;color:var(--gray-text);">Create and manage shift patterns, rotations, and assignments.</p>
+                            </div>
+                        </div></div></div></div></div>
+
+                    <div class="attendance-content" data-attendance="rostering" style="display:none;">
+                        <div class="md-row"><div class="md-col md-col-12"><div class="md-card"><div class="md-card-content">
+                            <h4 class="md-card-title mb-0">Rostering</h4>
+                            <p class="md-card-subtitle">Build and manage employee rosters</p>
+                            <div class="leave-placeholder">
+                                <i class="bi bi-layout-three-columns" style="font-size:2.4rem;color:var(--gray-text);display:block;text-align:center;margin:32px 0 8px;"></i>
+                                <p style="text-align:center;color:var(--gray-text);">Create weekly and monthly rosters with drag-and-drop scheduling.</p>
+                            </div>
+                        </div></div></div></div></div>
+
+                    <div class="attendance-content" data-attendance="timesheets" style="display:none;">
+                        <div class="md-row"><div class="md-col md-col-12"><div class="md-card"><div class="md-card-content">
+                            <h4 class="md-card-title mb-0">Timesheets</h4>
+                            <p class="md-card-subtitle">Track employee work hours and timesheets</p>
+                            <div class="leave-placeholder">
+                                <i class="bi bi-file-text" style="font-size:2.4rem;color:var(--gray-text);display:block;text-align:center;margin:32px 0 8px;"></i>
+                                <p style="text-align:center;color:var(--gray-text);">Employee timesheet submission, approval, and tracking system.</p>
+                            </div>
+                        </div></div></div></div></div>
+
+                    <div class="attendance-content" data-attendance="overtime" style="display:none;">
+                        <div class="md-row"><div class="md-col md-col-12"><div class="md-card"><div class="md-card-content">
+                            <h4 class="md-card-title mb-0">Overtime Management</h4>
+                            <p class="md-card-subtitle">Manage overtime requests and approvals</p>
+                            <div class="leave-placeholder">
+                                <i class="bi bi-clock" style="font-size:2.4rem;color:var(--gray-text);display:block;text-align:center;margin:32px 0 8px;"></i>
+                                <p style="text-align:center;color:var(--gray-text);">Overtime request, approval workflow, and overtime rate calculation.</p>
+                            </div>
+                        </div></div></div></div></div>
+
+                    <div class="attendance-content" data-attendance="corrections" style="display:none;">
+                        <div class="md-row"><div class="md-col md-col-12"><div class="md-card"><div class="md-card-content">
+                            <h4 class="md-card-title mb-0">Attendance Corrections</h4>
+                            <p class="md-card-subtitle">Handle attendance adjustment requests</p>
+                            <div class="leave-placeholder">
+                                <i class="bi bi-pencil-square" style="font-size:2.4rem;color:var(--gray-text);display:block;text-align:center;margin:32px 0 8px;"></i>
+                                <p style="text-align:center;color:var(--gray-text);">Process and approve attendance correction requests from employees.</p>
+                            </div>
+                        </div></div></div></div></div>
+
+                    <div class="attendance-content" data-attendance="reports" style="display:none;">
+                        <div class="md-row"><div class="md-col md-col-12"><div class="md-card"><div class="md-card-content">
+                            <h4 class="md-card-title mb-0">Attendance Reports</h4>
+                            <p class="md-card-subtitle">Generate attendance reports and analytics</p>
+                            <div class="leave-placeholder">
+                                <i class="bi bi-bar-chart" style="font-size:2.4rem;color:var(--gray-text);display:block;text-align:center;margin:32px 0 8px;"></i>
+                                <p style="text-align:center;color:var(--gray-text);">Attendance summary reports, late/absent analysis, and export tools.</p>
+                            </div>
+                        </div></div></div></div></div>
 
                 </div>
 
@@ -1800,6 +1968,134 @@
             </div>
         </div>
     </div>
+
+    <template data-template="month-calendar">
+        <div class="month-calendar" data-month-calendar>
+            <ul class="month-calendar__day-of-week-list">
+                <li class="month-calendar__day-of-week">Sat</li>
+                <li class="month-calendar__day-of-week">Sun</li>
+                <li class="month-calendar__day-of-week">Mon</li>
+                <li class="month-calendar__day-of-week">Tue</li>
+                <li class="month-calendar__day-of-week">Wed</li>
+                <li class="month-calendar__day-of-week">Thu</li>
+                <li class="month-calendar__day-of-week">Fri</li>
+            </ul>
+            <div class="month-calendar__day-list-wrapper">
+                <ul class="month-calendar__day-list" data-month-calendar-day-list data-calendar-scrollable></ul>
+            </div>
+        </div>
+    </template>
+
+    <template data-template="month-calendar-day">
+        <li class="month-calendar__day" data-month-calendar-day>
+            <button class="month-calendar__day-label" data-month-calendar-day-label></button>
+            <div class="month-calendar__event-list-wrapper" data-month-calendar-event-list-wrapper>
+                <ul class="event-list" data-event-list></ul>
+            </div>
+        </li>
+    </template>
+
+    <template data-template="week-calendar">
+        <div class="week-calendar" data-week-calendar>
+            <ul class="week-calendar__day-of-week-list" data-week-calendar-day-of-week-list></ul>
+            <ul class="week-calendar__all-day-list" data-week-calendar-all-day-list></ul>
+            <div class="week-calendar__content">
+                <div class="week-calendar__content-inner" data-calendar-scrollable>
+                    <ul class="week-calendar__time-list">
+                        <li class="week-calendar__time-item"><time class="week-calendar__time">12:00 AM</time></li>
+                        <li class="week-calendar__time-item"><time class="week-calendar__time">1:00 AM</time></li>
+                        <li class="week-calendar__time-item"><time class="week-calendar__time">2:00 AM</time></li>
+                        <li class="week-calendar__time-item"><time class="week-calendar__time">3:00 AM</time></li>
+                        <li class="week-calendar__time-item"><time class="week-calendar__time">4:00 AM</time></li>
+                        <li class="week-calendar__time-item"><time class="week-calendar__time">5:00 AM</time></li>
+                        <li class="week-calendar__time-item"><time class="week-calendar__time">6:00 AM</time></li>
+                        <li class="week-calendar__time-item"><time class="week-calendar__time">7:00 AM</time></li>
+                        <li class="week-calendar__time-item"><time class="week-calendar__time">8:00 AM</time></li>
+                        <li class="week-calendar__time-item"><time class="week-calendar__time">9:00 AM</time></li>
+                        <li class="week-calendar__time-item"><time class="week-calendar__time">10:00 AM</time></li>
+                        <li class="week-calendar__time-item"><time class="week-calendar__time">11:00 AM</time></li>
+                        <li class="week-calendar__time-item"><time class="week-calendar__time">12:00 PM</time></li>
+                        <li class="week-calendar__time-item"><time class="week-calendar__time">1:00 PM</time></li>
+                        <li class="week-calendar__time-item"><time class="week-calendar__time">2:00 PM</time></li>
+                        <li class="week-calendar__time-item"><time class="week-calendar__time">3:00 PM</time></li>
+                        <li class="week-calendar__time-item"><time class="week-calendar__time">4:00 PM</time></li>
+                        <li class="week-calendar__time-item"><time class="week-calendar__time">5:00 PM</time></li>
+                        <li class="week-calendar__time-item"><time class="week-calendar__time">6:00 PM</time></li>
+                        <li class="week-calendar__time-item"><time class="week-calendar__time">7:00 PM</time></li>
+                        <li class="week-calendar__time-item"><time class="week-calendar__time">8:00 PM</time></li>
+                        <li class="week-calendar__time-item"><time class="week-calendar__time">9:00 PM</time></li>
+                        <li class="week-calendar__time-item"><time class="week-calendar__time">10:00 PM</time></li>
+                        <li class="week-calendar__time-item"><time class="week-calendar__time">11:00 PM</time></li>
+                    </ul>
+                    <div class="week-calendar__columns" data-week-calendar-columns></div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template data-template="week-calendar-day-of-week">
+        <li class="week-calendar__day-of-week" data-week-calendar-day-of-week>
+            <button class="week-calendar__day-of-week-button" data-week-calendar-day-of-week-button>
+                <span class="week-calendar__day-of-week-day" data-week-calendar-day-of-week-day></span>
+                <span class="week-calendar__day-of-week-number" data-week-calendar-day-of-week-number></span>
+            </button>
+        </li>
+    </template>
+
+    <template data-template="week-calendar-all-day-list-item">
+        <li class="week-calendar__all-day-list-item" data-week-calendar-all-day-list-item>
+            <ul class="event-list" data-event-list></ul>
+        </li>
+    </template>
+
+    <template data-template="week-calendar-column">
+        <div class="week-calendar__column" data-week-calendar-column>
+            <div class="week-calendar__cell" data-week-calendar-cell="0"></div>
+            <div class="week-calendar__cell" data-week-calendar-cell="60"></div>
+            <div class="week-calendar__cell" data-week-calendar-cell="120"></div>
+            <div class="week-calendar__cell" data-week-calendar-cell="180"></div>
+            <div class="week-calendar__cell" data-week-calendar-cell="240"></div>
+            <div class="week-calendar__cell" data-week-calendar-cell="300"></div>
+            <div class="week-calendar__cell" data-week-calendar-cell="360"></div>
+            <div class="week-calendar__cell" data-week-calendar-cell="420"></div>
+            <div class="week-calendar__cell" data-week-calendar-cell="480"></div>
+            <div class="week-calendar__cell" data-week-calendar-cell="540"></div>
+            <div class="week-calendar__cell" data-week-calendar-cell="600"></div>
+            <div class="week-calendar__cell" data-week-calendar-cell="660"></div>
+            <div class="week-calendar__cell" data-week-calendar-cell="720"></div>
+            <div class="week-calendar__cell" data-week-calendar-cell="780"></div>
+            <div class="week-calendar__cell" data-week-calendar-cell="840"></div>
+            <div class="week-calendar__cell" data-week-calendar-cell="900"></div>
+            <div class="week-calendar__cell" data-week-calendar-cell="960"></div>
+            <div class="week-calendar__cell" data-week-calendar-cell="1020"></div>
+            <div class="week-calendar__cell" data-week-calendar-cell="1080"></div>
+            <div class="week-calendar__cell" data-week-calendar-cell="1140"></div>
+            <div class="week-calendar__cell" data-week-calendar-cell="1200"></div>
+            <div class="week-calendar__cell" data-week-calendar-cell="1260"></div>
+            <div class="week-calendar__cell" data-week-calendar-cell="1320"></div>
+            <div class="week-calendar__cell" data-week-calendar-cell="1380"></div>
+        </div>
+    </template>
+
+    <template data-template="event-list-item">
+        <li class="event-list__item" data-event-list-item></li>
+    </template>
+
+    <template data-template="event">
+        <button class="event" data-event>
+            <span class="event__color"></span>
+            <span class="event__title" data-event-title></span>
+            <span class="event__time">
+                <time data-event-start-time></time> - <time data-event-end-time></time>
+            </span>
+        </button>
+    </template>
+
+    <template data-template="mini-calendar-day-list-item">
+        <li class="mini-calendar__day-list-item" data-mini-calendar-day-list-item>
+            <button class="mini-calendar__day button button--sm" data-mini-calendar-day></button>
+        </li>
+    </template>
 
     <script src="hr.js"></script>
 </body>

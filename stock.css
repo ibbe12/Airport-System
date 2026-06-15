@@ -614,7 +614,10 @@ body {
 /* ---------- Main content ---------- */
 .stock-main {
     flex: 1;
-    padding: 48px;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    padding: 0 48px 48px;
     max-width: 1400px;
     width: 100%;
     margin: 0 auto;
@@ -763,4 +766,171 @@ body {
         height: 64px;
         font-size: 1.8rem;
     }
+}
+
+/* ========== STOCK CALENDAR OVERRIDES ========== */
+.page-calendar {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+}
+#stockCalendarWrap {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    /* Debug: force height */
+    min-height: 500px;
+}
+#stockCalendarWrap .cal-layout {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    flex: 1;
+    min-height: 0;
+}
+#stockCalendarWrap .sidebar {
+    flex: 0 0 220px;
+    border-right: 1px solid var(--color-gray-300);
+    padding: 0.75rem;
+    overflow: hidden;
+}
+#stockCalendarWrap .cal-grid-wrap {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+}
+#stockCalendarWrap .calendar {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+#stockCalendarWrap .month-calendar {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+}
+#stockCalendarWrap .month-calendar__day-of-week-list {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #d1d5db;
+    flex-shrink: 0;
+}
+#stockCalendarWrap .month-calendar__day-of-week {
+    font-size: var(--font-size-md);
+    font-weight: 500;
+    color: var(--color-text-dark);
+}
+#stockCalendarWrap .month-calendar__day-list-wrapper {
+    position: static;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+#stockCalendarWrap .month-calendar__day-list {
+    position: static;
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    overflow-y: auto;
+}
+#stockCalendarWrap .month-calendar__day {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    border-right: 1px solid #e5e7eb;
+    border-bottom: 1px solid #e5e7eb;
+    min-height: 60px;
+    padding: 4px;
+}
+#stockCalendarWrap .month-calendar__day--empty {
+    border: none;
+}
+#stockCalendarWrap .month-calendar__day-label {
+    font-size: 13px;
+    color: #111827;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem;
+}
+#stockCalendarWrap .cal-grid-wrap .week-calendar__content {
+    position: static;
+    flex: 1;
+}
+#stockCalendarWrap .cal-grid-wrap .week-calendar__content-inner {
+    position: static;
+    flex: 1;
+    display: flex;
+    overflow-y: auto;
+}
+#stockCalendarWrap .cal-legend {
+    display: none;
+}
+#stockCalendarWrap .cal-legend-title {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--text,#1e1e2f);
+}
+#stockCalendarWrap .cal-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.75rem;
+    color: var(--text,#1e1e2f);
+}
+#stockCalendarWrap .cal-legend-swatch {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+
+/* Day view */
+#stockCalendarWrap .cal-day-view {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--gray-200,#eef0f4);
+    border-radius: 8px;
+    overflow: hidden;
+}
+#stockCalendarWrap .cal-day-header {
+    padding: 10px 16px;
+    background: var(--card-bg-alt,#f8f4ec);
+    border-bottom: 1px solid var(--gray-200,#eef0f4);
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--text,#1e1e2f);
+}
+#stockCalendarWrap .cal-day-list {
+    flex: 1;
+    padding: 8px 16px;
+    overflow-y: auto;
+}
+
+/* Nav inside stock calendar */
+#stockCalendarWrap .nav {
+    border-bottom: 1px solid var(--color-gray-300, #d1d5db);
+    padding: 0.25rem 0;
+    margin-bottom: 0.5rem;
+}
+#stockCalendarWrap .nav__date {
+    font-size: var(--font-size-lg, 1.125rem);
+    font-weight: 600;
+}
+
+/* Mini calendar today highlight */
+#stockCalendarWrap .mini-calendar__day--highlight {
+    background: #eff6ff;
+    border-color: #bfdbfe;
 }

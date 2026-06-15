@@ -414,8 +414,12 @@
         if (kpiSection) kpiSection.style.display = 'none';
         if (leaveSection) leaveSection.style.display = 'none';
         if (leaveSubnav) leaveSubnav.style.display = 'none';
+        if (attendanceSection) attendanceSection.style.display = 'none';
+        if (attendanceSubnav) attendanceSubnav.style.display = 'none';
         if (settingsSection) settingsSection.style.display = 'none';
         if (empSection) empSection.style.display = 'none';
+        var hm = document.querySelector('.hr-main');
+        if (hm) hm.classList.remove('cal-fullscreen');
     }
 
     const navLinks = document.querySelectorAll('.hr-sidebar li a[data-page]');
@@ -451,6 +455,8 @@
                 }
             } else if (key === 'leave') {
                 showFullLeaveSection();
+            } else if (key === 'attendance') {
+                showFullAttendanceSection();
             } else if (key === 'settings') {
                 hideAllContent();
                 if (hrSubnav) hrSubnav.classList.toggle('hidden', true);
@@ -485,6 +491,10 @@
     const pageEmpty = document.getElementById('pageEmpty');
     const kpiSection = document.getElementById('kpiSection');
     const leaveSection = document.getElementById('leaveSection');
+    const attendanceSection = document.getElementById('attendanceSection');
+    const attendanceSubnav = document.getElementById('attendanceSubnav');
+    const attendanceNavItems = attendanceSubnav ? attendanceSubnav.querySelectorAll('.hr-subnav-item') : [];
+    const attendanceContentItems = document.querySelectorAll('.attendance-content');
     const settingsSection = document.getElementById('settingsSection');
     const leaveSubnavItem = document.querySelector('#hrSubnav a[data-sub="leave"]');
 
@@ -632,6 +642,8 @@
         leaveContentItems.forEach(function (c) {
             c.style.display = c.dataset.leave === key ? '' : 'none';
         });
+        var hm = document.querySelector('.hr-main');
+        if (hm) hm.classList.toggle('cal-fullscreen', key === 'calendar');
     }
 
     function showFullLeaveSection() {
@@ -646,6 +658,27 @@
             leaveNavItems.forEach(function (n) { n.classList.remove('active'); });
             first.classList.add('active');
             showLeaveContent(first.dataset.leave);
+        }
+    }
+
+    function showAttendanceContent(key) {
+        attendanceContentItems.forEach(function (c) {
+            c.style.display = c.dataset.attendance === key ? '' : 'none';
+        });
+    }
+
+    function showFullAttendanceSection() {
+        hideAllContent();
+        if (hrSubnav) hrSubnav.classList.toggle('hidden', true);
+        if (empSubnav) empSubnav.style.display = 'none';
+        if (pageEmpty) pageEmpty.style.display = 'none';
+        if (attendanceSection) attendanceSection.style.display = 'block';
+        if (attendanceSubnav) attendanceSubnav.style.display = '';
+        var first = attendanceNavItems[0];
+        if (first) {
+            attendanceNavItems.forEach(function (n) { n.classList.remove('active'); });
+            first.classList.add('active');
+            showAttendanceContent(first.dataset.attendance);
         }
     }
 
@@ -722,7 +755,7 @@
         }
     }
 
-    subnavItems.forEach((item) => {
+        subnavItems.forEach((item) => {
         item.addEventListener('click', (e) => {
             e.preventDefault();
             subnavItems.forEach((s) => s.classList.remove('active'));
@@ -733,6 +766,8 @@
                 showWorkforce();
             } else if (sub === 'leave') {
                 showLeaveDashboard();
+            } else if (sub === 'attendance') {
+                showFullAttendanceSection();
             } else {
                 const page = PAGES['dashboard'];
                 showEmpty(page);
@@ -830,6 +865,19 @@
                 item.classList.add('active');
                 var key = item.dataset.leave;
                 if (key) showLeaveContent(key);
+            });
+        });
+    }
+
+    /* ---------- Attendance Sub-nav items ---------- */
+    if (attendanceNavItems.length) {
+        attendanceNavItems.forEach(function (item) {
+            item.addEventListener('click', function (e) {
+                e.preventDefault();
+                attendanceNavItems.forEach(function (s) { s.classList.remove('active'); });
+                item.classList.add('active');
+                var key = item.dataset.attendance;
+                if (key) showAttendanceContent(key);
             });
         });
     }
@@ -2817,6 +2865,12 @@ document.getElementById('saveHolidayBtn')?.addEventListener('click', function() 
     var toast = new bootstrap.Toast(document.getElementById('successToast'));
     document.getElementById('toastMessage').textContent = editingHolidayIdx >= 0 ? 'Holiday updated.' : 'Holiday added.';
     toast.show();
+    /* Re-render calendar if visible */
+    var calGrid = document.querySelector('[data-calendar]');
+    if (calGrid && calGrid.offsetParent !== null) {
+        var data = getLeaveData();
+        if (data) renderLeaveCalendar(data); else renderLeaveCalendar({ requests: [] });
+    }
 });
 
 /* Cancel button */
@@ -2861,6 +2915,12 @@ document.addEventListener('click', function(e) {
         var toast = new bootstrap.Toast(document.getElementById('dangerToast'));
         document.getElementById('dangerToastMessage').textContent = 'Holiday removed.';
         toast.show();
+        /* Re-render calendar if visible */
+        var calGrid = document.querySelector('[data-calendar]');
+        if (calGrid && calGrid.offsetParent !== null) {
+            var data = getLeaveData();
+            if (data) renderLeaveCalendar(data); else renderLeaveCalendar({ requests: [] });
+        }
     });
 });
 
@@ -2982,6 +3042,10 @@ document.addEventListener('click', function(e) {
     if (e.target.id === 'lrCancelBtn' || e.target.closest('#lrCancelBtn')) {
         var row = document.getElementById('leaveFormRow');
         if (row) row.style.display = 'none';
+        var o = document.getElementById('calFormOverlay');
+        if (o && o.parentNode) o.parentNode.removeChild(o);
+        var p = document.getElementById('calLeavePopup');
+        if (p && p.parentNode) p.parentNode.removeChild(p);
         document.getElementById('lrSubmitBtn').innerHTML = '<i class="bi bi-check-lg"></i> Submit';
         editingRequestId = null;
     }
@@ -3084,6 +3148,10 @@ document.addEventListener('click', function(e) {
         var wasEditing = editingRequestId;
         var row = document.getElementById('leaveFormRow');
         if (row) row.style.display = 'none';
+        var o = document.getElementById('calFormOverlay');
+        if (o && o.parentNode) o.parentNode.removeChild(o);
+        var p = document.getElementById('calLeavePopup');
+        if (p && p.parentNode) p.parentNode.removeChild(p);
         document.getElementById('lrSubmitBtn').innerHTML = '<i class="bi bi-check-lg"></i> Submit';
         editingRequestId = null;
 
@@ -3240,9 +3308,18 @@ document.addEventListener('click', function(e) {
 
 var calCurrentDate = new Date();
 calCurrentDate.setDate(1);
+var calView = 'month';
+/* calCurrentDate meaning per view:
+ *   month – day is always 1 (1st of month)
+ *   week  – day is the Saturday that starts the displayed week
+ *   day   – day is the displayed day
+ */
 
 var CAL_MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 var CAL_FULL = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+var CAL_DOW = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+var DOW_SHORT = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
 var CAL_TYPE_COLORS = {
     'Annual Leave': '#895129',
     'FRL': '#e67e22',
@@ -3256,82 +3333,521 @@ var CAL_TYPE_COLORS = {
     'Hajj Leave': '#2ecc71'
 };
 
+/* Build a lookup of leave requests for a given date range */
+function buildLeaveMap(requests, startDate, endDate) {
+    var map = {};
+    var cur = new Date(startDate);
+    cur.setHours(12,0,0,0);
+    var end = new Date(endDate);
+    end.setHours(12,0,0,0);
+    while (cur <= end) {
+        map[cur.getTime()] = [];
+        cur.setDate(cur.getDate() + 1);
+    }
+    (requests || []).forEach(function(req) {
+        if (req.status !== 'Approved' && req.status !== 'Pending') return;
+        var fp = (req.from || '').split(' ');
+        var tp = (req.to || '').split(' ');
+        if (fp.length < 2 || tp.length < 2) return;
+        var fromMon = CAL_MONTHS.indexOf(fp[0]);
+        var fromDay = parseInt(fp[1]);
+        var toDay = parseInt(tp[1]);
+        if (fromMon < 0) return;
+        var reqYear = startDate.getFullYear();
+        /* Approximate – assumes the leave is in the same year */
+        var reqStart = new Date(reqYear, fromMon, fromDay, 12, 0, 0);
+        var reqEnd = new Date(reqYear, fromMon, toDay, 12, 0, 0);
+        /* Check if request crosses year boundary – approximate */
+        if (fromMon === 11 && toDay < fromDay) {
+            /* spans into next year – ignore, won't show in current view cleanly */
+            return;
+        }
+        var walk = new Date(reqStart);
+        while (walk <= reqEnd) {
+            var key = walk.getTime();
+            if (map[key]) map[key].push(req);
+            walk.setDate(walk.getDate() + 1);
+        }
+    });
+    return map;
+}
+
 function renderLeaveCalendar(data) {
-    var grid = document.getElementById('calGrid');
-    var header = document.getElementById('calMonthYear');
+    var grid = document.querySelector('[data-calendar]');
+    var header = document.querySelector('[data-nav-date]');
     if (!grid || !header) return;
+    var requests = (data && data.requests) || [];
+    renderMiniCalendar();
+    if (calView === 'month') renderCalMonth(grid, header, requests);
+    else if (calView === 'week') renderCalWeek(grid, header, requests);
+    else if (calView === 'day') renderCalDay(grid, header, requests);
+    renderCalLegend();
+}
+
+function renderCalMonth(grid, header, requests) {
     var year = calCurrentDate.getFullYear();
     var month = calCurrentDate.getMonth();
     header.textContent = CAL_FULL[month] + ' ' + year;
 
     var firstDay = new Date(year, month, 1).getDay();
     var daysInMonth = new Date(year, month + 1, 0).getDate();
-    /* Convert JS day (0=Sun,6=Sat) to Saturday-first offset */
-    var startOffset = (firstDay + 1) % 7;
+    var startOffset = (firstDay + 6) % 7;
+    var totalCells = startOffset + daysInMonth;
+    var weeks = Math.ceil(totalCells / 7);
 
-    /* Build leave lookup: which employees are on leave each day this month */
-    var leaveMap = {};
-    (data.requests || []).forEach(function(req) {
-        if (req.status !== 'Approved' && req.status !== 'Pending') return;
-        var fromParts = (req.from || '').split(' ');
-        var toParts = (req.to || '').split(' ');
-        if (fromParts.length < 2 || toParts.length < 2) return;
-        var fromMon = CAL_MONTHS.indexOf(fromParts[0]);
-        var fromDay = parseInt(fromParts[1]);
-        var toDay = parseInt(toParts[1]);
-        /* Only show leaves whose from-month matches current calendar month */
-        if (fromMon !== month) return;
-        for (var d = fromDay; d <= toDay && d <= daysInMonth; d++) {
-            if (!leaveMap[d]) leaveMap[d] = [];
-            leaveMap[d].push(req);
-        }
-    });
-
-    var html = '<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;">';
+    var html = '<div class="month-calendar">';
+    html += '<ul class="month-calendar__day-of-week-list">';
     ['Sat','Sun','Mon','Tue','Wed','Thu','Fri'].forEach(function(dn) {
-        html += '<div style="text-align:center;font-weight:600;font-size:0.8rem;padding:8px 0;color:var(--gray-text,#888);">' + dn + '</div>';
+        html += '<li class="month-calendar__day-of-week">' + dn + '</li>';
     });
+    html += '</ul>';
+    html += '<div class="month-calendar__day-list-wrapper"><ul class="month-calendar__day-list" style="grid-template-rows:repeat(' + weeks + ',1fr);">';
     for (var i = 0; i < startOffset; i++) {
-        html += '<div></div>';
+        html += '<li class="month-calendar__day month-calendar__day--empty"></li>';
     }
+    var today = new Date();
+    var holidays = loadHolidays();
+    var holidayMap = {};
+    holidays.forEach(function(h) { holidayMap[h.date] = h; });
     for (var d = 1; d <= daysInMonth; d++) {
-        var entries = leaveMap[d] || [];
-        var bg = entries.length ? '#fff3e0' : '#fefcf7';
-        html += '<div style="min-height:72px;padding:4px 6px;border-radius:6px;background:' + bg + ';border:1px solid var(--gray-200,#eef0f4);">';
-        html += '<div style="font-weight:600;font-size:0.8rem;margin-bottom:2px;color:var(--text,#1e1e2f);">' + d + '</div>';
+        var entries = [];
+        requests.forEach(function(req) {
+            if (req.status !== 'Approved' && req.status !== 'Pending') return;
+            var fp = (req.from || '').split(' ');
+            var tp = (req.to || '').split(' ');
+            if (fp.length < 2 || tp.length < 2) return;
+            var fMon = CAL_MONTHS.indexOf(fp[0]);
+            var fDay = parseInt(fp[1]);
+            var tDay = parseInt(tp[1]);
+            if (fMon < 0) return;
+            if (fMon !== month) return;
+            if (d >= fDay && d <= tDay) entries.push(req);
+        });
+        var dayCls = 'month-calendar__day';
+        if (year === today.getFullYear() && month === today.getMonth() && d === today.getDate()) {
+            dayCls += ' month-calendar__day--highlight';
+        }
+        var mm = ('0' + (month + 1)).slice(-2);
+        var dd = ('0' + d).slice(-2);
+        var dateStr = year + '-' + mm + '-' + dd;
+        var holiday = holidayMap[dateStr];
+        if (holiday) dayCls += ' month-calendar__day--holiday';
+        html += '<li class="' + dayCls + '">';
+        html += '<button class="month-calendar__day-label">' + d + '</button>';
+        if (holiday) {
+            html += '<div class="event event--holiday" title="' + holiday.name + '">' +
+                '<span class="event__color" style="background:#e11d48;"></span>' +
+                '<span>' + holiday.name + '</span></div>';
+        }
         entries.forEach(function(lr) {
             var c = lr.status === 'Pending' ? '#9ca3af' : (CAL_TYPE_COLORS[lr.type] || lr.color);
-            html += '<div style="font-size:0.75rem;background:' + c + ';color:#fff;border-radius:4px;padding:1px 4px;margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:default;" title="' + lr.employee + ' - ' + lr.type + ' (' + lr.status + ')">' + lr.employee + '</div>';
+            var pc = lr.status === 'Pending' ? ' event--pending' : '';
+            html += '<div class="event' + pc + '" title="' + lr.employee + ' - ' + lr.type + ' (' + lr.status + ')">' +
+                '<span class="event__color" style="background:' + c + ';"></span>' +
+                '<span>' + lr.employee + '</span></div>';
         });
+        html += '</li>';
+    }
+    var remaining = weeks * 7 - startOffset - daysInMonth;
+    for (var i = 0; i < remaining; i++) {
+        html += '<li class="month-calendar__day month-calendar__day--empty"></li>';
+    }
+    html += '</ul></div></div>';
+    grid.innerHTML = html;
+}
+
+function renderCalWeek(grid, header, requests) {
+    var year = calCurrentDate.getFullYear();
+    var month = calCurrentDate.getMonth();
+    header.textContent = CAL_FULL[month] + ' ' + year;
+    var sat = new Date(calCurrentDate);
+    sat.setHours(12, 0, 0, 0);
+    var html = '<div class="week-calendar">';
+    var today = new Date();
+    html += '<ul class="week-calendar__day-of-week-list">';
+    for (var i = 0; i < 7; i++) {
+        var day = new Date(sat);
+        day.setDate(sat.getDate() + i);
+        var isToday = (day.getFullYear() === today.getFullYear() && day.getMonth() === today.getMonth() && day.getDate() === today.getDate());
+        var dateStr = day.getDate();
+        var dowName = DOW_SHORT[day.getDay()];
+        html += '<li class="week-calendar__day-of-week-button' + (isToday ? ' week-calendar__day-of-week-button--highlight' : '') + '">' +
+            '<span class="dow">' + dowName + '</span>' +
+            '<span class="dom">' + dateStr + '</span></li>';
+    }
+    html += '</ul>';
+    html += '<ul class="week-calendar__all-day-list"></ul>';
+    html += '<div class="week-calendar__content"><div class="week-calendar__content-inner">';
+    html += '<div class="week-calendar__columns">';
+    var holidays = loadHolidays();
+    var holidayMap = {};
+    holidays.forEach(function(h) { holidayMap[h.date] = h; });
+    for (var i = 0; i < 7; i++) {
+        var day = new Date(sat);
+        day.setDate(sat.getDate() + i);
+        var y = day.getFullYear();
+        var m = day.getMonth();
+        var dd = day.getDate();
+        var dateStr = y + '-' + ('0' + (m + 1)).slice(-2) + '-' + ('0' + dd).slice(-2);
+        var holiday = holidayMap[dateStr];
+        html += '<div class="week-calendar__column">';
+        if (holiday) {
+            html += '<div class="event event--holiday" title="' + holiday.name + '">' +
+                '<span class="event__color" style="background:#e11d48;"></span>' +
+                '<span>' + holiday.name + '</span></div>';
+        }
         html += '</div>';
     }
-    html += '</div>';
+    html += '</div></div></div></div>';
     grid.innerHTML = html;
+}
 
-    /* Legend */
-    var leg = document.getElementById('calLegend');
-    if (leg) {
-        var lhtml = '<div style="font-weight:600;font-size:0.85rem;margin-bottom:8px;color:var(--text,#1e1e2f);">Leave Types</div>';
-        Object.keys(CAL_TYPE_COLORS).forEach(function(t) {
-            lhtml += '<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;font-size:0.75rem;color:var(--text,#1e1e2f);">' +
-                '<span style="width:12px;height:12px;border-radius:3px;background:' + CAL_TYPE_COLORS[t] + ';flex-shrink:0;"></span>' +
-                t + '</div>';
+function renderCalDay(grid, header, requests) {
+    var year = calCurrentDate.getFullYear();
+    var month = calCurrentDate.getMonth();
+    var dayNum = calCurrentDate.getDate();
+    var dayDate = new Date(year, month, dayNum, 12, 0, 0);
+    var dowName = CAL_DOW[dayDate.getDay()];
+    header.textContent = dowName + ', ' + dayNum + ' ' + CAL_FULL[month] + ' ' + year;
+    var html = '<div class="cal-day-view">';
+    html += '<div class="cal-day-header">' + header.textContent + '</div>';
+    html += '<div class="cal-day-list">';
+    var dayEntries = [];
+    requests.forEach(function(req) {
+        if (req.status !== 'Approved' && req.status !== 'Pending') return;
+        var fp = (req.from || '').split(' ');
+        var tp = (req.to || '').split(' ');
+        if (fp.length < 2 || tp.length < 2) return;
+        var fMon = CAL_MONTHS.indexOf(fp[0]);
+        var fDay = parseInt(fp[1]);
+        var tDay = parseInt(tp[1]);
+        if (fMon < 0) return;
+        if (fMon !== month) return;
+        if (dayNum >= fDay && dayNum <= tDay) dayEntries.push(req);
+    });
+    if (dayEntries.length === 0) {
+        var holidayHtml = '';
+        var holidays = loadHolidays();
+        var mm = ('0' + (month + 1)).slice(-2);
+        var dd = ('0' + dayNum).slice(-2);
+        var dateStr = year + '-' + mm + '-' + dd;
+        holidays.forEach(function(h) {
+            if (h.date === dateStr) holidayHtml = '<div class="cal-day-entry cal-day-entry--holiday"><span class="cal-dot" style="background:#e11d48"></span><strong>' + h.name + '</strong></div>';
         });
-        leg.innerHTML = lhtml;
+        html += '<div style="color:var(--gray-text,#888);font-size:0.85rem;padding:12px 0;">No leave on this day.</div>';
+        if (holidayHtml) html += holidayHtml;
+    } else {
+        dayEntries.forEach(function(lr) {
+            var c = lr.status === 'Pending' ? '#9ca3af' : (CAL_TYPE_COLORS[lr.type] || lr.color);
+            html += '<div class="cal-day-entry"><span class="cal-dot" style="background:' + c + '"></span>' +
+                '<strong>' + lr.employee + '</strong> &mdash; ' + lr.type + ' (' + lr.status + ')' +
+                '<span style="margin-left:auto;font-size:0.75rem;color:var(--gray-text,#888);">' + lr.from + ' - ' + lr.to + '</span></div>';
+        });
+        var holidays = loadHolidays();
+        var mm = ('0' + (month + 1)).slice(-2);
+        var dd = ('0' + dayNum).slice(-2);
+        var dateStr = year + '-' + mm + '-' + dd;
+        holidays.forEach(function(h) {
+            if (h.date === dateStr) html += '<div class="cal-day-entry cal-day-entry--holiday"><span class="cal-dot" style="background:#e11d48"></span><strong>' + h.name + '</strong></div>';
+        });
+    }
+    html += '</div></div>';
+    grid.innerHTML = html;
+}
+
+function renderCalLegend() {
+    var legendEl = document.getElementById('calLegend');
+    if (!legendEl) return;
+    var html = '<span class="cal-legend-title">Legend:</span>';
+    for (var type in CAL_TYPE_COLORS) {
+        html += '<span class="cal-legend-item"><span class="cal-legend-swatch" style="background:' + CAL_TYPE_COLORS[type] + '"></span>' + type + '</span>';
+    }
+    html += '<span class="cal-legend-item" style="opacity:0.7"><span class="cal-legend-swatch" style="background:#ccc"></span>Pending</span>';
+    html += '<span class="cal-legend-item"><span class="cal-legend-swatch" style="background:#e11d48"></span>Holiday</span>';
+    legendEl.innerHTML = html;
+}
+
+function renderMiniCalendar() {
+    /* Render three mini calendars: prev month, current month, next month */
+    var containers = document.querySelectorAll('[data-mini-calendar]');
+    if (!containers.length) return;
+    var today = new Date();
+    var baseYear = calCurrentDate.getFullYear();
+    var baseMonth = calCurrentDate.getMonth();
+    var offsets = [-1, 0, 1];
+    var monthNames = CAL_FULL;
+    containers.forEach(function(container, idx) {
+        var offset = offsets[idx] || 0;
+        var year = baseYear;
+        var month = baseMonth + offset;
+        if (month < 0) { month = 11; year--; }
+        else if (month > 11) { month = 0; year++; }
+        var dateEl = container.querySelector('[data-mini-calendar-date]');
+        var grid = container.querySelector('[data-mini-calendar-day-list]');
+        if (!dateEl || !grid) return;
+        dateEl.textContent = monthNames[month] + ' ' + year;
+        var firstDay = new Date(year, month, 1).getDay();
+        var daysInMonth = new Date(year, month + 1, 0).getDate();
+        var startOffset = (firstDay + 6) % 7;
+        var html = '';
+        for (var i = 0; i < startOffset; i++) {
+            html += '<li class="mini-calendar__day-list-item"><button class="mini-calendar__day mini-calendar__day--other"></button></li>';
+        }
+        for (var d = 1; d <= daysInMonth; d++) {
+            var cls = 'mini-calendar__day';
+            if (year === today.getFullYear() && month === today.getMonth() && d === today.getDate()) cls += ' mini-calendar__day--highlight';
+            if (year === calCurrentDate.getFullYear() && month === calCurrentDate.getMonth() && d === calCurrentDate.getDate()) cls += ' mini-calendar__day--selected';
+            html += '<li class="mini-calendar__day-list-item"><button class="' + cls + '" data-m="' + month + '" data-y="' + year + '" data-d="' + d + '">' + d + '</button></li>';
+        }
+        var totalCells = startOffset + daysInMonth;
+        var remaining = (7 - (totalCells % 7)) % 7;
+        for (var i = 1; i <= remaining; i++) {
+            html += '<li class="mini-calendar__day-list-item"><button class="mini-calendar__day mini-calendar__day--other" data-m="' + ((month + 1) % 12) + '" data-y="' + ((month === 11) ? year + 1 : year) + '" data-d="' + i + '">' + i + '</button></li>';
+        }
+        grid.innerHTML = html;
+    });
+}
+
+/* Click day in main calendar to open leave form */
+document.addEventListener('click', function(e) {
+    var label = e.target.closest('.month-calendar__day-label');
+    if (!label) return;
+    var wrap = label.closest('#leaveCalendarWrap');
+    if (!wrap) return;
+
+    var dayNum = parseInt(label.textContent.trim(), 10);
+    if (isNaN(dayNum)) return;
+
+    var year = calCurrentDate.getFullYear();
+    var month = calCurrentDate.getMonth();
+    var mm = ('0' + (month + 1)).slice(-2);
+    var dd = ('0' + dayNum).slice(-2);
+    var dateStr = year + '-' + mm + '-' + dd;
+
+    openLeaveRequestPopup(dateStr);
+});
+
+function openLeaveRequestPopup(dateStr) {
+    var from = document.getElementById('lrFrom');
+    var to = document.getElementById('lrTo');
+    if (from) from.value = dateStr;
+    if (to) to.value = dateStr;
+
+    if (from) {
+        var evt = document.createEvent('HTMLEvents');
+        evt.initEvent('change', true, false);
+        from.dispatchEvent(evt);
+    }
+    if (to) {
+        var evt2 = document.createEvent('HTMLEvents');
+        evt2.initEvent('change', true, false);
+        to.dispatchEvent(evt2);
+    }
+
+    var formRow = document.getElementById('leaveFormRow');
+    if (!formRow) return;
+
+    /* Remove any existing popup */
+    var oldPopup = document.getElementById('calLeavePopup');
+    if (oldPopup && oldPopup.parentNode) oldPopup.parentNode.removeChild(oldPopup);
+    var oldOverlay = document.getElementById('calFormOverlay');
+    if (oldOverlay && oldOverlay.parentNode) oldOverlay.parentNode.removeChild(oldOverlay);
+
+    /* Ensure form selects are populated (clone inherits populated HTML) */
+    populateLeaveRequestModal();
+    var formHTML = formRow.innerHTML;
+
+    /* Create popup overlay */
+    var overlay = document.createElement('div');
+    overlay.id = 'calFormOverlay';
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:9998;';
+    document.body.appendChild(overlay);
+
+    /* Clone form into a centered popup */
+    var popup = document.createElement('div');
+    popup.id = 'calLeavePopup';
+    popup.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:9999;' +
+        'background:#fff;border-radius:12px;padding:24px;width:520px;max-width:90vw;max-height:85vh;overflow-y:auto;' +
+        'box-shadow:0 20px 60px rgba(0,0,0,0.3);';
+    popup.innerHTML = '<h4 style="margin:0 0 16px;font-size:1rem;font-weight:700;">New Leave Request</h4>' +
+        '<div id="calPopupForm">' +
+        formHTML +
+        '</div>';
+    document.body.appendChild(popup);
+
+    /* Re-bind the form fields within popup */
+    var popupSubmit = popup.querySelector('#lrSubmitBtn');
+    var popupCancel = popup.querySelector('#lrCancelBtn');
+
+    /* Sync popup field changes to original form so balance/day-count works */
+    ['#lrEmployee','#lrType','#lrFrom','#lrTo'].forEach(function(sel) {
+        var el = popup.querySelector(sel);
+        if (!el) return;
+        el.addEventListener('change', function() {
+            var orig = document.getElementById(sel.replace('#',''));
+            if (orig) orig.value = this.value;
+            if (orig) {
+                var evt = document.createEvent('HTMLEvents');
+                evt.initEvent('change', true, false);
+                orig.dispatchEvent(evt);
+            }
+            /* Copy balance/day-count info to popup */
+            setTimeout(function() {
+                var origBal = document.getElementById('lrBalanceInfo');
+                var popBal = popup.querySelector('#lrBalanceInfo');
+                var origDay = document.getElementById('lrDayCount');
+                var popDay = popup.querySelector('#lrDayCount');
+                if (origBal && popBal) {
+                    popBal.style.display = origBal.style.display;
+                    popBal.innerHTML = origBal.innerHTML;
+                }
+                if (origDay && popDay) {
+                    popDay.style.display = origDay.style.display;
+                    popDay.innerHTML = origDay.innerHTML;
+                }
+            }, 10);
+        });
+    });
+
+    overlay.addEventListener('click', function() {
+        if (popup.parentNode) popup.parentNode.removeChild(popup);
+        if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+    });
+
+    if (popupCancel) {
+        popupCancel.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (popup.parentNode) popup.parentNode.removeChild(popup);
+            if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+        });
+    }
+    if (popupSubmit) {
+        popupSubmit.addEventListener('click', function(e) {
+            e.stopPropagation();
+            /* Sync values to original form */
+            var emp = document.getElementById('lrEmployee');
+            var type = document.getElementById('lrType');
+            var from = document.getElementById('lrFrom');
+            var to = document.getElementById('lrTo');
+            var notes = document.getElementById('lrNotes');
+            var pEmp = popup.querySelector('#lrEmployee');
+            var pType = popup.querySelector('#lrType');
+            var pFrom = popup.querySelector('#lrFrom');
+            var pTo = popup.querySelector('#lrTo');
+            var pNotes = popup.querySelector('#lrNotes');
+            if (emp && pEmp) emp.value = pEmp.value;
+            if (type && pType) type.value = pType.value;
+            if (from && pFrom) from.value = pFrom.value;
+            if (to && pTo) to.value = pTo.value;
+            if (notes && pNotes) notes.value = pNotes.value;
+            /* Trigger original submit button */
+            var origSubmit = document.getElementById('lrSubmitBtn');
+            if (origSubmit) origSubmit.click();
+        });
+    }
+
+    /* Set the date in the popup fields */
+    var popFrom = popup.querySelector('#lrFrom');
+    var popTo = popup.querySelector('#lrTo');
+    if (popFrom) popFrom.value = dateStr;
+    if (popTo) popTo.value = dateStr;
+    /* Also set original form fields and trigger change for balance/day-count */
+    var origFrom = document.getElementById('lrFrom');
+    var origTo = document.getElementById('lrTo');
+    if (origFrom) origFrom.value = dateStr;
+    if (origTo) origTo.value = dateStr;
+    /* Trigger change on popup fields to show balance/day count */
+    if (popFrom) {
+        var evt = document.createEvent('HTMLEvents');
+        evt.initEvent('change', true, false);
+        popFrom.dispatchEvent(evt);
+    }
+    if (popTo) {
+        var evt2 = document.createEvent('HTMLEvents');
+        evt2.initEvent('change', true, false);
+        popTo.dispatchEvent(evt2);
     }
 }
 
+/* Mini calendar day click */
 document.addEventListener('click', function(e) {
-    if (e.target.id === 'calPrev' || e.target.closest('#calPrev')) {
-        calCurrentDate.setMonth(calCurrentDate.getMonth() - 1);
+    var dayEl = e.target.closest('.mini-calendar__day');
+    if (!dayEl) return;
+    var m = parseInt(dayEl.getAttribute('data-m'), 10);
+    var d = parseInt(dayEl.getAttribute('data-d'), 10);
+    var y = parseInt(dayEl.getAttribute('data-y'), 10);
+    if (isNaN(m) || isNaN(d)) return;
+    if (isNaN(y)) {
+        y = calCurrentDate.getFullYear();
+        if (m === 11 && calCurrentDate.getMonth() === 0) y--;
+        else if (m === 0 && calCurrentDate.getMonth() === 11) y++;
+    }
+    if (calView === 'month') {
+        calCurrentDate = new Date(y, m, 1);
+    } else if (calView === 'week') {
+        var clicked = new Date(y, m, d);
+        clicked.setDate(clicked.getDate() - ((clicked.getDay() + 1) % 7));
+        calCurrentDate = clicked;
+    } else {
+        calCurrentDate = new Date(y, m, d);
+    }
+    var data = getLeaveData();
+    if (data) renderLeaveCalendar(data); else renderLeaveCalendar({ requests: [] });
+
+    /* Also open leave request popup with clicked date */
+    var mm = ('0' + (m + 1)).slice(-2);
+    var dd = ('0' + d).slice(-2);
+    var dateStr = y + '-' + mm + '-' + dd;
+    openLeaveRequestPopup(dateStr);
+});
+
+/* Navigation */
+document.addEventListener('click', function(e) {
+    if (e.target.closest('[data-nav-previous-button]')) {
+        if (calView === 'month') calCurrentDate.setMonth(calCurrentDate.getMonth() - 1);
+        else if (calView === 'week') calCurrentDate.setDate(calCurrentDate.getDate() - 7);
+        else calCurrentDate.setDate(calCurrentDate.getDate() - 1);
         var data = getLeaveData();
         if (data) renderLeaveCalendar(data); else renderLeaveCalendar({ requests: [] });
     }
-    if (e.target.id === 'calNext' || e.target.closest('#calNext')) {
-        calCurrentDate.setMonth(calCurrentDate.getMonth() + 1);
+    if (e.target.closest('[data-nav-next-button]')) {
+        if (calView === 'month') calCurrentDate.setMonth(calCurrentDate.getMonth() + 1);
+        else if (calView === 'week') calCurrentDate.setDate(calCurrentDate.getDate() + 7);
+        else calCurrentDate.setDate(calCurrentDate.getDate() + 1);
         var data = getLeaveData();
         if (data) renderLeaveCalendar(data); else renderLeaveCalendar({ requests: [] });
     }
+    if (e.target.closest('[data-nav-today-button]')) {
+        var now = new Date();
+        if (calView === 'month') {
+            calCurrentDate = new Date(now.getFullYear(), now.getMonth(), 1);
+        } else if (calView === 'week') {
+            calCurrentDate = new Date(now);
+            calCurrentDate.setDate(now.getDate() - ((now.getDay() + 1) % 7));
+        } else {
+            calCurrentDate = new Date(now);
+        }
+        var data = getLeaveData();
+        if (data) renderLeaveCalendar(data); else renderLeaveCalendar({ requests: [] });
+    }
+});
+
+/* View switcher */
+document.addEventListener('change', function(e) {
+    var sel = e.target.closest('[data-view-select]');
+    if (!sel) return;
+    calView = sel.value;
+    var now = new Date();
+    if (calView === 'month') {
+        calCurrentDate = new Date(now.getFullYear(), now.getMonth(), 1);
+    } else if (calView === 'week') {
+        calCurrentDate = new Date(now);
+        calCurrentDate.setDate(now.getDate() - ((now.getDay() + 1) % 7));
+    } else {
+        calCurrentDate = new Date(now);
+    }
+    var data = getLeaveData();
+    if (data) renderLeaveCalendar(data); else renderLeaveCalendar({ requests: [] });
 });
 
 function renderAllFromEmployees() {
