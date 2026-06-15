@@ -644,6 +644,11 @@
         });
         var hm = document.querySelector('.hr-main');
         if (hm) hm.classList.toggle('cal-fullscreen', key === 'calendar');
+        /* Re-render calendar when switching to calendar tab */
+        if (key === 'calendar') {
+            var data = getLeaveData();
+            if (data) renderLeaveCalendar(data); else renderLeaveCalendar({ requests: [] });
+        }
     }
 
     function showFullLeaveSection() {
