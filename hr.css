@@ -1237,8 +1237,7 @@ body {
   background: var(--cream);
 }
 .leave-content .md-table th,
-.leave-content .md-table td,
-.leave-content .md-table tbody tr:hover td {
+.leave-content .md-table td {
   background: var(--cream);
 }
 .leave-content .md-table-wrap {
@@ -1265,10 +1264,26 @@ body {
 .leave-content[data-leave="balances"] .md-table th,
 .leave-content[data-leave="balances"] .md-table td {
   white-space: nowrap;
-}
-.leave-content[data-leave="balances"] .md-table th:nth-child(n + 3),
-.leave-content[data-leave="balances"] .md-table td:nth-child(n + 3) {
   text-align: center;
+}
+.leave-content[data-leave="balances"] .md-table th:nth-child(2),
+.leave-content[data-leave="balances"] .md-table td:nth-child(2) {
+  text-align: left;
+}
+
+.leave-content[data-leave="requests"] .md-row:last-child .md-table th,
+.leave-content[data-leave="requests"] .md-row:last-child .md-table td {
+  white-space: nowrap;
+  text-align: center;
+}
+.leave-content[data-leave="requests"] .md-row:last-child .md-table th:first-child,
+.leave-content[data-leave="requests"] .md-row:last-child .md-table td:first-child {
+  text-align: left;
+}
+
+.leave-content[data-leave="balances"] .md-table tbody tr:hover td,
+.leave-content[data-leave="requests"] .md-row:last-child .md-table tbody tr:hover td {
+  background: var(--gray-100);
 }
 
 .md-badge {
