@@ -36,6 +36,7 @@
     const themeToggle = document.getElementById('themeToggle');
     const successToastEl = document.getElementById('successToast');
     const toastMessage = document.getElementById('toastMessage');
+    var toastTimer = null;
 
     const userName = document.getElementById('userName');
     const userRole = document.getElementById('userRole');
@@ -82,6 +83,17 @@
 
     function lsLoad(key, def) {
         try { return JSON.parse(localStorage.getItem(key)) || def; } catch (e) { return def; }
+    }
+
+    var _toastDebounce = {};
+    function showToast(el, msg) {
+        var id = el.id;
+        var now = Date.now();
+        if (_toastDebounce[id] && now - _toastDebounce[id] < 800) return;
+        _toastDebounce[id] = now;
+        el.querySelector('.toast-body span') && (el.querySelector('.toast-body span').textContent = msg);
+        var t = new bootstrap.Toast(el);
+        t.show();
     }
 
     function loadDirectoryFromStorage() {
@@ -2667,8 +2679,7 @@ function renderLeaveBalanceSummary(data) {
             '<td>' + (b.sickMedical ?? '—') + '</td><td>' + (b.sick ?? '—') + '</td>' +
             '<td>' + (b.circumcision ?? '—') + '</td><td>' + (b.paternity ?? '—') + '</td>' +
             '<td>' + (b.maternity ?? '—') + '</td><td>' + (b.noPay ?? '—') + '</td>' +
-            '<td>' + (b.umrah ?? '—') + '</td><td>' + (b.hajj ?? '—') + '</td>' +
-            '<td>' + balanceTotal(b) + '</td>';
+            '<td>' + (b.umrah ?? '—') + '</td><td>' + (b.hajj ?? '—') + '</td>';
         tbody.appendChild(tr);
     });
 }
@@ -2701,21 +2712,76 @@ function renderApprovalWorkflow(data) {
 function renderLeaveBalances(data) {
     var tbody = document.querySelector('.leave-content[data-leave="balances"] .md-table tbody');
     if (!tbody) return;
+    var searchVal = (document.getElementById('lbSearch')?.value || '').toLowerCase();
+    var deptVal = document.getElementById('lbDeptFilter')?.value || '';
+    var desigVal = document.getElementById('lbDesigFilter')?.value || '';
     tbody.innerHTML = '';
     var emps = getEmployees();
     emps.forEach(function(emp) {
+        var searchText = (emp.name + ' ' + (emp.sn || '') + ' ' + (emp.nic || '') + ' ' + (emp.mobile || '')).toLowerCase();
+        var nameMatch = searchText.indexOf(searchVal) !== -1;
+        var deptMatch = !deptVal || emp.department === deptVal;
+        var desigMatch = !desigVal || emp.position === desigVal;
+        if (!nameMatch || !deptMatch || !desigMatch) return;
         var b = data.balances[emp.name] || {};
         var tr = document.createElement('tr');
-        tr.innerHTML = '<td><strong>' + emp.name + '</strong></td>' +
+        tr.innerHTML = '<td>' + (emp.sn || '—') + '</td><td><strong>' + emp.name + '</strong></td>' +
             '<td>' + (b.annual ?? '—') + '</td><td>' + (b.frl ?? '—') + '</td>' +
             '<td>' + (b.sickMedical ?? '—') + '</td><td>' + (b.sick ?? '—') + '</td>' +
             '<td>' + (b.circumcision ?? '—') + '</td><td>' + (b.paternity ?? '—') + '</td>' +
             '<td>' + (b.maternity ?? '—') + '</td><td>' + (b.noPay ?? '—') + '</td>' +
-            '<td>' + (b.umrah ?? '—') + '</td><td>' + (b.hajj ?? '—') + '</td>' +
-            '<td>' + balanceTotal(b) + '</td>';
+            '<td>' + (b.umrah ?? '—') + '</td><td>' + (b.hajj ?? '—') + '</td>';
         tbody.appendChild(tr);
     });
 }
+
+/* Populate leave balances filter dropdowns */
+function populateLbFilters() {
+    var deptSel = document.getElementById('lbDeptFilter');
+    var desigSel = document.getElementById('lbDesigFilter');
+    if (deptSel) {
+        var deptCur = deptSel.value;
+        deptSel.innerHTML = '<option value="">All Departments</option>';
+        var emps = getEmployees();
+        var depts = {};
+        emps.forEach(function(e) { if (e.department) depts[e.department] = true; });
+        Object.keys(depts).sort().forEach(function(d) {
+            var opt = document.createElement('option');
+            opt.value = d;
+            opt.textContent = d;
+            deptSel.appendChild(opt);
+        });
+        deptSel.value = deptCur;
+    }
+    if (desigSel) {
+        var desigCur = desigSel.value;
+        desigSel.innerHTML = '<option value="">All Designations</option>';
+        var emps2 = getEmployees();
+        var desigs = {};
+        emps2.forEach(function(e) { if (e.position) desigs[e.position] = true; });
+        Object.keys(desigs).sort().forEach(function(d) {
+            var opt = document.createElement('option');
+            opt.value = d;
+            opt.textContent = d;
+            desigSel.appendChild(opt);
+        });
+        desigSel.value = desigCur;
+    }
+}
+
+/* Bind leave balances filter events */
+document.addEventListener('input', function(e) {
+    if (e.target.id === 'lbSearch') {
+        var data = getLeaveData();
+        if (data) renderLeaveBalances(data);
+    }
+});
+document.addEventListener('change', function(e) {
+    if (e.target.id === 'lbDeptFilter' || e.target.id === 'lbDesigFilter') {
+        var data = getLeaveData();
+        if (data) renderLeaveBalances(data);
+    }
+});
 
 function renderSickLeaveTracking(data) {
     var tbody = document.querySelector('.leave-content[data-leave="sick"] .md-table tbody');
@@ -2853,17 +2919,21 @@ document.getElementById('addHolidayBtn')?.addEventListener('click', function() {
 });
 
 /* Save Holiday */
+var _savingHoliday = false;
 document.getElementById('saveHolidayBtn')?.addEventListener('click', function() {
+    if (_savingHoliday) return;
+    _savingHoliday = true;
     var dateVal = document.getElementById('holidayDate').value;
     var nameVal = document.getElementById('holidayName').value.trim();
     var typeVal = document.getElementById('holidayType').value;
-    if (!dateVal || !nameVal) return;
+    if (!dateVal || !nameVal) { _savingHoliday = false; return; }
     var holidays = loadHolidays();
     if (editingHolidayIdx >= 0 && editingHolidayIdx < holidays.length) {
         holidays[editingHolidayIdx] = { date: dateVal, name: nameVal, type: typeVal };
     } else {
         holidays.push({ date: dateVal, name: nameVal, type: typeVal });
     }
+    _savingHoliday = false;
     saveHolidays(holidays);
     renderHolidays();
     hideHolidayForm();
@@ -3058,6 +3128,10 @@ document.addEventListener('click', function(e) {
 
 document.addEventListener('click', function(e) {
     if (e.target.id === 'lrSubmitBtn' || e.target.closest('#lrSubmitBtn')) {
+        /* Prevent double submission */
+        if (document.getElementById('calLeavePopup') && document.getElementById('calLeavePopup').getAttribute('data-submitting') === '1') return;
+        if (document.getElementById('calLeavePopup')) document.getElementById('calLeavePopup').setAttribute('data-submitting', '1');
+
         var empName = document.getElementById('lrEmployee').value;
         var leaveType = document.getElementById('lrType').value;
         var fromVal = document.getElementById('lrFrom').value;
@@ -3726,30 +3800,6 @@ function openLeaveRequestPopup(dateStr) {
             if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
         });
     }
-    if (popupSubmit) {
-        popupSubmit.addEventListener('click', function(e) {
-            e.stopPropagation();
-            /* Sync values to original form */
-            var emp = document.getElementById('lrEmployee');
-            var type = document.getElementById('lrType');
-            var from = document.getElementById('lrFrom');
-            var to = document.getElementById('lrTo');
-            var notes = document.getElementById('lrNotes');
-            var pEmp = popup.querySelector('#lrEmployee');
-            var pType = popup.querySelector('#lrType');
-            var pFrom = popup.querySelector('#lrFrom');
-            var pTo = popup.querySelector('#lrTo');
-            var pNotes = popup.querySelector('#lrNotes');
-            if (emp && pEmp) emp.value = pEmp.value;
-            if (type && pType) type.value = pType.value;
-            if (from && pFrom) from.value = pFrom.value;
-            if (to && pTo) to.value = pTo.value;
-            if (notes && pNotes) notes.value = pNotes.value;
-            /* Trigger original submit button */
-            var origSubmit = document.getElementById('lrSubmitBtn');
-            if (origSubmit) origSubmit.click();
-        });
-    }
 
     /* Set the date in the popup fields */
     var popFrom = popup.querySelector('#lrFrom');
@@ -3875,6 +3925,7 @@ function renderAllFromEmployees() {
         renderLeaveCalendar(data);
     }
     renderHolidays();
+    populateLbFilters();
 }
 
 /* Run on load and after data changes */

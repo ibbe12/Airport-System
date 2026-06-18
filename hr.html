@@ -503,7 +503,7 @@
 
                     <!-- Leave Requests -->
                     <div class="leave-content" data-leave="requests">
-                        <div class="md-row md-stats-row" style="margin-bottom:0;">
+                        <div class="md-row md-stats-row" style="margin-bottom:20px;">
                             <div class="md-col md-col-3">
                                 <div class="md-card md-card-gradient g-amber">
                                     <div class="md-gradient-inner">
@@ -558,7 +558,7 @@
                             </div>
                         </div>
 
-                        <div class="md-row" style="margin:0 0 16px 0;">
+                        <div class="md-row" style="margin:0 0 20px 0;">
                             <div class="md-col md-col-12" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;">
                                 <div>
                                     <h4 class="md-card-title mb-0">Recent Leave Requests</h4>
@@ -568,7 +568,7 @@
                             </div>
                         </div>
 
-                        <div id="leaveFormRow" style="display:none;margin-bottom:16px;padding:20px;background:var(--card-bg-alt,#f8f9fb);border-radius:12px;border:1px solid var(--gray-200,#eef0f4);">
+                        <div id="leaveFormRow" style="display:none;margin-bottom:20px;padding:20px;background:var(--card-bg-alt,#f8f9fb);border-radius:12px;border:1px solid var(--gray-200,#eef0f4);">
                             <div style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;">
                                 <div>
                                     <label style="display:block;margin-bottom:4px;font-size:12px;font-weight:500;color:var(--gray-text,#888);">Employee</label>
@@ -640,7 +640,7 @@
                                         <div class="md-table-wrap">
                                             <table class="md-table">
                                                 <thead>
-                                                    <tr><th>Employee</th><th>Annual Leave</th><th>FRL</th><th>Sick Leave Medical</th><th>Sick Leave</th><th>Circumcision</th><th>Paternity</th><th>Maternity</th><th>No Pay</th><th>Umrah</th><th>Hajj</th><th>Total</th></tr>
+                                                    <tr><th>Employee</th><th>Annual Leave</th><th>FRL</th><th>Sick Leave Medical</th><th>Sick Leave</th><th>Circumcision</th><th>Paternity</th><th>Maternity</th><th>No Pay</th><th>Umrah</th><th>Hajj</th></tr>
                                                 </thead>
                                                 <tbody>
                                                 </tbody>
@@ -780,10 +780,19 @@
                                     <div class="md-card-content">
                                         <h4 class="md-card-title mb-0">Leave Balances</h4>
                                         <p class="md-card-subtitle">Individual employee leave balances by type</p>
+                                        <div class="leave-balances-toolbar" style="display:flex;gap:10px;margin-bottom:12px;">
+                                            <input type="text" id="lbSearch" placeholder="Search employee..." style="flex:1;padding:8px 12px;border:1px solid var(--gray-300,#ddd);border-radius:8px;font-size:13px;background:var(--input-bg,#fff);color:var(--text,#1e1e2f);">
+                                            <select id="lbDeptFilter" style="padding:8px 12px;border:1px solid var(--gray-300,#ddd);border-radius:8px;font-size:13px;background:var(--input-bg,#fff);color:var(--text,#1e1e2f);">
+                                                <option value="">All Departments</option>
+                                            </select>
+                                            <select id="lbDesigFilter" style="padding:8px 12px;border:1px solid var(--gray-300,#ddd);border-radius:8px;font-size:13px;background:var(--input-bg,#fff);color:var(--text,#1e1e2f);">
+                                                <option value="">All Designations</option>
+                                            </select>
+                                        </div>
                                         <div class="md-table-wrap">
                                             <table class="md-table">
                                                 <thead>
-                                                    <tr><th>Employee</th><th>Annual Leave</th><th>FRL</th><th>Sick Leave Medical</th><th>Sick Leave</th><th>Circumcision</th><th>Paternity</th><th>Maternity</th><th>No Pay</th><th>Umrah</th><th>Hajj</th><th>Total</th></tr>
+                                                    <tr><th>SN</th><th>Employee</th><th>Annual Leave</th><th>FRL</th><th>Sick Leave Medical</th><th>Sick Leave</th><th>Circumcision</th><th>Paternity</th><th>Maternity</th><th>No Pay</th><th>Umrah</th><th>Hajj</th></tr>
                                                 </thead>
                                                 <tbody>
                                                 </tbody>
