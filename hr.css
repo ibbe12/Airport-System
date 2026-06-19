@@ -927,6 +927,9 @@ body {
 .md-col-3 {
   flex: 0 0 calc(25% - 15px);
 }
+.md-col-9 {
+  flex: 0 0 calc(75% - 5px);
+}
 
 .md-card {
   background: var(--card-bg);
@@ -1216,7 +1219,6 @@ body {
   background: var(--gray-100);
 }
 
-
 /* ========== LEAVE CARDS/TABLES GLOBAL STYLES ========== */
 .leave-content {
   --input-bg: var(--cream);
@@ -1258,11 +1260,11 @@ body {
 /* Stats card text/icon colors */
 .leave-content .md-card.g-amber .md-gradient-inner,
 .leave-content .md-card.g-amber .md-gradient-icon {
-  color: #0096FF;
+  color: #0096ff;
 }
 .leave-content .md-card.g-purple-amber .md-gradient-inner,
 .leave-content .md-card.g-purple-amber .md-gradient-icon {
-  color: #50C878;
+  color: #50c878;
 }
 .leave-content .md-card.g-green-teal .md-gradient-inner,
 .leave-content .md-card.g-green-teal .md-gradient-icon {
@@ -1270,7 +1272,7 @@ body {
 }
 .leave-content .md-card.g-red-pink .md-gradient-inner,
 .leave-content .md-card.g-red-pink .md-gradient-icon {
-  color: #DC143C;
+  color: #dc143c;
 }
 .leave-content[data-leave="balances"] .md-table th,
 .leave-content[data-leave="balances"] .md-table td {
@@ -1287,14 +1289,84 @@ body {
   white-space: nowrap;
   text-align: center;
 }
-.leave-content[data-leave="requests"] .md-row:last-child .md-table th:first-child,
-.leave-content[data-leave="requests"] .md-row:last-child .md-table td:first-child {
+.leave-content[data-leave="requests"]
+  .md-row:last-child
+  .md-table
+  th:first-child,
+.leave-content[data-leave="requests"]
+  .md-row:last-child
+  .md-table
+  td:first-child {
   text-align: left;
 }
 
 .leave-content[data-leave="balances"] .md-table tbody tr:hover td,
-.leave-content[data-leave="requests"] .md-row:last-child .md-table tbody tr:hover td {
+.leave-content[data-leave="requests"]
+  .md-row:last-child
+  .md-table
+  tbody
+  tr:hover
+  td {
   background: var(--gray-100);
+}
+
+/* Annual Leave Planning grid */
+#alpGrid {
+  border-collapse: collapse;
+  font-size: 0.8rem;
+  width: 100%;
+  min-width: 600px;
+}
+#alpGrid th,
+#alpGrid td {
+  border: none !important;
+}
+#alpGrid th {
+  padding: 6px 2px;
+  text-align: center;
+  font-size: 0.72rem;
+  background: var(--cream, #fffdd0);
+}
+#alpGrid td {
+  padding: 0;
+  text-align: center;
+  cursor: pointer;
+  transition: background 0.1s;
+  background: var(--cream, #fffdd0);
+}
+#alpGrid td.alp-cell {
+  height: 26px;
+  min-width: 28px;
+}
+#alpGrid td.alp-cell:hover {
+  background: #f0e6d8 !important;
+}
+#alpGrid td.alp-cell:active {
+  background: #895129 !important;
+  color: #fff !important;
+}
+#alpGrid tbody tr:hover td:first-child {
+  background: #e8ddd0;
+}
+#alpGrid th:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 3;
+  min-width: 140px;
+  text-align: left;
+  font-weight: 700;
+}
+#alpGrid tbody td:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: var(--cream, #fffdd0);
+  white-space: nowrap;
+  font-size: 0.78rem;
+  text-align: left;
+  cursor: default;
+  width: auto;
+  min-width: 140px;
 }
 
 .md-badge {
@@ -2831,7 +2903,7 @@ select.emp-form-control {
 
 /* Mini calendar today highlight */
 #leaveCalendarWrap .mini-calendar__day--highlight {
-  background: #eff6ff;
+  background: #2e1bdd;
   border-color: #bfdbfe;
 }
 

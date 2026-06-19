@@ -574,38 +574,40 @@
                         </div>
 
                         <div id="leaveFormRow" style="display:none;margin-bottom:20px;padding:20px;background:var(--card-bg-alt,#f8f9fb);border-radius:12px;border:1px solid var(--gray-200,#eef0f4);">
-                            <div style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;">
+                            <div style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;justify-content:center;">
                                 <div>
                                     <label style="display:block;margin-bottom:4px;font-size:12px;font-weight:500;color:var(--gray-text,#888);">Employee</label>
-                                    <select id="lrEmployee" style="padding:8px 12px;border:1px solid var(--gray-300,#ddd);border-radius:8px;font-size:13px;background:var(--input-bg,#fff);color:var(--text,#1e1e2f);min-width:180px;">
+                                    <select id="lrEmployee" style="padding:8px 12px;border:1px solid var(--gray-300,#ddd);border-radius:8px;font-size:13px;background:var(--input-bg,#fff);color:var(--text,#1e1e2f);width:170px;">
                                         <option value="">— Select —</option>
                                     </select>
                                 </div>
                                 <div>
                                     <label style="display:block;margin-bottom:4px;font-size:12px;font-weight:500;color:var(--gray-text,#888);">Leave Type</label>
-                                    <select id="lrType" style="padding:8px 12px;border:1px solid var(--gray-300,#ddd);border-radius:8px;font-size:13px;background:var(--input-bg,#fff);color:var(--text,#1e1e2f);min-width:160px;">
+                                    <select id="lrType" style="padding:8px 12px;border:1px solid var(--gray-300,#ddd);border-radius:8px;font-size:13px;background:var(--input-bg,#fff);color:var(--text,#1e1e2f);width:170px;">
                                         <option value="">— Select —</option>
                                     </select>
                                 </div>
                                 <div>
                                     <label style="display:block;margin-bottom:4px;font-size:12px;font-weight:500;color:var(--gray-text,#888);">From</label>
-                                    <input type="date" id="lrFrom" style="padding:8px 12px;border:1px solid var(--gray-300,#ddd);border-radius:8px;font-size:13px;background:var(--input-bg,#fff);color:var(--text,#1e1e2f);" />
+                                    <input type="date" id="lrFrom" style="padding:8px 12px;border:1px solid var(--gray-300,#ddd);border-radius:8px;font-size:13px;background:var(--input-bg,#fff);color:var(--text,#1e1e2f);width:170px;box-sizing:border-box;" />
                                 </div>
                                 <div>
                                     <label style="display:block;margin-bottom:4px;font-size:12px;font-weight:500;color:var(--gray-text,#888);">To</label>
-                                    <input type="date" id="lrTo" style="padding:8px 12px;border:1px solid var(--gray-300,#ddd);border-radius:8px;font-size:13px;background:var(--input-bg,#fff);color:var(--text,#1e1e2f);" />
+                                    <input type="date" id="lrTo" style="padding:8px 12px;border:1px solid var(--gray-300,#ddd);border-radius:8px;font-size:13px;background:var(--input-bg,#fff);color:var(--text,#1e1e2f);width:170px;box-sizing:border-box;" />
                                 </div>
                                 <div>
                                     <label style="display:block;margin-bottom:4px;font-size:12px;font-weight:500;color:var(--gray-text,#888);">Notes</label>
-                                    <input type="text" id="lrNotes" placeholder="Reason (optional)" style="padding:8px 12px;border:1px solid var(--gray-300,#ddd);border-radius:8px;font-size:13px;background:var(--input-bg,#fff);color:var(--text,#1e1e2f);width:180px;" />
+                                    <input type="text" id="lrNotes" placeholder="Reason (optional)" style="padding:8px 12px;border:1px solid var(--gray-300,#ddd);border-radius:8px;font-size:13px;background:var(--input-bg,#fff);color:var(--text,#1e1e2f);width:170px;box-sizing:border-box;" />
                                 </div>
-                                <div style="display:flex;gap:6px;">
-                                    <button id="lrSubmitBtn" style="padding:8px 16px;border:none;border-radius:8px;background:#895129;color:#fff;cursor:pointer;font-size:13px;font-weight:500;"><i class="bi bi-check-lg"></i> Submit</button>
-                                    <button id="lrCancelBtn" style="padding:8px 16px;border:1px solid var(--gray-300,#ddd);border-radius:8px;background:var(--card-bg,#fff);color:var(--gray-text,#888);cursor:pointer;font-size:13px;font-weight:500;">Cancel</button>
+                                <div>
+                                    <button id="lrCancelBtn" style="padding:8px 16px;border:1px solid var(--gray-300,#ddd);border-radius:8px;background:var(--card-bg,#fff);color:var(--gray-text,#888);cursor:pointer;font-size:13px;font-weight:500;width:170px;box-sizing:border-box;">Cancel</button>
                                 </div>
                             </div>
-                            <div id="lrBalanceInfo" style="margin-top:10px;padding:8px 14px;border-radius:6px;font-size:0.85rem;display:none;"></div>
-                            <div id="lrDayCount" style="margin-top:6px;padding:8px 14px;border-radius:6px;font-size:0.85rem;display:none;background:#e8f0fe;color:#1a56db;"></div>
+                            <div id="lrBalanceInfo" style="text-align:center;margin-top:12px;padding:8px 14px;border-radius:6px;font-size:0.85rem;display:none;"></div>
+                            <div id="lrDayCount" style="text-align:center;margin-top:6px;padding:8px 14px;border-radius:6px;font-size:0.85rem;display:none;background:#e8f0fe;color:#1a56db;"></div>
+                            <div style="display:flex;gap:8px;justify-content:center;margin-top:12px;">
+                                <button id="lrSubmitBtn" style="padding:10px 28px;border:none;border-radius:8px;background:#895129;color:#fff;cursor:pointer;font-size:14px;font-weight:600;">Apply for Leave</button>
+                            </div>
                         </div>
 
                         <div class="md-row">
@@ -815,11 +817,31 @@
                             <div class="md-col md-col-12">
                                 <div class="md-card">
                                     <div class="md-card-content">
-                                        <h4 class="md-card-title mb-0">Annual Leave Planning</h4>
-                                        <p class="md-card-subtitle">Plan and manage annual leave schedules</p>
-                                        <div class="leave-placeholder">
-                                            <i class="bi bi-tree" style="font-size:2.4rem;color:var(--gray-text);display:block;text-align:center;margin:32px 0 8px;"></i>
-                                            <p style="text-align:center;color:var(--gray-text);">Annual leave planning calendar and team coverage view.</p>
+                                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+                                            <div style="display:flex;align-items:center;gap:6px;">
+                                                <select id="alpDeptFilter" style="padding:6px 28px 6px 10px;border:none;border-radius:8px;font-size:13px;background-color:var(--cream);color:var(--text,#1e1e2f);cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23895129'/%3E%3C/svg%3E\");background-repeat:no-repeat;background-position:right 8px center;">
+                                                    <option value="">All Departments</option>
+                                                </select>
+                                                <select id="alpDesigFilter" style="padding:6px 28px 6px 10px;border:none;border-radius:8px;font-size:13px;background-color:var(--cream);color:var(--text,#1e1e2f);cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23895129'/%3E%3C/svg%3E\");background-repeat:no-repeat;background-position:right 8px center;">
+                                                    <option value="">All Designations</option>
+                                                </select>
+                                            </div>
+                                            <div style="display:flex;align-items:center;gap:4px;">
+                                                <button id="alpPrev" style="padding:4px 8px;border:none;border-radius:8px;background:var(--cream);color:var(--dark-brown,#895129);cursor:pointer;font-size:14px;font-weight:700;">&lt;</button>
+                                                <h4 class="md-card-title mb-0" id="alpTitle" style="margin:0;white-space:nowrap;color:var(--text,#1e1e2f);">January 2026</h4>
+                                                <button id="alpNext" style="padding:4px 8px;border:none;border-radius:8px;background:var(--cream);color:var(--dark-brown,#895129);cursor:pointer;font-size:14px;font-weight:700;">&gt;</button>
+                                            </div>
+                                            <div class="alp-view-btns" style="display:flex;align-items:center;gap:4px;">
+                                                <button data-view="year" style="padding:6px 10px;border:none;border-radius:8px;background:var(--cream);color:var(--text,#1e1e2f);cursor:pointer;font-size:13px;">Year</button>
+                                                <button data-view="month" style="padding:6px 10px;border:none;border-radius:8px;background:var(--cream);color:var(--text,#1e1e2f);cursor:pointer;font-size:13px;text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--dark-brown,#895129);text-decoration-thickness:2px;">Month</button>
+                                                <button data-view="week" style="padding:6px 10px;border:none;border-radius:8px;background:var(--cream);color:var(--text,#1e1e2f);cursor:pointer;font-size:13px;">Week</button>
+                                            </div>
+                                        </div>
+                                        <div id="alpGridWrap" style="overflow-x:auto;max-height:550px;overflow-y:auto;">
+                                            <table id="alpGrid" style="border-collapse:collapse;font-size:0.8rem;width:100%;min-width:600px;">
+                                                <thead id="alpGridHead"></thead>
+                                                <tbody id="alpGridBody"></tbody>
+                                            </table>
                                         </div>
                                     </div>
                                 </div>
@@ -864,7 +886,7 @@
                                             <button class="emp-btn emp-btn-primary" id="addHolidayBtn"><i class="bi bi-plus-lg"></i> Add Holiday</button>
                                         </div>
                                         <div id="holidayFormRow" style="display:none;margin-bottom:16px;padding:20px;background:var(--card-bg-alt,#f8f9fb);border-radius:12px;border:1px solid var(--gray-200,#eef0f4);">
-                                            <div style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;">
+                            <div style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;justify-content:center;">
                                                 <div>
                                                     <label style="display:block;margin-bottom:4px;font-size:12px;font-weight:500;color:var(--gray-text,#888);">Date</label>
                                                     <input type="date" id="holidayDate" style="padding:8px 12px;border:1px solid var(--gray-300,#ddd);border-radius:8px;font-size:13px;background:var(--input-bg,#fff);color:var(--text,#1e1e2f);" />

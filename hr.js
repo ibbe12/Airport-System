@@ -2799,6 +2799,434 @@ function renderSickLeaveTracking(data) {
     });
 }
 
+/* ---------- Annual Leave Planning ---------- */
+var ALP_KEY = 'hrf-leave-plan';
+var alpDate = new Date();
+alpDate.setDate(1);
+var alpView = 'month';
+
+function loadAlpData() {
+    return lsLoad(ALP_KEY, {});
+}
+
+function saveAlpData(data) {
+    lsSave(ALP_KEY, data);
+}
+
+function updateAlpViewBtn(v) {
+    alpView = v;
+    document.querySelectorAll('.alp-view-btns button').forEach(function(b) {
+        if (b.getAttribute('data-view') === v) {
+            b.style.textDecoration = 'underline';
+            b.style.textUnderlineOffset = '3px';
+            b.style.textDecorationColor = '#895129';
+            b.style.textDecorationThickness = '2px';
+        } else {
+            b.style.textDecoration = 'none';
+        }
+    });
+}
+
+function renderAnnualLeavePlanning(emps) {
+    populateAlpFilters(emps);
+    renderAlpGrid();
+}
+
+function populateAlpFilters(emps) {
+    var deptSel = document.getElementById('alpDeptFilter');
+    var desigSel = document.getElementById('alpDesigFilter');
+    if (!deptSel || !desigSel) return;
+
+    var depts = {}, desigs = {};
+    emps.forEach(function(e) {
+        if (e.department) depts[e.department] = true;
+        if (e.position) desigs[e.position] = true;
+    });
+    var curDept = deptSel.value;
+    var curDesig = desigSel.value;
+    deptSel.innerHTML = '<option value="">All Departments</option>';
+    Object.keys(depts).sort().forEach(function(d) {
+        deptSel.innerHTML += '<option value="' + d.replace(/"/g, '&quot;') + '">' + d + '</option>';
+    });
+    desigSel.innerHTML = '<option value="">All Designations</option>';
+    Object.keys(desigs).sort().forEach(function(d) {
+        desigSel.innerHTML += '<option value="' + d.replace(/"/g, '&quot;') + '">' + d + '</option>';
+    });
+    deptSel.value = curDept;
+    desigSel.value = curDesig;
+}
+
+function getFilteredEmps() {
+    var emps = getEmployees();
+    var dept = document.getElementById('alpDeptFilter');
+    var desig = document.getElementById('alpDesigFilter');
+    var deptVal = dept ? dept.value : '';
+    var desigVal = desig ? desig.value : '';
+    return emps.filter(function(e) {
+        if (deptVal && e.department !== deptVal) return false;
+        if (desigVal && e.position !== desigVal) return false;
+        return true;
+    });
+}
+
+function renderAlpGrid() {
+    if (alpView === 'year') renderAlpYearView();
+    else if (alpView === 'week') renderAlpWeekView();
+    else renderAlpMonthView();
+}
+
+function renderAlpYearView() {
+    var head = document.getElementById('alpGridHead');
+    var body = document.getElementById('alpGridBody');
+    var title = document.getElementById('alpTitle');
+    if (!head || !body || !title) return;
+
+    var year = alpDate.getFullYear();
+    var monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var fullMonths = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    title.textContent = 'Year ' + year;
+
+    var planData = loadAlpData();
+    var leaveData = getLeaveData();
+    var balances = leaveData ? leaveData.balances || {} : {};
+
+    /* Header row */
+    var headerHtml = '<tr><th style="position:sticky;top:0;left:0;z-index:3;background:var(--cream,#fffdd0);padding:6px 8px;border:1px solid var(--gray-200,#eef0f4);text-align:left;min-width:140px;font-weight:700;">Employee</th>';
+    headerHtml += '<th style="position:sticky;top:0;z-index:2;background:var(--cream,#fffdd0);padding:6px 6px;border:1px solid var(--gray-200,#eef0f4);text-align:center;min-width:50px;font-size:0.72rem;font-weight:700;">AL Balance</th>';
+    headerHtml += '<th style="position:sticky;top:0;z-index:2;background:var(--cream,#fffdd0);padding:6px 6px;border:1px solid var(--gray-200,#eef0f4);text-align:center;min-width:50px;font-size:0.72rem;font-weight:700;">Plan</th>';
+    for (var m = 0; m < 12; m++) {
+        headerHtml += '<th style="position:sticky;top:0;z-index:2;background:var(--cream,#fffdd0);padding:8px 4px;border:1px solid var(--gray-200,#eef0f4);text-align:center;min-width:60px;font-size:0.75rem;">' + monthNames[m] + '</th>';
+    }
+    headerHtml += '<th style="position:sticky;top:0;z-index:2;background:var(--cream,#fffdd0);padding:8px 4px;border:1px solid var(--gray-200,#eef0f4);text-align:center;min-width:50px;font-size:0.75rem;font-weight:700;">Total</th>';
+    head.innerHTML = headerHtml;
+
+    var emps = getFilteredEmps();
+    if (emps.length === 0) {
+        body.innerHTML = '<tr><td colspan="16" style="text-align:center;padding:40px 0;color:var(--gray-text);">No employees found.</td></tr>';
+        return;
+    }
+
+    var bodyHtml = '';
+    emps.forEach(function(emp) {
+        var initials = (emp.initials || '').slice(0, 2).toUpperCase() || emp.name.slice(0, 2).toUpperCase();
+        var empColor = emp.color || '#895129';
+        var empPlan = planData[emp.name] || [];
+        if (!Array.isArray(empPlan)) empPlan = [];
+
+        var bal = balances[emp.name] ? (balances[emp.name].annual || 0) : 0;
+
+        var monthCounts = [];
+        var total = 0;
+        for (var m = 0; m < 12; m++) {
+            var count = 0;
+            var prefix = year + '-' + String(m + 1).padStart(2, '0');
+            empPlan.forEach(function(ds) {
+                if (ds.indexOf(prefix) === 0) count++;
+            });
+            monthCounts.push(count);
+            total += count;
+        }
+
+        bodyHtml += '<tr>' +
+            '<td style="padding:6px 8px;border:1px solid var(--gray-200,#eef0f4);white-space:nowrap;font-size:0.78rem;position:sticky;left:0;background:var(--cream,#fffdd0);z-index:1;">' +
+            '<span class="alp-avatar" style="background:' + empColor + ';width:22px;height:22px;font-size:0.65rem;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;color:#fff;font-weight:700;margin-right:6px;">' + initials + '</span>' +
+            emp.name + '</td>' +
+            '<td style="padding:6px 4px;border:1px solid var(--gray-200,#eef0f4);text-align:center;font-size:0.78rem;font-weight:600;' + (bal <= 0 ? 'color:#dc3545;' : '') + '">' + bal + '</td>' +
+            '<td style="padding:6px 4px;border:1px solid var(--gray-200,#eef0f4);text-align:center;font-size:0.78rem;font-weight:700;">' + (total || '') + '</td>';
+
+        for (var m = 0; m < 12; m++) {
+            var hasPlan = monthCounts[m] > 0;
+            bodyHtml += '<td style="padding:6px 4px;border:1px solid var(--gray-200,#eef0f4);text-align:center;font-size:0.78rem;' +
+                (hasPlan ? 'background:#895129;color:#fff;font-weight:600;' : '') +
+                '">' + (monthCounts[m] || '') + '</td>';
+        }
+        bodyHtml += '<td style="padding:6px 4px;border:1px solid var(--gray-200,#eef0f4);text-align:center;font-size:0.8rem;font-weight:700;">' + (total || '') + '</td>';
+        bodyHtml += '</tr>';
+    });
+    body.innerHTML = bodyHtml;
+}
+
+function renderAlpMonthView() {
+    var head = document.getElementById('alpGridHead');
+    var body = document.getElementById('alpGridBody');
+    var title = document.getElementById('alpTitle');
+    if (!head || !body || !title) return;
+
+    var year = alpDate.getFullYear();
+    var month = alpDate.getMonth();
+    var fullMonths = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    title.textContent = fullMonths[month] + ' ' + year;
+
+    var daysInMonth = new Date(year, month + 1, 0).getDate();
+    var planData = loadAlpData();
+    var holidays = loadHolidays();
+    var holidayMap = {};
+    holidays.forEach(function(h) { holidayMap[h.date] = h; });
+    var leaveData = getLeaveData();
+    var balances = leaveData ? leaveData.balances || {} : {};
+
+    /* Header row */
+    var headerHtml = '<tr><th style="position:sticky;top:0;left:0;z-index:3;background:var(--cream,#fffdd0);padding:6px 8px;border:1px solid var(--gray-200,#eef0f4);text-align:left;min-width:140px;font-weight:700;">Employee</th>';
+    headerHtml += '<th style="position:sticky;top:0;z-index:2;background:var(--cream,#fffdd0);padding:6px 6px;border:1px solid var(--gray-200,#eef0f4);text-align:center;min-width:40px;font-size:0.72rem;font-weight:700;">AL Balance</th>';
+    headerHtml += '<th style="position:sticky;top:0;z-index:2;background:var(--cream,#fffdd0);padding:6px 6px;border:1px solid var(--gray-200,#eef0f4);text-align:center;min-width:40px;font-size:0.72rem;font-weight:700;">Plan</th>';
+    for (var d = 1; d <= daysInMonth; d++) {
+        var dow = new Date(year, month, d).getDay();
+        var isWeekend = dow === 5;
+        headerHtml += '<th style="position:sticky;top:0;z-index:2;background:var(--cream,#fffdd0);padding:6px 2px;border:1px solid var(--gray-200,#eef0f4);text-align:center;min-width:28px;font-size:0.72rem;' +
+            (isWeekend ? 'color:var(--gray-text,#aaa);' : '') + '">' + d + '</th>';
+    }
+    head.innerHTML = headerHtml;
+
+    var emps = getFilteredEmps();
+    if (emps.length === 0) {
+        body.innerHTML = '<tr><td colspan="' + (daysInMonth + 3) + '" style="text-align:center;padding:40px 0;color:var(--gray-text);">No employees found.</td></tr>';
+        return;
+    }
+
+    var bodyHtml = '';
+    emps.forEach(function(emp) {
+        var initials = (emp.initials || '').slice(0, 2).toUpperCase() || emp.name.slice(0, 2).toUpperCase();
+        var empColor = emp.color || '#895129';
+        var empPlan = planData[emp.name] || {};
+        var dateSet = {};
+        if (Array.isArray(empPlan)) {
+            empPlan.forEach(function(ds) { dateSet[ds] = true; });
+        }
+
+        var bal = balances[emp.name] ? (balances[emp.name].annual || 0) : 0;
+        var empTotal = Array.isArray(empPlan) ? empPlan.length : 0;
+
+        bodyHtml += '<tr>' +
+            '<td style="padding:4px 8px;border:1px solid var(--gray-200,#eef0f4);white-space:nowrap;font-size:0.78rem;position:sticky;left:0;background:var(--cream,#fffdd0);z-index:1;">' +
+            '<span class="alp-avatar" style="background:' + empColor + ';width:22px;height:22px;font-size:0.65rem;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;color:#fff;font-weight:700;margin-right:6px;">' + initials + '</span>' +
+            emp.name + '</td>' +
+            '<td style="padding:4px 6px;border:1px solid var(--gray-200,#eef0f4);text-align:center;font-size:0.72rem;font-weight:600;' + (bal <= 0 ? 'color:#dc3545;' : '') + '">' + bal + '</td>' +
+            '<td style="padding:4px 6px;border:1px solid var(--gray-200,#eef0f4);text-align:center;font-size:0.72rem;font-weight:700;">' + (empTotal || '') + '</td>';
+
+        for (var d = 1; d <= daysInMonth; d++) {
+            var dateStr = year + '-' + String(month + 1).padStart(2, '0') + '-' + String(d).padStart(2, '0');
+            var dow = new Date(year, month, d).getDay();
+            var isFriday = dow === 5;
+            var isPlanned = dateSet[dateStr] === true;
+            var isHoliday = holidayMap[dateStr] !== undefined;
+
+            var cellLabel = '';
+            var cellStyle = '';
+            if (isPlanned) {
+                cellLabel = isHoliday ? 'PH' : (isFriday ? 'OFF' : 'AL');
+                cellStyle = 'background:#895129;color:' + (isHoliday ? '#4fc3f7' : (isFriday ? '#ffb74d' : '#fff')) + ';font-weight:600;';
+            }
+            bodyHtml += '<td class="alp-cell" data-emp="' + emp.name.replace(/"/g, '&quot;') + '" data-date="' + dateStr + '" style="padding:0;border:1px solid var(--gray-200,#eef0f4);text-align:center;cursor:pointer;font-size:0.65rem;' + cellStyle + '">' + cellLabel + '</td>';
+        }
+        bodyHtml += '</tr>';
+    });
+    body.innerHTML = bodyHtml;
+}
+
+function renderAlpWeekView() {
+    var head = document.getElementById('alpGridHead');
+    var body = document.getElementById('alpGridBody');
+    var title = document.getElementById('alpTitle');
+    if (!head || !body || !title) return;
+
+    /* Find the Monday of the current week */
+    var ref = new Date(alpDate);
+    var day = ref.getDay(); /* 0=Sun */
+    var diff = day === 0 ? -6 : 1 - day; /* Monday = 1 */
+    var monday = new Date(ref);
+    monday.setDate(ref.getDate() + diff);
+    var sunday = new Date(monday);
+    sunday.setDate(monday.getDate() + 6);
+
+    var fullMonths = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    title.textContent = fullMonths[monday.getMonth()] + ' ' + monday.getDate() + ' - ' + fullMonths[sunday.getMonth()] + ' ' + sunday.getDate() + ', ' + sunday.getFullYear();
+
+    var planData = loadAlpData();
+    var holidays = loadHolidays();
+    var holidayMap = {};
+    holidays.forEach(function(h) { holidayMap[h.date] = h; });
+    var dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    var leaveData = getLeaveData();
+    var balances = leaveData ? leaveData.balances || {} : {};
+
+    /* Header row */
+    var headerHtml = '<tr><th style="position:sticky;top:0;left:0;z-index:3;background:var(--cream,#fffdd0);padding:6px 8px;border:1px solid var(--gray-200,#eef0f4);text-align:left;min-width:140px;font-weight:700;">Employee</th>';
+    headerHtml += '<th style="position:sticky;top:0;z-index:2;background:var(--cream,#fffdd0);padding:6px 6px;border:1px solid var(--gray-200,#eef0f4);text-align:center;min-width:40px;font-size:0.72rem;font-weight:700;">AL Balance</th>';
+    headerHtml += '<th style="position:sticky;top:0;z-index:2;background:var(--cream,#fffdd0);padding:6px 6px;border:1px solid var(--gray-200,#eef0f4);text-align:center;min-width:40px;font-size:0.72rem;font-weight:700;">Plan</th>';
+    for (var i = 0; i < 7; i++) {
+        var d = new Date(monday);
+        d.setDate(monday.getDate() + i);
+        var dow = d.getDay();
+        var isFriday = dow === 5;
+        var dayNum = d.getDate();
+        headerHtml += '<th style="position:sticky;top:0;z-index:2;background:var(--cream,#fffdd0);padding:6px 4px;border:1px solid var(--gray-200,#eef0f4);text-align:center;min-width:40px;font-size:0.72rem;' +
+            (isFriday ? 'color:var(--gray-text,#aaa);' : '') + '">' + dayNames[dow] + ' ' + dayNum + '</th>';
+    }
+    head.innerHTML = headerHtml;
+
+    var emps = getFilteredEmps();
+    if (emps.length === 0) {
+        body.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:40px 0;color:var(--gray-text);">No employees found.</td></tr>';
+        return;
+    }
+
+    var bodyHtml = '';
+    emps.forEach(function(emp) {
+        var initials = (emp.initials || '').slice(0, 2).toUpperCase() || emp.name.slice(0, 2).toUpperCase();
+        var empColor = emp.color || '#895129';
+        var empPlan = planData[emp.name] || [];
+        var dateSet = {};
+        if (Array.isArray(empPlan)) {
+            empPlan.forEach(function(ds) { dateSet[ds] = true; });
+        }
+
+        var bal = balances[emp.name] ? (balances[emp.name].annual || 0) : 0;
+        var empTotal = Array.isArray(empPlan) ? empPlan.length : 0;
+
+        bodyHtml += '<tr>' +
+            '<td style="padding:4px 8px;border:1px solid var(--gray-200,#eef0f4);white-space:nowrap;font-size:0.78rem;position:sticky;left:0;background:var(--cream,#fffdd0);z-index:1;">' +
+            '<span class="alp-avatar" style="background:' + empColor + ';width:22px;height:22px;font-size:0.65rem;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;color:#fff;font-weight:700;margin-right:6px;">' + initials + '</span>' +
+            emp.name + '</td>' +
+            '<td style="padding:4px 6px;border:1px solid var(--gray-200,#eef0f4);text-align:center;font-size:0.72rem;font-weight:600;' + (bal <= 0 ? 'color:#dc3545;' : '') + '">' + bal + '</td>' +
+            '<td style="padding:4px 6px;border:1px solid var(--gray-200,#eef0f4);text-align:center;font-size:0.72rem;font-weight:700;">' + (empTotal || '') + '</td>';
+
+        for (var i = 0; i < 7; i++) {
+            var d = new Date(monday);
+            d.setDate(monday.getDate() + i);
+            var dateStr = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+            var dow = d.getDay();
+            var isFriday = dow === 5;
+            var isPlanned = dateSet[dateStr] === true;
+            var isHoliday = holidayMap[dateStr] !== undefined;
+
+            var cellLabel = '';
+            var cellStyle = '';
+            if (isPlanned) {
+                cellLabel = isHoliday ? 'PH' : (isFriday ? 'OFF' : 'AL');
+                cellStyle = 'background:#895129;color:' + (isHoliday ? '#4fc3f7' : (isFriday ? '#ffb74d' : '#fff')) + ';font-weight:600;';
+            }
+            bodyHtml += '<td class="alp-cell" data-emp="' + emp.name.replace(/"/g, '&quot;') + '" data-date="' + dateStr + '" style="padding:0;border:1px solid var(--gray-200,#eef0f4);text-align:center;cursor:pointer;font-size:0.65rem;' + cellStyle + '">' + cellLabel + '</td>';
+        }
+        bodyHtml += '</tr>';
+    });
+    body.innerHTML = bodyHtml;
+}
+
+function updateAlpCell(cell, forcePlan) {
+    var empName = cell.getAttribute('data-emp');
+    var dateStr = cell.getAttribute('data-date');
+    if (!empName || !dateStr) return;
+
+    var planData = loadAlpData();
+    if (!planData[empName] || !Array.isArray(planData[empName])) {
+        planData[empName] = [];
+    }
+    var idx = planData[empName].indexOf(dateStr);
+
+    if (forcePlan === true && idx < 0) {
+        planData[empName].push(dateStr);
+        planData[empName].sort();
+    } else if (forcePlan === false && idx >= 0) {
+        planData[empName].splice(idx, 1);
+    } else if (forcePlan === undefined) {
+        if (idx >= 0) planData[empName].splice(idx, 1);
+        else { planData[empName].push(dateStr); planData[empName].sort(); }
+    }
+    saveAlpData(planData);
+
+    var isNowPlanned = planData[empName].indexOf(dateStr) >= 0;
+    var parts = dateStr.split('-');
+    var d = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+    var isFriday = d.getDay() === 5;
+    var holidays = loadHolidays();
+    var holidayMap = {};
+    holidays.forEach(function(h) { holidayMap[h.date] = h; });
+    var isHoliday = holidayMap[dateStr] !== undefined;
+
+    if (isNowPlanned) {
+        cell.textContent = isHoliday ? 'PH' : (isFriday ? 'OFF' : 'AL');
+        cell.style.background = '#895129';
+        cell.style.color = isHoliday ? '#4fc3f7' : (isFriday ? '#ffb74d' : '#fff');
+        cell.style.fontWeight = '600';
+    } else {
+        cell.style.background = '';
+        cell.style.color = '';
+        cell.style.fontWeight = '';
+        cell.textContent = '';
+    }
+
+    /* Update planned total in same row */
+    var row = cell.parentNode;
+    if (row) {
+        var plannedTd = row.querySelector('td:nth-child(3)');
+        if (plannedTd) {
+            var totalCount = Array.isArray(planData[empName]) ? planData[empName].length : 0;
+            plannedTd.textContent = totalCount || '';
+        }
+    }
+    return isNowPlanned;
+}
+
+var alpDragging = false;
+var alpDragAction = undefined; /* true = plan, false = unplan */
+
+document.addEventListener('mousedown', function(e) {
+    var cell = e.target.closest('.alp-cell');
+    if (cell) {
+        alpDragging = true;
+        var empName = cell.getAttribute('data-emp');
+        var dateStr = cell.getAttribute('data-date');
+        if (!empName || !dateStr) return;
+        var planData = loadAlpData();
+        var empPlan = planData[empName] || [];
+        alpDragAction = empPlan.indexOf(dateStr) < 0; /* plan if currently unplanned */
+        updateAlpCell(cell);
+    }
+});
+
+document.addEventListener('mouseenter', function(e) {
+    if (!alpDragging) return;
+    var cell = e.target.closest('.alp-cell');
+    if (cell) {
+        updateAlpCell(cell, alpDragAction);
+    }
+}, true);
+
+document.addEventListener('mouseup', function() {
+    alpDragging = false;
+    alpDragAction = undefined;
+});
+
+document.addEventListener('click', function(e) {
+    if (alpDragging) { alpDragging = false; return; }
+
+    /* Navigation */
+    if (e.target.id === 'alpPrev') {
+        if (alpView === 'year') alpDate.setFullYear(alpDate.getFullYear() - 1);
+        else if (alpView === 'week') alpDate.setDate(alpDate.getDate() - 7);
+        else alpDate.setMonth(alpDate.getMonth() - 1);
+        renderAlpGrid();
+    }
+    if (e.target.id === 'alpNext') {
+        if (alpView === 'year') alpDate.setFullYear(alpDate.getFullYear() + 1);
+        else if (alpView === 'week') alpDate.setDate(alpDate.getDate() + 7);
+        else alpDate.setMonth(alpDate.getMonth() + 1);
+        renderAlpGrid();
+    }
+});
+
+/* View change */
+document.addEventListener('click', function(e) {
+    var btn = e.target.closest('.alp-view-btns button');
+    if (btn) {
+        updateAlpViewBtn(btn.getAttribute('data-view'));
+        renderAlpGrid();
+    }
+    if (e.target.id === 'alpDeptFilter' || e.target.id === 'alpDesigFilter') {
+        renderAlpGrid();
+    }
+});
+
 /* ---------- Public Holiday CRUD ---------- */
 var HOLIDAYS_KEY = 'hrf-holidays';
 var defaultHolidays = [
@@ -3069,6 +3497,11 @@ function showLeaveDayCount() {
     } else {
         el.textContent = 'Days: ' + rawDays + ' day' + (rawDays > 1 ? 's' : '');
     }
+    /* Update submit button with day count */
+    var btn = document.getElementById('lrSubmitBtn');
+    if (btn && !editingRequestId) {
+        btn.innerHTML = 'Apply for ' + days + ' ' + (days > 1 ? 'Days' : 'Day') + ' Leave';
+    }
 }
 
 function leaveTypeToKey(type) {
@@ -3104,7 +3537,7 @@ document.addEventListener('click', function(e) {
             document.getElementById('lrFrom').value = '';
             document.getElementById('lrTo').value = '';
             document.getElementById('lrNotes').value = '';
-            document.getElementById('lrSubmitBtn').innerHTML = '<i class="bi bi-check-lg"></i> Submit';
+            document.getElementById('lrSubmitBtn').innerHTML = 'Apply for Leave';
             editingRequestId = null;
             row.style.display = 'block';
         } else {
@@ -3121,7 +3554,7 @@ document.addEventListener('click', function(e) {
         if (o && o.parentNode) o.parentNode.removeChild(o);
         var p = document.getElementById('calLeavePopup');
         if (p && p.parentNode) p.parentNode.removeChild(p);
-        document.getElementById('lrSubmitBtn').innerHTML = '<i class="bi bi-check-lg"></i> Submit';
+        document.getElementById('lrSubmitBtn').innerHTML = 'Apply for Leave';
         editingRequestId = null;
     }
 });
@@ -3261,7 +3694,7 @@ document.addEventListener('click', function(e) {
         if (o && o.parentNode) o.parentNode.removeChild(o);
         var p = document.getElementById('calLeavePopup');
         if (p && p.parentNode) p.parentNode.removeChild(p);
-        document.getElementById('lrSubmitBtn').innerHTML = '<i class="bi bi-check-lg"></i> Submit';
+        document.getElementById('lrSubmitBtn').innerHTML = 'Apply for Leave';
         editingRequestId = null;
 
         renderAllFromEmployees();
@@ -3814,6 +4247,10 @@ function openLeaveRequestPopup(dateStr) {
                     popDay.style.display = origDay.style.display;
                     popDay.innerHTML = origDay.innerHTML;
                 }
+                var popBtn = popup.querySelector('#lrSubmitBtn');
+                if (popBtn) {
+                    popBtn.innerHTML = document.getElementById('lrSubmitBtn').innerHTML;
+                }
             }, 10);
         });
     });
@@ -3821,6 +4258,7 @@ function openLeaveRequestPopup(dateStr) {
     overlay.addEventListener('click', function() {
         if (popup.parentNode) popup.parentNode.removeChild(popup);
         if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+        document.getElementById('lrSubmitBtn').innerHTML = 'Apply for Leave';
     });
 
     if (popupCancel) {
@@ -3828,6 +4266,7 @@ function openLeaveRequestPopup(dateStr) {
             e.stopPropagation();
             if (popup.parentNode) popup.parentNode.removeChild(popup);
             if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+            document.getElementById('lrSubmitBtn').innerHTML = 'Apply for Leave';
         });
     }
 
@@ -3952,6 +4391,7 @@ function renderAllFromEmployees() {
         renderApprovalWorkflow(data);
         renderLeaveBalances(data);
         renderSickLeaveTracking(data);
+        renderAnnualLeavePlanning(emps);
         renderLeaveCalendar(data);
     }
     renderHolidays();
