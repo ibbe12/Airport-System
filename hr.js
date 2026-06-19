@@ -3163,6 +3163,36 @@ document.addEventListener('click', function(e) {
             return;
         }
 
+        /* Check for overlapping leave requests for same employee */
+        var requestYear = from.getFullYear();
+        for (var ri = 0; ri < data.requests.length; ri++) {
+            var r = data.requests[ri];
+            if (r.employee !== empName) continue;
+            if (r.status !== 'Pending' && r.status !== 'Approved') continue;
+            if (editingRequestId && r._id === editingRequestId) continue;
+
+            var rFromParts = (r.from || '').split(' ');
+            var rToParts = (r.to || '').split(' ');
+            if (rFromParts.length !== 2 || rToParts.length !== 2) continue;
+
+            var rFromMonth = months.indexOf(rFromParts[0]);
+            var rFromDay = parseInt(rFromParts[1], 10);
+            var rToMonth = months.indexOf(rToParts[0]);
+            var rToDay = parseInt(rToParts[1], 10);
+            if (rFromMonth < 0 || rToMonth < 0 || isNaN(rFromDay) || isNaN(rToDay)) continue;
+
+            var rFrom = new Date(requestYear, rFromMonth, rFromDay);
+            var rTo = new Date(requestYear, rToMonth, rToDay);
+            if (rTo < rFrom) rTo.setFullYear(requestYear + 1);
+
+            if (from <= rTo && rFrom <= to) {
+                document.getElementById('dangerToastMessage').textContent = 'Employee "' + empName + '" already has a ' + r.status.toLowerCase() + ' leave request from ' + r.from + ' to ' + r.to + ' that overlaps with the requested dates.';
+                var toast = new bootstrap.Toast(document.getElementById('dangerToast'), { autohide: false });
+                toast.show();
+                return;
+            }
+        }
+
         if (editingRequestId) {
             /* Update existing request */
             for (var i = 0; i < data.requests.length; i++) {

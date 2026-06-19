@@ -1,0 +1,4 @@
+Total Requests: #0096FF
+Approved: #50C878
+Pending: #818589
+Rejected: #DC143C

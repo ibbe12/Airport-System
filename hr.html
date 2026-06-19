@@ -52,12 +52,17 @@
                 ></button>
             </div>
         </div>
+    </div>
+
+    <!-- Danger toast centered on screen -->
+    <div id="dangerToastContainer" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1090;display:flex;align-items:center;justify-content:center;">
         <div
             id="dangerToast"
             class="toast align-items-center text-bg-danger border-0"
             role="alert"
             aria-live="assertive"
             aria-atomic="true"
+            style="pointer-events:auto;border-radius:16px;max-width:90vw;"
         >
             <div class="d-flex">
                 <div class="toast-body">
@@ -607,7 +612,7 @@
                             <div class="md-col md-col-8">
                                 <div class="md-card">
                                     <div class="md-card-content">
-                                        <h4 class="md-card-title mb-0">Leave Requests <i class="bi bi-three-dots-vertical float-end"></i></h4>
+                                        <h4 class="md-card-title mb-0">Leave Requests</h4>
                                         <div class="md-table-wrap">
                                             <table class="md-table">
                                                 <thead>
@@ -623,7 +628,7 @@
                             <div class="md-col md-col-4">
                                 <div class="md-card">
                                     <div class="md-card-content">
-                                        <h4 class="md-card-title mb-0">Pending Approvals <i class="bi bi-three-dots-vertical float-end"></i></h4>
+                                        <h4 class="md-card-title mb-0">Pending Approvals</h4>
                                         <p class="md-card-subtitle">Awaiting your decision</p>
                                         <ul class="md-list">
                                         </ul>
@@ -636,7 +641,7 @@
                             <div class="md-col md-col-12">
                                 <div class="md-card">
                                     <div class="md-card-content">
-                                        <h4 class="md-card-title mb-0">Leave Balance Summary <i class="bi bi-three-dots-vertical float-end"></i></h4>
+                                        <h4 class="md-card-title mb-0">Leave Balance Summary</h4>
                                         <div class="md-table-wrap">
                                             <table class="md-table">
                                                 <thead>

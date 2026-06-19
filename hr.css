@@ -1216,6 +1216,7 @@ body {
   background: var(--gray-100);
 }
 
+
 /* ========== LEAVE CARDS/TABLES GLOBAL STYLES ========== */
 .leave-content {
   --input-bg: var(--cream);
@@ -1255,11 +1256,21 @@ body {
 }
 
 /* Stats card text/icon colors */
-.leave-content .md-gradient-inner {
-  color: #111827;
+.leave-content .md-card.g-amber .md-gradient-inner,
+.leave-content .md-card.g-amber .md-gradient-icon {
+  color: #0096FF;
 }
-.leave-content .md-gradient-icon {
-  color: #111827;
+.leave-content .md-card.g-purple-amber .md-gradient-inner,
+.leave-content .md-card.g-purple-amber .md-gradient-icon {
+  color: #50C878;
+}
+.leave-content .md-card.g-green-teal .md-gradient-inner,
+.leave-content .md-card.g-green-teal .md-gradient-icon {
+  color: #818589;
+}
+.leave-content .md-card.g-red-pink .md-gradient-inner,
+.leave-content .md-card.g-red-pink .md-gradient-icon {
+  color: #DC143C;
 }
 .leave-content[data-leave="balances"] .md-table th,
 .leave-content[data-leave="balances"] .md-table td {
