@@ -2892,7 +2892,7 @@ function renderAlpYearView() {
 
     /* Header row */
     var headerHtml = '<tr><th style="position:sticky;top:0;left:0;z-index:3;background:var(--cream,#fffdd0);padding:6px 8px;border:1px solid var(--gray-200,#eef0f4);text-align:left;min-width:140px;font-weight:700;">Employee</th>';
-    headerHtml += '<th style="position:sticky;top:0;z-index:2;background:var(--cream,#fffdd0);padding:6px 6px;border:1px solid var(--gray-200,#eef0f4);text-align:center;min-width:50px;font-size:0.72rem;font-weight:700;">AL Balance</th>';
+    headerHtml += '<th style="position:sticky;top:0;z-index:2;background:var(--cream,#fffdd0);padding:6px 6px;border:1px solid var(--gray-200,#eef0f4);text-align:center;min-width:50px;font-size:0.72rem;font-weight:700;white-space:nowrap;">AL Balance</th>';
     headerHtml += '<th style="position:sticky;top:0;z-index:2;background:var(--cream,#fffdd0);padding:6px 6px;border:1px solid var(--gray-200,#eef0f4);text-align:center;min-width:50px;font-size:0.72rem;font-weight:700;">Plan</th>';
     for (var m = 0; m < 12; m++) {
         headerHtml += '<th style="position:sticky;top:0;z-index:2;background:var(--cream,#fffdd0);padding:8px 4px;border:1px solid var(--gray-200,#eef0f4);text-align:center;min-width:60px;font-size:0.75rem;">' + monthNames[m] + '</th>';
@@ -2907,6 +2907,8 @@ function renderAlpYearView() {
     }
 
     var bodyHtml = '';
+    var monthEmpCounts = [];
+    for (var m = 0; m < 12; m++) monthEmpCounts.push(0);
     emps.forEach(function(emp) {
         var initials = (emp.initials || '').slice(0, 2).toUpperCase() || emp.name.slice(0, 2).toUpperCase();
         var empColor = emp.color || '#895129';
@@ -2925,13 +2927,18 @@ function renderAlpYearView() {
             });
             monthCounts.push(count);
             total += count;
+            if (count > 0) monthEmpCounts[m]++;
         }
+
+        var empAvatar = emp.photo && emp.photo.startsWith('data:')
+            ? '<img src="' + emp.photo + '" style="width:22px;height:22px;border-radius:50%;margin-right:6px;vertical-align:middle;object-fit:cover;" />'
+            : '<span class="alp-avatar" style="background:' + empColor + ';width:22px;height:22px;font-size:0.65rem;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;color:#fff;font-weight:700;margin-right:6px;">' + initials + '</span>';
 
         bodyHtml += '<tr>' +
             '<td style="padding:6px 8px;border:1px solid var(--gray-200,#eef0f4);white-space:nowrap;font-size:0.78rem;position:sticky;left:0;background:var(--cream,#fffdd0);z-index:1;">' +
-            '<span class="alp-avatar" style="background:' + empColor + ';width:22px;height:22px;font-size:0.65rem;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;color:#fff;font-weight:700;margin-right:6px;">' + initials + '</span>' +
+            empAvatar +
             emp.name + '</td>' +
-            '<td style="padding:6px 4px;border:1px solid var(--gray-200,#eef0f4);text-align:center;font-size:0.78rem;font-weight:600;' + (bal <= 0 ? 'color:#dc3545;' : '') + '">' + bal + '</td>' +
+            '<td style="padding:6px 4px;border:1px solid var(--gray-200,#eef0f4);text-align:center;font-size:0.78rem;font-weight:600;white-space:nowrap;' + (bal <= 0 ? 'color:#dc3545;' : '') + '">' + bal + '</td>' +
             '<td style="padding:6px 4px;border:1px solid var(--gray-200,#eef0f4);text-align:center;font-size:0.78rem;font-weight:700;">' + (total || '') + '</td>';
 
         for (var m = 0; m < 12; m++) {
@@ -2943,6 +2950,15 @@ function renderAlpYearView() {
         bodyHtml += '<td style="padding:6px 4px;border:1px solid var(--gray-200,#eef0f4);text-align:center;font-size:0.8rem;font-weight:700;">' + (total || '') + '</td>';
         bodyHtml += '</tr>';
     });
+    /* Footer summary row */
+    bodyHtml += '<tr style="background:var(--cream,#fffdd0);font-weight:700;">' +
+        '<td style="padding:6px 8px;border:1px solid var(--gray-200,#eef0f4);position:sticky;left:0;background:var(--cream,#fffdd0);z-index:1;font-size:0.72rem;">Total</td>' +
+        '<td style="padding:6px 4px;border:1px solid var(--gray-200,#eef0f4);text-align:center;font-size:0.72rem;"></td>' +
+        '<td style="padding:6px 4px;border:1px solid var(--gray-200,#eef0f4);text-align:center;font-size:0.72rem;"></td>';
+    for (var m = 0; m < 12; m++) {
+        bodyHtml += '<td style="padding:6px 4px;border:1px solid var(--gray-200,#eef0f4);text-align:center;font-size:0.72rem;">' + (monthEmpCounts[m] || '') + '</td>';
+    }
+    bodyHtml += '<td style="padding:6px 4px;border:1px solid var(--gray-200,#eef0f4);text-align:center;font-size:0.72rem;"></td></tr>';
     body.innerHTML = bodyHtml;
 }
 
@@ -2967,12 +2983,12 @@ function renderAlpMonthView() {
 
     /* Header row */
     var headerHtml = '<tr><th style="position:sticky;top:0;left:0;z-index:3;background:var(--cream,#fffdd0);padding:6px 8px;border:1px solid var(--gray-200,#eef0f4);text-align:left;min-width:140px;font-weight:700;">Employee</th>';
-    headerHtml += '<th style="position:sticky;top:0;z-index:2;background:var(--cream,#fffdd0);padding:6px 6px;border:1px solid var(--gray-200,#eef0f4);text-align:center;min-width:40px;font-size:0.72rem;font-weight:700;">AL Balance</th>';
-    headerHtml += '<th style="position:sticky;top:0;z-index:2;background:var(--cream,#fffdd0);padding:6px 6px;border:1px solid var(--gray-200,#eef0f4);text-align:center;min-width:40px;font-size:0.72rem;font-weight:700;">Plan</th>';
+    headerHtml += '<th style="position:sticky;top:0;z-index:2;background:var(--cream,#fffdd0);padding:6px 6px;border:1px solid var(--gray-200,#eef0f4);text-align:center;min-width:55px;font-size:0.72rem;font-weight:700;white-space:nowrap;">AL Balance</th>';
+    headerHtml += '<th style="position:sticky;top:0;z-index:2;background:var(--cream,#fffdd0);padding:6px 6px;border:1px solid var(--gray-200,#eef0f4);text-align:center;min-width:35px;font-size:0.72rem;font-weight:700;">Plan</th>';
     for (var d = 1; d <= daysInMonth; d++) {
         var dow = new Date(year, month, d).getDay();
         var isWeekend = dow === 5;
-        headerHtml += '<th style="position:sticky;top:0;z-index:2;background:var(--cream,#fffdd0);padding:6px 2px;border:1px solid var(--gray-200,#eef0f4);text-align:center;min-width:28px;font-size:0.72rem;' +
+        headerHtml += '<th style="position:sticky;top:0;z-index:2;background:var(--cream,#fffdd0);padding:6px 2px;border:1px solid var(--gray-200,#eef0f4);text-align:center;font-size:0.72rem;' +
             (isWeekend ? 'color:var(--gray-text,#aaa);' : '') + '">' + d + '</th>';
     }
     head.innerHTML = headerHtml;
@@ -2984,6 +3000,8 @@ function renderAlpMonthView() {
     }
 
     var bodyHtml = '';
+    var dayEmpCounts = [];
+    for (var d = 1; d <= daysInMonth; d++) dayEmpCounts.push(0);
     emps.forEach(function(emp) {
         var initials = (emp.initials || '').slice(0, 2).toUpperCase() || emp.name.slice(0, 2).toUpperCase();
         var empColor = emp.color || '#895129';
@@ -2996,11 +3014,15 @@ function renderAlpMonthView() {
         var bal = balances[emp.name] ? (balances[emp.name].annual || 0) : 0;
         var empTotal = Array.isArray(empPlan) ? empPlan.length : 0;
 
+        var empAvatar = emp.photo && emp.photo.startsWith('data:')
+            ? '<img src="' + emp.photo + '" style="width:22px;height:22px;border-radius:50%;margin-right:6px;vertical-align:middle;object-fit:cover;" />'
+            : '<span class="alp-avatar" style="background:' + empColor + ';width:22px;height:22px;font-size:0.65rem;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;color:#fff;font-weight:700;margin-right:6px;">' + initials + '</span>';
+
         bodyHtml += '<tr>' +
             '<td style="padding:4px 8px;border:1px solid var(--gray-200,#eef0f4);white-space:nowrap;font-size:0.78rem;position:sticky;left:0;background:var(--cream,#fffdd0);z-index:1;">' +
-            '<span class="alp-avatar" style="background:' + empColor + ';width:22px;height:22px;font-size:0.65rem;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;color:#fff;font-weight:700;margin-right:6px;">' + initials + '</span>' +
+            empAvatar +
             emp.name + '</td>' +
-            '<td style="padding:4px 6px;border:1px solid var(--gray-200,#eef0f4);text-align:center;font-size:0.72rem;font-weight:600;' + (bal <= 0 ? 'color:#dc3545;' : '') + '">' + bal + '</td>' +
+            '<td style="padding:4px 6px;border:1px solid var(--gray-200,#eef0f4);text-align:center;font-size:0.72rem;font-weight:600;white-space:nowrap;' + (bal <= 0 ? 'color:#dc3545;' : '') + '">' + bal + '</td>' +
             '<td style="padding:4px 6px;border:1px solid var(--gray-200,#eef0f4);text-align:center;font-size:0.72rem;font-weight:700;">' + (empTotal || '') + '</td>';
 
         for (var d = 1; d <= daysInMonth; d++) {
@@ -3009,6 +3031,8 @@ function renderAlpMonthView() {
             var isFriday = dow === 5;
             var isPlanned = dateSet[dateStr] === true;
             var isHoliday = holidayMap[dateStr] !== undefined;
+
+            if (isPlanned) dayEmpCounts[d - 1]++;
 
             var cellLabel = '';
             var cellStyle = '';
@@ -3020,6 +3044,15 @@ function renderAlpMonthView() {
         }
         bodyHtml += '</tr>';
     });
+    /* Footer summary row */
+    bodyHtml += '<tr style="background:var(--cream,#fffdd0);font-weight:700;">' +
+        '<td style="padding:4px 8px;border:1px solid var(--gray-200,#eef0f4);position:sticky;left:0;background:var(--cream,#fffdd0);z-index:1;font-size:0.7rem;">Total</td>' +
+        '<td style="padding:4px 6px;border:1px solid var(--gray-200,#eef0f4);text-align:center;"></td>' +
+        '<td style="padding:4px 6px;border:1px solid var(--gray-200,#eef0f4);text-align:center;"></td>';
+    for (var d = 1; d <= daysInMonth; d++) {
+        bodyHtml += '<td style="padding:4px 2px;border:1px solid var(--gray-200,#eef0f4);text-align:center;font-size:0.7rem;font-weight:600;">' + (dayEmpCounts[d - 1] || '') + '</td>';
+    }
+    bodyHtml += '</tr>';
     body.innerHTML = bodyHtml;
 }
 
@@ -3029,38 +3062,38 @@ function renderAlpWeekView() {
     var title = document.getElementById('alpTitle');
     if (!head || !body || !title) return;
 
-    /* Find the Monday of the current week */
+    /* Find the Saturday of the current week */
     var ref = new Date(alpDate);
-    var day = ref.getDay(); /* 0=Sun */
-    var diff = day === 0 ? -6 : 1 - day; /* Monday = 1 */
-    var monday = new Date(ref);
-    monday.setDate(ref.getDate() + diff);
-    var sunday = new Date(monday);
-    sunday.setDate(monday.getDate() + 6);
+    var day = ref.getDay(); /* 0=Sun, 6=Sat */
+    var diff = day === 6 ? 0 : -(day + 1);
+    var saturday = new Date(ref);
+    saturday.setDate(ref.getDate() + diff);
+    var friday = new Date(saturday);
+    friday.setDate(saturday.getDate() + 6);
 
     var fullMonths = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-    title.textContent = fullMonths[monday.getMonth()] + ' ' + monday.getDate() + ' - ' + fullMonths[sunday.getMonth()] + ' ' + sunday.getDate() + ', ' + sunday.getFullYear();
+    title.textContent = fullMonths[saturday.getMonth()] + ' ' + saturday.getDate() + ' - ' + fullMonths[friday.getMonth()] + ' ' + friday.getDate() + ', ' + friday.getFullYear();
 
     var planData = loadAlpData();
     var holidays = loadHolidays();
     var holidayMap = {};
     holidays.forEach(function(h) { holidayMap[h.date] = h; });
-    var dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    var dayNames = ['Sat','Sun','Mon','Tue','Wed','Thu','Fri'];
     var leaveData = getLeaveData();
     var balances = leaveData ? leaveData.balances || {} : {};
 
     /* Header row */
     var headerHtml = '<tr><th style="position:sticky;top:0;left:0;z-index:3;background:var(--cream,#fffdd0);padding:6px 8px;border:1px solid var(--gray-200,#eef0f4);text-align:left;min-width:140px;font-weight:700;">Employee</th>';
-    headerHtml += '<th style="position:sticky;top:0;z-index:2;background:var(--cream,#fffdd0);padding:6px 6px;border:1px solid var(--gray-200,#eef0f4);text-align:center;min-width:40px;font-size:0.72rem;font-weight:700;">AL Balance</th>';
-    headerHtml += '<th style="position:sticky;top:0;z-index:2;background:var(--cream,#fffdd0);padding:6px 6px;border:1px solid var(--gray-200,#eef0f4);text-align:center;min-width:40px;font-size:0.72rem;font-weight:700;">Plan</th>';
+    headerHtml += '<th style="position:sticky;top:0;z-index:2;background:var(--cream,#fffdd0);padding:6px 6px;border:1px solid var(--gray-200,#eef0f4);text-align:center;min-width:55px;font-size:0.72rem;font-weight:700;white-space:nowrap;">AL Balance</th>';
+    headerHtml += '<th style="position:sticky;top:0;z-index:2;background:var(--cream,#fffdd0);padding:6px 6px;border:1px solid var(--gray-200,#eef0f4);text-align:center;min-width:35px;font-size:0.72rem;font-weight:700;">Plan</th>';
     for (var i = 0; i < 7; i++) {
-        var d = new Date(monday);
-        d.setDate(monday.getDate() + i);
+        var d = new Date(saturday);
+        d.setDate(saturday.getDate() + i);
         var dow = d.getDay();
         var isFriday = dow === 5;
         var dayNum = d.getDate();
-        headerHtml += '<th style="position:sticky;top:0;z-index:2;background:var(--cream,#fffdd0);padding:6px 4px;border:1px solid var(--gray-200,#eef0f4);text-align:center;min-width:40px;font-size:0.72rem;' +
-            (isFriday ? 'color:var(--gray-text,#aaa);' : '') + '">' + dayNames[dow] + ' ' + dayNum + '</th>';
+        headerHtml += '<th style="position:sticky;top:0;z-index:2;background:var(--cream,#fffdd0);padding:6px 4px;border:1px solid var(--gray-200,#eef0f4);text-align:center;font-size:0.72rem;' +
+            (isFriday ? 'color:var(--gray-text,#aaa);' : '') + '">' + dayNames[i] + ' ' + dayNum + '</th>';
     }
     head.innerHTML = headerHtml;
 
@@ -3071,6 +3104,7 @@ function renderAlpWeekView() {
     }
 
     var bodyHtml = '';
+    var dayEmpCounts = [0,0,0,0,0,0,0];
     emps.forEach(function(emp) {
         var initials = (emp.initials || '').slice(0, 2).toUpperCase() || emp.name.slice(0, 2).toUpperCase();
         var empColor = emp.color || '#895129';
@@ -3083,21 +3117,27 @@ function renderAlpWeekView() {
         var bal = balances[emp.name] ? (balances[emp.name].annual || 0) : 0;
         var empTotal = Array.isArray(empPlan) ? empPlan.length : 0;
 
+        var empAvatar = emp.photo && emp.photo.startsWith('data:')
+            ? '<img src="' + emp.photo + '" style="width:22px;height:22px;border-radius:50%;margin-right:6px;vertical-align:middle;object-fit:cover;" />'
+            : '<span class="alp-avatar" style="background:' + empColor + ';width:22px;height:22px;font-size:0.65rem;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;color:#fff;font-weight:700;margin-right:6px;">' + initials + '</span>';
+
         bodyHtml += '<tr>' +
             '<td style="padding:4px 8px;border:1px solid var(--gray-200,#eef0f4);white-space:nowrap;font-size:0.78rem;position:sticky;left:0;background:var(--cream,#fffdd0);z-index:1;">' +
-            '<span class="alp-avatar" style="background:' + empColor + ';width:22px;height:22px;font-size:0.65rem;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;color:#fff;font-weight:700;margin-right:6px;">' + initials + '</span>' +
+            empAvatar +
             emp.name + '</td>' +
-            '<td style="padding:4px 6px;border:1px solid var(--gray-200,#eef0f4);text-align:center;font-size:0.72rem;font-weight:600;' + (bal <= 0 ? 'color:#dc3545;' : '') + '">' + bal + '</td>' +
+            '<td style="padding:4px 6px;border:1px solid var(--gray-200,#eef0f4);text-align:center;font-size:0.72rem;font-weight:600;white-space:nowrap;' + (bal <= 0 ? 'color:#dc3545;' : '') + '">' + bal + '</td>' +
             '<td style="padding:4px 6px;border:1px solid var(--gray-200,#eef0f4);text-align:center;font-size:0.72rem;font-weight:700;">' + (empTotal || '') + '</td>';
 
         for (var i = 0; i < 7; i++) {
-            var d = new Date(monday);
-            d.setDate(monday.getDate() + i);
+            var d = new Date(saturday);
+            d.setDate(saturday.getDate() + i);
             var dateStr = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
             var dow = d.getDay();
             var isFriday = dow === 5;
             var isPlanned = dateSet[dateStr] === true;
             var isHoliday = holidayMap[dateStr] !== undefined;
+
+            if (isPlanned) dayEmpCounts[i]++;
 
             var cellLabel = '';
             var cellStyle = '';
@@ -3109,6 +3149,15 @@ function renderAlpWeekView() {
         }
         bodyHtml += '</tr>';
     });
+    /* Footer summary row */
+    bodyHtml += '<tr style="background:var(--cream,#fffdd0);font-weight:700;">' +
+        '<td style="padding:4px 8px;border:1px solid var(--gray-200,#eef0f4);position:sticky;left:0;background:var(--cream,#fffdd0);z-index:1;font-size:0.7rem;">Total</td>' +
+        '<td style="padding:4px 6px;border:1px solid var(--gray-200,#eef0f4);text-align:center;"></td>' +
+        '<td style="padding:4px 6px;border:1px solid var(--gray-200,#eef0f4);text-align:center;"></td>';
+    for (var i = 0; i < 7; i++) {
+        bodyHtml += '<td style="padding:4px 4px;border:1px solid var(--gray-200,#eef0f4);text-align:center;font-size:0.7rem;font-weight:600;">' + (dayEmpCounts[i] || '') + '</td>';
+    }
+    bodyHtml += '</tr>';
     body.innerHTML = bodyHtml;
 }
 
@@ -3164,6 +3213,24 @@ function updateAlpCell(cell, forcePlan) {
             plannedTd.textContent = totalCount || '';
         }
     }
+
+    /* Update footer summary row count for this day */
+    var tbody = row ? row.parentNode : null;
+    if (tbody) {
+        var footerRow = tbody.lastElementChild;
+        if (footerRow && footerRow.querySelector('td:first-child') && footerRow.querySelector('td:first-child').textContent === 'Total') {
+            var cellIndex = cell.cellIndex;
+            var dayPlanData = loadAlpData();
+            var emps = getFilteredEmps();
+            var count = 0;
+            emps.forEach(function(e) {
+                var p = dayPlanData[e.name];
+                if (Array.isArray(p) && p.indexOf(dateStr) >= 0) count++;
+            });
+            var footerTd = footerRow.cells[cellIndex];
+            if (footerTd) footerTd.textContent = count || '';
+        }
+    }
     return isNowPlanned;
 }
 
@@ -3201,13 +3268,15 @@ document.addEventListener('click', function(e) {
     if (alpDragging) { alpDragging = false; return; }
 
     /* Navigation */
-    if (e.target.id === 'alpPrev') {
+    var prevBtn = e.target.closest('#alpPrev');
+    var nextBtn = e.target.closest('#alpNext');
+    if (prevBtn) {
         if (alpView === 'year') alpDate.setFullYear(alpDate.getFullYear() - 1);
         else if (alpView === 'week') alpDate.setDate(alpDate.getDate() - 7);
         else alpDate.setMonth(alpDate.getMonth() - 1);
         renderAlpGrid();
     }
-    if (e.target.id === 'alpNext') {
+    if (nextBtn) {
         if (alpView === 'year') alpDate.setFullYear(alpDate.getFullYear() + 1);
         else if (alpView === 'week') alpDate.setDate(alpDate.getDate() + 7);
         else alpDate.setMonth(alpDate.getMonth() + 1);

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Employee Directory</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Segoe UI,Arial;background:#181d2c;color:#fff}
+.top{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;background:#23283a}
+.search{position:relative;width:45%}.search input{width:100%;padding:11px 38px;background:#171b28;border:1px solid #00c7b7;color:#fff;border-radius:4px}
+.search i{position:absolute;left:12px;top:12px;color:#aaa}
+.right{display:flex;align-items:center;gap:15px}.icons{display:flex;background:#2b3146;border-radius:4px;overflow:hidden}.icon{padding:11px 15px;cursor:pointer;border-left:1px solid #3d4357}.icon:first-child{border-left:none}.icon.active{background:#00c7b7}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(470px,1fr));gap:16px;padding:18px}
+.card{display:flex;background:#262c40;border:1px solid #394056}
+.card img{width:120px;height:160px;object-fit:cover}
+.info{padding:14px}.name{font-size:28px;font-weight:600}.job{margin:8px 0;color:#ddd}.line{margin:8px 0}.badge{display:inline-block;background:#3d6b7b;padding:4px 10px;border-radius:20px;font-size:12px;margin-right:6px}
+.badge.orange{background:#7d6148}
+.tableWrap{display:none;padding:0 6px 20px}
+table{width:100%;border-collapse:collapse;background:#262c40}
+th,td{padding:14px;border-bottom:1px solid #3a4056;text-align:left}
+thead{background:#1d2232}
+.emp{display:flex;align-items:center;gap:10px}
+.emp img{width:28px;height:28px;border-radius:4px}
+tbody tr:hover{background:#303852}
+@media(max-width:900px){.grid{grid-template-columns:1fr}.search{width:60%}}
+</style>
+</head>
+<body>
+<div class="top">
+<div class="search"><i class="fa fa-search"></i><input id="search" placeholder="Search..."></div>
+<div class="right">
+<div>1-3 / 3</div>
+<div class="icons">
+<div class="icon active" id="gridBtn"><i class="fa fa-table-cells"></i></div>
+<div class="icon" id="listBtn"><i class="fa fa-list"></i></div>
+</div>
+</div>
+</div>
+
+<div class="grid" id="gridView">
+<div class="card"><img src="https://randomuser.me/api/portraits/women/65.jpg"><div class="info"><div class="name">Emma Granger</div><div class="job">Consultant</div><div class="line"><i class="fa fa-envelope"></i> granger@company.com</div><div class="line"><i class="fa fa-phone"></i> (555)-768-6230</div><span class="badge">Consultant</span><span class="badge orange">Demo</span></div></div>
+<div class="card"><img src="https://randomuser.me/api/portraits/men/32.jpg"><div class="info"><div class="name">Michael Williams</div><div class="job">Chief Executive Officer</div><div class="line"><i class="fa fa-envelope"></i> williams@company.com</div><div class="line"><i class="fa fa-phone"></i> (555)-768-6230</div><span class="badge orange">Employee</span></div></div>
+<div class="card"><img src="https://randomuser.me/api/portraits/men/45.jpg"><div class="info"><div class="name">Simon Jones</div><div class="job">Experienced Developer</div><div class="line"><i class="fa fa-envelope"></i> jones@company.com</div><div class="line"><i class="fa fa-phone"></i> (555)-768-6230</div><span class="badge orange">Employee</span></div></div>
+</div>
+
+<div class="tableWrap" id="listView">
+<table>
+<thead><tr><th></th><th>Name</th><th>Work Phone</th><th>Department</th><th>Job</th><th>Manager</th></tr></thead>
+<tbody id="tbody">
+<tr><td><input type="checkbox"></td><td class="emp"><img src="https://randomuser.me/api/portraits/women/65.jpg">Emma Granger</td><td>(555)-768-6230</td><td>Research & Development</td><td>Consultant</td><td class="emp"><img src="https://randomuser.me/api/portraits/men/32.jpg">Michael Williams</td></tr>
+<tr><td><input type="checkbox"></td><td class="emp"><img src="https://randomuser.me/api/portraits/men/32.jpg">Michael Williams</td><td>(555)-768-6230</td><td>Administration</td><td>Chief Executive Officer</td><td>-</td></tr>
+<tr><td><input type="checkbox"></td><td class="emp"><img src="https://randomuser.me/api/portraits/men/45.jpg">Simon Jones</td><td>(555)-768-6230</td><td>Research & Development</td><td>Experienced Developer</td><td class="emp"><img src="https://randomuser.me/api/portraits/men/32.jpg">Michael Williams</td></tr>
+</tbody>
+</table>
+</div>
+
+<script>
+const g=document.getElementById('gridView'),l=document.getElementById('listView');
+gridBtn.onclick=()=>{g.style.display='grid';l.style.display='none';gridBtn.classList.add('active');listBtn.classList.remove('active');}
+listBtn.onclick=()=>{g.style.display='none';l.style.display='block';listBtn.classList.add('active');gridBtn.classList.remove('active');}
+search.onkeyup=e=>{
+let v=e.target.value.toLowerCase();
+document.querySelectorAll('.card').forEach(c=>c.style.display=c.innerText.toLowerCase().includes(v)?'flex':'none');
+document.querySelectorAll('#tbody tr').forEach(r=>r.style.display=r.innerText.toLowerCase().includes(v)?'':'none');
+}
+</script>
+</body>
+</html>

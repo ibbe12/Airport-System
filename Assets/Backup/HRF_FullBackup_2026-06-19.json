@@ -723,5 +723,21 @@
     "paternity": 30,
     "maternity": 30,
     "hajjUmrah": "once"
+  },
+  "__meta": {
+    "app": "HRF Airport System",
+    "exported": "2026-06-19T05:30:57.035Z",
+    "keys": [
+      "hrf-airport-session",
+      "hrf-airport-theme",
+      "hrf-emp-directory",
+      "hrf-emp-onboarding",
+      "hrf-settings",
+      "hrf-departments",
+      "hrf-designations",
+      "hrf-leave-data",
+      "hrf-holidays",
+      "hrf-leave-policy"
+    ]
   }
 }

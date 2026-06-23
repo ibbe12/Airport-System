@@ -1321,6 +1321,14 @@ body {
 #alpGrid td {
   border: none !important;
 }
+#alpGrid tbody tr:not(:last-child) td,
+#alpGrid thead th {
+  border-bottom: 1px solid var(--gray-200, #eef0f4) !important;
+}
+#alpGrid th:nth-child(4),
+#alpGrid td:nth-child(4) {
+  border-left: 2px solid var(--gray-200, #eef0f4) !important;
+}
 #alpGrid th {
   padding: 6px 2px;
   text-align: center;
