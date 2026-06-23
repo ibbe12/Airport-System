@@ -927,9 +927,6 @@ body {
 .md-col-3 {
   flex: 0 0 calc(25% - 15px);
 }
-.md-col-9 {
-  flex: 0 0 calc(75% - 5px);
-}
 
 .md-card {
   background: var(--card-bg);
@@ -1308,73 +1305,6 @@ body {
   tr:hover
   td {
   background: var(--gray-100);
-}
-
-/* Annual Leave Planning grid */
-#alpGrid {
-  border-collapse: collapse;
-  font-size: 0.8rem;
-  width: 100%;
-  min-width: 600px;
-}
-#alpGrid th,
-#alpGrid td {
-  border: none !important;
-}
-#alpGrid tbody tr:not(:last-child) td,
-#alpGrid thead th {
-  border-bottom: 1px solid var(--gray-200, #eef0f4) !important;
-}
-#alpGrid th:nth-child(4),
-#alpGrid td:nth-child(4) {
-  border-left: 2px solid var(--gray-200, #eef0f4) !important;
-}
-#alpGrid th {
-  padding: 6px 2px;
-  text-align: center;
-  font-size: 0.72rem;
-  background: var(--cream, #fffdd0);
-}
-#alpGrid td {
-  padding: 0;
-  text-align: center;
-  cursor: pointer;
-  transition: background 0.1s;
-  background: var(--cream, #fffdd0);
-}
-#alpGrid td.alp-cell {
-  height: 26px;
-  min-width: 28px;
-}
-#alpGrid td.alp-cell:hover {
-  background: #f0e6d8 !important;
-}
-#alpGrid td.alp-cell:active {
-  background: #895129 !important;
-  color: #fff !important;
-}
-#alpGrid tbody tr:hover td:first-child {
-  background: #e8ddd0;
-}
-#alpGrid th:first-child {
-  position: sticky;
-  left: 0;
-  z-index: 3;
-  min-width: 140px;
-  text-align: left;
-  font-weight: 700;
-}
-#alpGrid tbody td:first-child {
-  position: sticky;
-  left: 0;
-  z-index: 1;
-  background: var(--cream, #fffdd0);
-  white-space: nowrap;
-  font-size: 0.78rem;
-  text-align: left;
-  cursor: default;
-  width: auto;
-  min-width: 140px;
 }
 
 .md-badge {
@@ -2911,8 +2841,8 @@ select.emp-form-control {
 
 /* Mini calendar today highlight */
 #leaveCalendarWrap .mini-calendar__day--highlight {
-  background: #2e1bdd;
-  border-color: #bfdbfe;
+  background: #1e137e;
+  border-color: #1e4e88;
 }
 
 /* Three mini calendars in sidebar - more compact */
